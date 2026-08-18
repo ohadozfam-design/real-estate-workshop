@@ -1,0 +1,15 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# Environment / secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Raw source photos (working originals — web assets live in public/images/)
+photos/
