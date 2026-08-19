@@ -1,40 +1,78 @@
 import Stripe from "stripe";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildLineItems } from "../server/lineItems";
 
 /**
- * Production serverless handler (Vercel Node runtime).
+ * Production serverless handler (Vercel Node runtime) — fully self-contained.
  *
- * Standards-compliant Vercel function: `export default (req, res) => …`.
- * The Stripe secret key is read from the server environment only and is never
- * shipped to the browser. The same logic runs in dev via the Vite middleware
- * plugin in vite.config.ts.
+ * IMPORTANT: this file intentionally has NO relative imports outside the /api
+ * boundary (e.g. it does not import ../server/lineItems). Vercel bundles each
+ * function independently, and reaching outside /api can leave the dependency
+ * unbundled at runtime -> FUNCTION_INVOCATION_FAILED. Keeping everything inline
+ * guarantees the lambda is standalone.
  *
- * Request body:  { hasOrderBump: boolean }
- * Response:      { url: string }   ->  the client redirects to Stripe Checkout
- *                { error: string } ->  on any failure (surfaced to the console)
+ * Request body:  { hasOrderBump?: boolean }
+ * Response:      { url: string }   -> client redirects to Stripe Checkout
+ *                { error: string } -> on any failure (always structured JSON)
  */
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    res.status(405).json({ error: "Method Not Allowed" });
-    return;
-  }
 
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  if (!secretKey) {
-    // Most common production failure: the env var was never set in Vercel.
-    console.error(
-      "[create-checkout-session] STRIPE_SECRET_KEY is undefined. " +
-        "Set it in Vercel → Project → Settings → Environment Variables (and redeploy)."
-    );
-    res.status(500).json({
-      error: "Stripe is not configured on the server (STRIPE_SECRET_KEY missing).",
+// "General - Electronically Supplied Services" — the correct, Managed-Payments-
+// eligible tax code for a live online workshop. Overridable via env.
+const TAX_CODE = process.env.STRIPE_TAX_CODE || "txcd_10000000";
+
+function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreateParams.LineItem[] {
+  const items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+    {
+      price_data: {
+        currency: "usd",
+        product_data: { name: "סדנת לייב: איתור וניתוח נכסים בארה״ב", tax_code: TAX_CODE },
+        unit_amount: 9700, // $97.00
+      },
+      quantity: 1,
+    },
+  ];
+
+  if (hasOrderBump) {
+    items.push({
+      price_data: {
+        currency: "usd",
+        product_data: { name: "חבילת חוזים מול קבלנים ומוכרים פרטיים", tax_code: TAX_CODE },
+        unit_amount: 2700, // $27.00
+      },
+      quantity: 1,
     });
-    return;
   }
 
+  return items;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // CORS — set before anything else so even errors/preflight carry the headers.
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Everything is wrapped so the lambda NEVER crashes into a 500 HTML screen —
+  // it always responds with structured JSON.
   try {
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST, OPTIONS");
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
+
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      console.error(
+        "[create-checkout-session] STRIPE_SECRET_KEY is undefined. " +
+          "Set it in Vercel → Project → Settings → Environment Variables, then redeploy."
+      );
+      return res.status(500).json({
+        error: "Stripe is not configured on the server (STRIPE_SECRET_KEY missing).",
+      });
+    }
+
     const stripe = new Stripe(secretKey);
 
     // Vercel auto-parses JSON bodies, but guard against a string/undefined body too.
@@ -57,11 +95,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error("Stripe did not return a Checkout URL.");
     }
 
-    res.status(200).json({ url: session.url });
+    return res.status(200).json({ url: session.url });
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Unknown error creating the Checkout session.";
-    console.error("[create-checkout-session] Stripe error:", message);
-    res.status(500).json({ error: message });
+    console.error("[create-checkout-session] error:", message);
+    return res.status(500).json({ error: message });
   }
 }
