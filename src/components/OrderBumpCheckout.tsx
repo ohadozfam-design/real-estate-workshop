@@ -164,7 +164,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <LineItem label="Off-Market & Contractor Pack" price="$27" accent />
+                    <LineItem label="Off Market & Contractor Pack" price="$27" accent />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -205,7 +205,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 <span className="text-xl leading-relaxed text-cloud">
                   <span className="font-bold">כן! הוסף להזמנה שלי</span> את חבילת החוזים לעבודה מול
                   קבלנים ומוכרים פרטיים{" "}
-                  <span className="font-semibold text-gold">(Off-Market &amp; Contractor Pack)</span>{" "}
+                  <span className="font-semibold text-gold">(Off Market &amp; Contractor Pack)</span>{" "}
                   תמורת <span className="ltr-nums font-bold">$27</span> בלבד{" "}
                   <span className="text-drift">
                     (במקום <span className="ltr-nums line-through">${PRICING.bumpOriginal}</span>).

@@ -6,7 +6,7 @@ import { scrollToCheckout } from "../lib/site";
 const bullets = [
   "מנתחים עסקאות אמיתיות בזמן אמת.",
   "מקבלים תסריטים מוכנים באנגלית מול סוכנים.",
-  "יוצאים עם הצעה מוכנה להגשה.",
+  "מחשבים MAO ורווח צפוי ישירות בשטח.",
 ];
 
 // Staggered entrance: badge, H1, subheadline, and CTA fade in + slide up on load.
@@ -37,7 +37,7 @@ export default function HeroSection() {
           className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-4 py-2 text-base font-semibold text-drift"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
-          לייב בזום · יומיים מרוכזים
+          לייב בזום · יומיים · 4 שעות סה״כ
         </motion.div>
 
         {/* Centered headline */}
@@ -102,6 +102,9 @@ export default function HeroSection() {
           </CtaButton>
           <p className="mt-4 text-lg text-drift">
             🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
+          </p>
+          <p className="mt-2 text-base font-semibold text-coral">
+            המקומות מוגבלים כדי לשמור על סשן שאלות ותשובות אישי בלייב.
           </p>
         </motion.div>
       </motion.div>
