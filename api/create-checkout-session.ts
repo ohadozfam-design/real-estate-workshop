@@ -10,9 +10,12 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  * unbundled at runtime -> FUNCTION_INVOCATION_FAILED. Keeping everything inline
  * guarantees the lambda is standalone.
  *
- * Request body:  { hasOrderBump?: boolean }
+ * Request body:  { hasOrderBump?: boolean; name?: string; phone?: string; email?: string }
  * Response:      { url: string }   -> client redirects to Stripe Checkout
  *                { error: string } -> on any failure (always structured JSON)
+ *
+ * The lead's contact details are attached to the session (customer_email +
+ * metadata { name, phone }) so every lead and buyer is captured with full contact info.
  */
 
 // "General - Electronically Supplied Services" — the correct, Managed-Payments-
@@ -76,9 +79,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const stripe = new Stripe(secretKey);
 
     // Vercel auto-parses JSON bodies, but guard against a string/undefined body too.
-    const body: { hasOrderBump?: boolean } =
+    const body: { hasOrderBump?: boolean; name?: string; phone?: string; email?: string } =
       typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body ?? {});
     const hasOrderBump = Boolean(body.hasOrderBump);
+    const name = (body.name ?? "").trim();
+    const phone = (body.phone ?? "").trim();
+    const email = (body.email ?? "").trim();
 
     const origin =
       (req.headers.origin as string | undefined) ??
@@ -87,6 +93,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: buildLineItems(hasOrderBump),
+      // Capture the lead's contact details on the session.
+      ...(email ? { customer_email: email } : {}),
+      metadata: { name, phone, email },
       success_url: `${origin}/?checkout=success`,
       cancel_url: `${origin}/?checkout=cancel`,
     });

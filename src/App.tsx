@@ -1,7 +1,7 @@
 import { useState } from "react";
 import HeroSection from "./components/HeroSection";
 import LogisticsSection from "./components/LogisticsSection";
-import TreasureMap from "./components/TreasureMap";
+import CurriculumSection from "./components/CurriculumSection";
 import InstructorSection from "./components/InstructorSection";
 import ValueStack from "./components/ValueStack";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
@@ -17,7 +17,7 @@ export default function App() {
         <SectionDivider />
         <LogisticsSection />
         <SectionDivider />
-        <TreasureMap />
+        <CurriculumSection />
         <SectionDivider />
         <InstructorSection />
         <SectionDivider />

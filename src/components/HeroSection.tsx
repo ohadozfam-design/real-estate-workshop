@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Radio } from "lucide-react";
+import { Check, Radio, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
 import { SITE, scrollToCheckout } from "../lib/site";
 
@@ -32,7 +32,7 @@ export default function HeroSection() {
           {/* Understated editorial pill — subtle border, quiet warm dot */}
           <div className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-3.5 py-1.5 text-[13px] font-semibold text-drift lg:mx-0">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
-            לייב בזום · יומיים מרוכזים, {SITE.eventDates}
+            לייב בזום · יומיים מרוכזים
           </div>
 
           <h1
@@ -58,7 +58,15 @@ export default function HeroSection() {
             ))}
           </ul>
 
-          <div className="mx-auto mt-9 max-w-md lg:mx-0">
+          {/* Prominent dates */}
+          <div className="mx-auto mt-8 flex max-w-md items-center gap-2.5 rounded-xl border border-gold/40 bg-gold/10 px-4 py-2.5 lg:mx-0">
+            <CalendarDays className="h-5 w-5 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
+            <span className="ltr-nums text-lg font-extrabold text-gold">24 &amp; 26 באוגוסט</span>
+            <span className="text-gold/40" aria-hidden="true">·</span>
+            <span className="text-sm font-semibold text-cloud/90">שעתיים בכל יום בלייב</span>
+          </div>
+
+          <div className="mx-auto mt-6 max-w-md lg:mx-0">
             <CtaButton onClick={scrollToCheckout}>
               שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
             </CtaButton>

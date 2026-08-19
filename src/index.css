@@ -37,13 +37,9 @@
 }
 
 @layer components {
-  /* Uppercase eyebrow label + tiny rule (editorial, from the QUADIS reference). */
+  /* Uppercase eyebrow label — clean tracked gold text, no leading rule. */
   .eyebrow {
-    @apply inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-gold;
-  }
-  .eyebrow::before {
-    content: "";
-    @apply inline-block h-px w-8 bg-gold/60;
+    @apply inline-flex items-center text-xs font-bold uppercase tracking-[0.22em] text-gold;
   }
 }
 

@@ -34,13 +34,19 @@ function stripeCheckoutApi(secretKey: string | undefined): Plugin {
         try {
           let raw = "";
           for await (const chunk of req) raw += chunk;
-          const { hasOrderBump } = raw ? JSON.parse(raw) : {};
+          const { hasOrderBump, name = "", phone = "", email = "" } = raw ? JSON.parse(raw) : {};
           const origin = (req.headers.origin as string) || "http://localhost:5173";
 
           const stripe = new Stripe(secretKey);
           const session = await stripe.checkout.sessions.create({
             mode: "payment",
             line_items: buildLineItems(Boolean(hasOrderBump)),
+            ...(email ? { customer_email: String(email).trim() } : {}),
+            metadata: {
+              name: String(name).trim(),
+              phone: String(phone).trim(),
+              email: String(email).trim(),
+            },
             success_url: `${origin}/?checkout=success`,
             cancel_url: `${origin}/?checkout=cancel`,
           });

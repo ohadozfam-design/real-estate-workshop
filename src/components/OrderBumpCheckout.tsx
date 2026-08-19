@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ShieldCheck, Lock, AlertCircle } from "lucide-react";
+import { Check, ShieldCheck, Lock, AlertCircle, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
 import { PRICING, SITE } from "../lib/site";
 
@@ -9,13 +9,33 @@ type Props = {
   onToggle: (v: boolean) => void;
 };
 
+type Lead = { name: string; phone: string; email: string };
+type FieldErrors = Partial<Record<keyof Lead, string>>;
+
+function validateLead(lead: Lead): FieldErrors {
+  const errs: FieldErrors = {};
+  if (lead.name.trim().length < 2) errs.name = "נא למלא שם מלא";
+  if (lead.phone.replace(/\D/g, "").length < 9) errs.phone = "נא למלא מספר טלפון תקין";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email.trim())) errs.email = "נא למלא כתובת אימייל תקינה";
+  return errs;
+}
+
 export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   const total = bumpSelected ? PRICING.withBump : PRICING.base;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Optional fallback: static Stripe Payment Links, used only if the serverless
-  // API is unreachable or misconfigured (e.g. STRIPE_SECRET_KEY missing on the host).
+  const [lead, setLead] = useState<Lead>({ name: "", phone: "", email: "" });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [showErrors, setShowErrors] = useState(false);
+
+  function setField(key: keyof Lead, value: string) {
+    setLead((prev) => ({ ...prev, [key]: value }));
+    if (showErrors) {
+      setFieldErrors(validateLead({ ...lead, [key]: value }));
+    }
+  }
+
   function paymentLinkFallback(): string | undefined {
     const base = import.meta.env.VITE_STRIPE_PAYMENT_URL_BASE;
     const bump = import.meta.env.VITE_STRIPE_PAYMENT_URL_BUMP;
@@ -23,13 +43,29 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   }
 
   async function handleCheckout() {
+    // Validate the lead details before allowing submission.
+    const errs = validateLead(lead);
+    if (Object.keys(errs).length > 0) {
+      setShowErrors(true);
+      setFieldErrors(errs);
+      setError("נא למלא שם מלא, טלפון ואימייל כדי להמשיך.");
+      const firstInvalid = (["name", "phone", "email"] as (keyof Lead)[]).find((k) => errs[k]);
+      if (firstInvalid) document.getElementById(`lead-${firstInvalid}`)?.focus();
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
     try {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hasOrderBump: bumpSelected }),
+        body: JSON.stringify({
+          hasOrderBump: bumpSelected,
+          name: lead.name.trim(),
+          phone: lead.phone.trim(),
+          email: lead.email.trim(),
+        }),
       });
 
       // Read as text first so a non-JSON response (e.g. an HTML SPA fallback that
@@ -52,7 +88,6 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
       // Redirect to Stripe's hosted Checkout page.
       window.location.href = data.url;
     } catch (err) {
-      // Full error in the console for easy tracing in production.
       console.error("[checkout] create-checkout-session failed:", err);
 
       const fallbackUrl = paymentLinkFallback();
@@ -82,7 +117,13 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             >
               סיכום ההזמנה שלך
             </h2>
-            <p className="mt-2 text-sm text-drift">יומיים בלייב בזום · {SITE.eventDates}</p>
+            {/* Prominent dates badge */}
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm font-bold text-gold">
+              <CalendarDays className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
+              <span className="ltr-nums">{SITE.eventDates}</span>
+              <span className="text-gold/50" aria-hidden="true">·</span>
+              יומיים בלייב בזום
+            </div>
           </div>
 
           <div className="p-6 sm:p-8">
@@ -120,7 +161,6 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                     : "border-gold/50 bg-night/30 hover:bg-night/45"
                 }`}
               >
-                {/* coral highlighter tag */}
                 <span
                   className="absolute -top-px right-4 -translate-y-1/2 rounded-md bg-coral px-2 py-0.5 text-[11px] font-extrabold text-night"
                   aria-hidden="true"
@@ -128,7 +168,6 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                   הצעה חד פעמית שלא תחזור
                 </span>
 
-                {/* visual checkbox — the native input above carries the real state */}
                 <span
                   className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors duration-200 ${
                     bumpSelected ? "border-gold bg-gold text-night" : "border-gold/70 bg-transparent"
@@ -149,8 +188,51 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               </label>
             </div>
 
+            {/* ---- Lead capture form ---- */}
+            <div className="rounded-xl border border-drift/15 bg-night/40 p-5 sm:p-6">
+              <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gold">הפרטים שלך</h3>
+              <p className="mt-1 text-xs text-drift">
+                כדי לשמור לך את המקום ולשלוח את הקישור לזום ואת כל החומרים.
+              </p>
+              <div className="mt-4 space-y-3.5">
+                <Field
+                  id="lead-name"
+                  label="שם מלא"
+                  value={lead.name}
+                  onChange={(v) => setField("name", v)}
+                  autoComplete="name"
+                  placeholder="ישראל ישראלי"
+                  error={showErrors ? fieldErrors.name : undefined}
+                />
+                <Field
+                  id="lead-phone"
+                  label="טלפון / וואטסאפ"
+                  type="tel"
+                  inputMode="tel"
+                  dir="ltr"
+                  value={lead.phone}
+                  onChange={(v) => setField("phone", v)}
+                  autoComplete="tel"
+                  placeholder="050 000 0000"
+                  error={showErrors ? fieldErrors.phone : undefined}
+                />
+                <Field
+                  id="lead-email"
+                  label="כתובת אימייל"
+                  type="email"
+                  inputMode="email"
+                  dir="ltr"
+                  value={lead.email}
+                  onChange={(v) => setField("email", v)}
+                  autoComplete="email"
+                  placeholder="name@email.com"
+                  error={showErrors ? fieldErrors.email : undefined}
+                />
+              </div>
+            </div>
+
             {/* ---- Total ---- */}
-            <div className="flex items-center justify-between rounded-xl border border-cloud/10 bg-night/50 px-5 py-4">
+            <div className="mt-6 flex items-center justify-between rounded-xl border border-cloud/10 bg-night/50 px-5 py-4">
               <span className="text-base font-bold text-cloud">סה״כ לתשלום היום</span>
               <div
                 className="relative h-11 overflow-hidden text-left"
@@ -213,6 +295,59 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
         </div>
       </div>
     </section>
+  );
+}
+
+function Field({
+  id,
+  label,
+  value,
+  onChange,
+  error,
+  type = "text",
+  inputMode,
+  dir,
+  autoComplete,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  error?: string;
+  type?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
+  dir?: "rtl" | "ltr";
+  autoComplete?: string;
+  placeholder?: string;
+}) {
+  const invalid = Boolean(error);
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-cloud">
+        {label}
+      </label>
+      <input
+        id={id}
+        type={type}
+        inputMode={inputMode}
+        dir={dir}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-invalid={invalid}
+        aria-describedby={invalid ? `${id}-error` : undefined}
+        className={`focus-ring w-full rounded-xl border bg-night/60 px-4 py-3 text-[15px] text-cloud placeholder:text-drift/40 transition-colors ${
+          invalid ? "border-coral" : "border-drift/20 hover:border-drift/35"
+        }`}
+      />
+      {invalid && (
+        <p id={`${id}-error`} className="mt-1.5 text-xs font-semibold text-coral">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 
