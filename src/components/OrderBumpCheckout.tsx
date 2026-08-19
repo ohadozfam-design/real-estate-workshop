@@ -114,10 +114,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               aria-hidden="true"
             />
             <div className="text-center sm:text-right">
-              <div className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
-                No Questions Asked
-              </div>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
+              <h2 className="text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
                 אחריות 100% שביעות רצון
               </h2>
               <p className="mt-3 max-w-2xl text-xl leading-relaxed text-cloud/85">

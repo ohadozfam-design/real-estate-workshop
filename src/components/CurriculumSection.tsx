@@ -53,9 +53,8 @@ export default function CurriculumSection() {
             >
               תכנית העבודה ליומיים של הסדנה
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-drift">
-              בדיוק מה עושים בכל יום, ומה תצאו איתו בסוף. ארבעה מודולים מעשיים,
-              שניים בכל יום.
+            <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-drift lg:max-w-none lg:whitespace-nowrap">
+              בדיוק מה עושים בכל יום, ומה תצאו איתו בסוף. ארבעה מודולים מעשיים, שניים בכל יום.
             </p>
           </div>
         </Reveal>
