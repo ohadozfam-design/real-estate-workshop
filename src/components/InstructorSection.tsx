@@ -22,14 +22,14 @@ const track: { icon: LucideIcon; text: string }[] = [
 
 export default function InstructorSection() {
   return (
-    <section className="px-5 py-16 lg:py-24" aria-labelledby="instructor-heading">
+    <section className="px-5 py-20 lg:py-28" aria-labelledby="instructor-heading">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div>
             <span className="eyebrow">המנחה</span>
             <h2
               id="instructor-heading"
-              className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2rem,5vw,3.25rem)]"
+              className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2.25rem,5.6vw,3.8rem)]"
             >
               מי יעביר לך את הסדנה?
             </h2>
@@ -42,9 +42,9 @@ export default function InstructorSection() {
             <div className="md:sticky md:top-8">
               <InstructorPortrait />
               <div className="mt-5">
-                <h3 className="text-2xl font-extrabold tracking-tight text-cloud">אוהד עוז</h3>
-                <p className="ltr-nums mt-0.5 text-sm font-semibold text-drift">Ohad Ozalvo</p>
-                <p className="mt-4 text-sm leading-relaxed text-drift">
+                <h3 className="text-3xl font-extrabold tracking-tight text-cloud">אוהד עוז</h3>
+                <p className="ltr-nums mt-0.5 text-base font-semibold text-drift">Ohad Ozalvo</p>
+                <p className="mt-4 text-lg leading-relaxed text-drift">
                   יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים.
                 </p>
               </div>
@@ -57,10 +57,10 @@ export default function InstructorSection() {
               {story.map((block, i) => (
                 <Reveal key={block.label} delay={i * 0.06}>
                   <article className="py-7">
-                    <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
+                    <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
                       {block.label}
                     </div>
-                    <p className="mt-3 text-base leading-relaxed text-cloud/90">{block.body}</p>
+                    <p className="mt-3 text-lg leading-relaxed text-cloud/90">{block.body}</p>
                   </article>
                 </Reveal>
               ))}
@@ -68,7 +68,7 @@ export default function InstructorSection() {
 
             <Reveal delay={0.12}>
               <div className="mt-8">
-                <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
+                <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
                   ההוכחה בשטח
                 </div>
                 <ul className="mt-4 space-y-px overflow-hidden rounded-xl bg-drift/15">
@@ -78,7 +78,7 @@ export default function InstructorSection() {
                       className="flex items-center gap-3.5 bg-night px-4 py-3.5"
                     >
                       <item.icon className="h-[18px] w-[18px] shrink-0 text-gold" strokeWidth={2} aria-hidden="true" />
-                      <span className="text-sm leading-relaxed text-cloud/90">{item.text}</span>
+                      <span className="text-lg leading-relaxed text-cloud/90">{item.text}</span>
                     </li>
                   ))}
                 </ul>
@@ -99,7 +99,7 @@ function InstructorPortrait() {
     <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-drift/15 bg-cloud/[0.03]">
       {imgFailed ? (
         <div className="flex h-full w-full items-center justify-center" role="img" aria-label="אוהד עוז">
-          <span className="text-5xl font-extrabold text-gold">א״ע</span>
+          <span className="text-6xl font-extrabold text-gold">א״ע</span>
         </div>
       ) : (
         <img
@@ -111,7 +111,7 @@ function InstructorPortrait() {
         />
       )}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-night/80 to-transparent px-4 pb-3 pt-10">
-        <span className="text-xs font-bold uppercase tracking-[0.18em] text-cloud">מנחה הסדנה</span>
+        <span className="text-sm font-bold uppercase tracking-[0.18em] text-cloud">מנחה הסדנה</span>
       </div>
     </div>
   );

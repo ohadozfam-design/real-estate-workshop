@@ -103,22 +103,22 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   }
 
   return (
-    <section id="checkout" className="scroll-mt-8 px-5 py-16 lg:py-24" aria-labelledby="checkout-heading">
+    <section id="checkout" className="scroll-mt-8 px-5 py-20 lg:py-28" aria-labelledby="checkout-heading">
       <div className="mx-auto max-w-2xl">
         <div className="overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/15 shadow-card">
           {/* header */}
           <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
-            <span className="text-xs font-bold uppercase tracking-[0.22em] text-gold">
+            <span className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
               שריון מקום לסדנה
             </span>
             <h2
               id="checkout-heading"
-              className="mt-3 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl"
+              className="mt-3 text-3xl font-extrabold tracking-tight text-cloud sm:text-4xl"
             >
               סיכום ההזמנה שלך
             </h2>
             {/* Prominent dates badge */}
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm font-bold text-gold">
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-base font-bold text-gold">
               <CalendarDays className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
               <span className="ltr-nums">{SITE.eventDates}</span>
               <span className="text-gold/50" aria-hidden="true">·</span>
@@ -162,7 +162,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 }`}
               >
                 <span
-                  className="absolute -top-px right-4 -translate-y-1/2 rounded-md bg-coral px-2 py-0.5 text-[11px] font-extrabold text-night"
+                  className="absolute -top-px right-4 -translate-y-1/2 rounded-md bg-coral px-2 py-0.5 text-xs font-extrabold text-night"
                   aria-hidden="true"
                 >
                   הצעה חד פעמית שלא תחזור
@@ -176,7 +176,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 >
                   {bumpSelected && <Check className="h-4 w-4" strokeWidth={3.5} />}
                 </span>
-                <span className="text-sm leading-relaxed text-cloud">
+                <span className="text-lg leading-relaxed text-cloud">
                   <span className="font-bold">כן! הוסף להזמנה שלי</span> את חבילת החוזים לעבודה מול
                   קבלנים ומוכרים פרטיים{" "}
                   <span className="font-semibold text-gold">(Off-Market &amp; Contractor Pack)</span>{" "}
@@ -190,8 +190,8 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
 
             {/* ---- Lead capture form ---- */}
             <div className="rounded-xl border border-drift/15 bg-night/40 p-5 sm:p-6">
-              <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gold">הפרטים שלך</h3>
-              <p className="mt-1 text-xs text-drift">
+              <h3 className="text-base font-bold uppercase tracking-[0.15em] text-gold">הפרטים שלך</h3>
+              <p className="mt-1 text-sm text-drift">
                 כדי לשמור לך את המקום ולשלוח את הקישור לזום ואת כל החומרים.
               </p>
               <div className="mt-4 space-y-3.5">
@@ -233,7 +233,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
 
             {/* ---- Total ---- */}
             <div className="mt-6 flex items-center justify-between rounded-xl border border-cloud/10 bg-night/50 px-5 py-4">
-              <span className="text-base font-bold text-cloud">סה״כ לתשלום היום</span>
+              <span className="text-lg font-bold text-cloud">סה״כ לתשלום היום</span>
               <div
                 className="relative h-11 overflow-hidden text-left"
                 role="status"
@@ -248,7 +248,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -20, opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="ltr-nums block text-4xl font-extrabold tracking-tight text-gold"
+                    className="ltr-nums block text-5xl font-extrabold tracking-tight text-gold"
                   >
                     ${total}
                   </motion.span>
@@ -275,14 +275,14 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               {error && (
                 <p
                   role="alert"
-                  className="mt-3 flex items-center justify-center gap-2 rounded-lg border border-coral/40 bg-coral/10 px-4 py-2.5 text-sm font-semibold text-coral"
+                  className="mt-3 flex items-center justify-center gap-2 rounded-lg border border-coral/40 bg-coral/10 px-4 py-2.5 text-base font-semibold text-coral"
                 >
                   <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} aria-hidden="true" />
                   {error}
                 </p>
               )}
 
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-drift">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-drift">
                 <span className="inline-flex items-center gap-1.5">
                   <ShieldCheck className="h-4 w-4 text-gold" aria-hidden="true" /> החזר כספי מלא 100%
                 </span>
@@ -324,7 +324,7 @@ function Field({
   const invalid = Boolean(error);
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-cloud">
+      <label htmlFor={id} className="mb-1.5 block text-base font-semibold text-cloud">
         {label}
       </label>
       <input
@@ -338,12 +338,12 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={invalid}
         aria-describedby={invalid ? `${id}-error` : undefined}
-        className={`focus-ring w-full rounded-xl border bg-night/60 px-4 py-3 text-[15px] text-cloud placeholder:text-drift/40 transition-colors ${
+        className={`focus-ring w-full rounded-xl border bg-night/60 px-4 py-3 text-lg text-cloud placeholder:text-drift/40 transition-colors ${
           invalid ? "border-coral" : "border-drift/20 hover:border-drift/35"
         }`}
       />
       {invalid && (
-        <p id={`${id}-error`} className="mt-1.5 text-xs font-semibold text-coral">
+        <p id={`${id}-error`} className="mt-1.5 text-sm font-semibold text-coral">
           {error}
         </p>
       )}
@@ -366,8 +366,8 @@ function LineItem({
         accent ? "border-gold/40 bg-gold/10" : "border-cloud/10 bg-night/40"
       }`}
     >
-      <span className="pe-3 text-sm font-semibold text-cloud">{label}</span>
-      <span className="ltr-nums shrink-0 text-sm font-bold text-cloud">{price}</span>
+      <span className="pe-3 text-base font-semibold text-cloud">{label}</span>
+      <span className="ltr-nums shrink-0 text-base font-bold text-cloud">{price}</span>
     </div>
   );
 }

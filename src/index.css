@@ -14,7 +14,20 @@
   body {
     /* Crisp, flat Neverything base — no blurred gradient blobs. */
     @apply bg-night text-cloud font-sans antialiased;
+    /* UI/UX Pro Max: readable base — 18px body, unitless line-height 1.5+ */
+    font-size: 1.125rem; /* 18px default body */
+    line-height: 1.6;
     overflow-x: hidden;
+  }
+
+  /* Tighter leading for large display headings (readability at scale) */
+  h1,
+  h2 {
+    line-height: 1.05;
+  }
+  h3,
+  h4 {
+    line-height: 1.2;
   }
 
   /* Numbers, prices and dates read LTR inside RTL sentences */
@@ -39,7 +52,7 @@
 @layer components {
   /* Uppercase eyebrow label — clean tracked gold text, no leading rule. */
   .eyebrow {
-    @apply inline-flex items-center text-xs font-bold uppercase tracking-[0.22em] text-gold;
+    @apply inline-flex items-center text-sm font-bold uppercase tracking-[0.22em] text-gold;
   }
 }
 

@@ -26,7 +26,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-drift/15 px-5 py-10 text-center">
-        <p className="mx-auto max-w-2xl text-xs leading-relaxed text-drift">
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-drift">
           כל הזכויות שמורות · הסדנה הינה תוכן חינוכי ופרקטי ואינה מהווה ייעוץ
           השקעות, ייעוץ מס או ייעוץ משפטי. תוצאות עשויות להשתנות בהתאם ליישום בפועל.
         </p>

@@ -34,14 +34,14 @@ const bonuses = [
 
 export default function ValueStack() {
   return (
-    <section className="px-5 py-16 lg:py-24" aria-labelledby="value-heading">
+    <section className="px-5 py-20 lg:py-28" aria-labelledby="value-heading">
       <div className="mx-auto max-w-4xl">
         <Reveal>
           <div className="text-center">
             <span className="eyebrow">הבונוסים</span>
             <h2
               id="value-heading"
-              className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2rem,5vw,3.25rem)]"
+              className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2.25rem,5.6vw,3.8rem)]"
             >
               כל מה שנכנס לסדנה
             </h2>
@@ -58,18 +58,18 @@ export default function ValueStack() {
             <Reveal key={b.n} delay={i * 0.06}>
               <div className="flex h-full flex-col rounded-2xl border border-drift/15 bg-cloud/[0.02] p-6 transition-colors duration-300 hover:border-gold/35">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="ltr-nums text-xs font-bold uppercase tracking-[0.16em] text-drift">
+                  <span className="ltr-nums text-sm font-bold uppercase tracking-[0.16em] text-drift">
                     בונוס {String(b.n).padStart(2, "0")}
                   </span>
-                  <span className="ltr-nums rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-sm font-extrabold text-gold">
+                  <span className="ltr-nums rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-base font-extrabold text-gold">
                     שווי ${b.value}
                   </span>
                 </div>
-                <h3 className="mt-4 text-lg font-bold tracking-tight text-cloud">{b.name}</h3>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold/70">
+                <h3 className="mt-4 text-xl font-bold tracking-tight text-cloud">{b.name}</h3>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-gold/70">
                   {b.en}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-drift">{b.desc}</p>
+                <p className="mt-3 text-lg leading-relaxed text-drift">{b.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -79,21 +79,21 @@ export default function ValueStack() {
         <Reveal delay={0.1}>
           <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-gold/25 bg-cloud/[0.03] p-6 sm:p-8">
             <div className="flex items-center justify-between">
-              <span className="text-base font-semibold text-drift sm:text-lg">סה״כ שווי כולל</span>
-              <span className="ltr-nums text-2xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-3xl">
+              <span className="text-lg font-semibold text-drift sm:text-xl">סה״כ שווי כולל</span>
+              <span className="ltr-nums text-3xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-4xl">
                 ${PRICING.totalStackValue}
               </span>
             </div>
             <div className="my-5 hairline" />
             <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-              <span className="text-lg font-extrabold tracking-tight text-cloud sm:text-xl">
+              <span className="text-xl font-extrabold tracking-tight text-cloud sm:text-xl">
                 מחיר הצטרפות היום
               </span>
               <span className="inline-flex items-baseline gap-2">
-                <span className="ltr-nums text-4xl font-extrabold tracking-tight text-gold sm:text-5xl">
+                <span className="ltr-nums text-5xl font-extrabold tracking-tight text-gold sm:text-6xl">
                   $97
                 </span>
-                <span className="text-base font-bold text-drift">בלבד</span>
+                <span className="text-lg font-bold text-drift">בלבד</span>
               </span>
             </div>
           </div>

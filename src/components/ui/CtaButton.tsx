@@ -23,7 +23,7 @@ export default function CtaButton({
   disabled = false,
   "aria-label": ariaLabel,
 }: CtaButtonProps) {
-  const pad = size === "lg" ? "px-8 py-[17px] text-base sm:text-lg" : "px-5 py-3 text-sm";
+  const pad = size === "lg" ? "px-8 py-[17px] text-lg sm:text-xl" : "px-5 py-3 text-base";
   const isDisabled = disabled || loading;
 
   return (

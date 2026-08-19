@@ -23,17 +23,17 @@ const cells = [
 
 export default function LogisticsSection() {
   return (
-    <section className="px-5 py-16 lg:py-24" aria-label="פרטים לוגיסטיים ואחריות">
+    <section className="px-5 py-20 lg:py-28" aria-label="פרטים לוגיסטיים ואחריות">
       <div className="mx-auto max-w-6xl">
         {/* Editorial detail table — hairline separators, no icon cards */}
         <Reveal>
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-drift/15 bg-drift/15 sm:grid-cols-2 lg:grid-cols-4">
             {cells.map((c) => (
               <div key={c.label} className="bg-night p-6 transition-colors duration-300 hover:bg-cloud/[0.02]">
-                <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
+                <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
                   {c.label}
                 </div>
-                <p className="mt-3 text-[15px] leading-relaxed text-drift">{c.body}</p>
+                <p className="mt-3 text-lg leading-relaxed text-drift">{c.body}</p>
               </div>
             ))}
           </div>
@@ -49,13 +49,13 @@ export default function LogisticsSection() {
                 aria-hidden="true"
               />
               <div className="text-center sm:text-right">
-                <div className="text-xs font-bold uppercase tracking-[0.22em] text-gold">
+                <div className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
                   No Questions Asked
                 </div>
-                <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
+                <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-cloud sm:text-4xl">
                   אחריות 100% שביעות רצון
                 </h2>
-                <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-cloud/85 sm:text-base">
+                <p className="mt-4 max-w-2xl text-lg leading-relaxed text-cloud/85 sm:text-lg">
                   „אם תשתתף בסדנה ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
                   הודעה עד 24 שעות מסיום הסדנה וקבל בחזרה את מלוא הסכום ששילמת
                   (<span className="ltr-nums font-bold text-gold">$97</span>). כל המחשבונים
