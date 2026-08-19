@@ -69,7 +69,7 @@ export default function ValueStack() {
                 <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-gold/70">
                   {b.en}
                 </p>
-                <p className="mt-3 text-lg leading-relaxed text-drift">{b.desc}</p>
+                <p className="mt-3 text-xl leading-relaxed text-drift">{b.desc}</p>
               </div>
             </Reveal>
           ))}

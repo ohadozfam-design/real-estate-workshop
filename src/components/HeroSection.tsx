@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Check, Radio, CalendarDays } from "lucide-react";
+import { Check, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
-import { SITE, scrollToCheckout } from "../lib/site";
+import { scrollToCheckout } from "../lib/site";
 
 const bullets = [
   "מנתחים עסקאות אמיתיות בזמן אמת.",
@@ -9,121 +9,117 @@ const bullets = [
   "יוצאים עם הצעה מוכנה להגשה.",
 ];
 
-const stats = [
-  { value: "יומיים", label: "שעתיים בכל יום" },
-  { value: "בזום", label: "שידור חי" },
-  { value: "מוגבל", label: "מספר מקומות" },
-];
+// Staggered entrance: badge, H1, subheadline, and CTA fade in + slide up on load.
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
 
 export default function HeroSection() {
   return (
     <section
-      className="relative overflow-hidden px-5 pb-20 pt-10 sm:pt-16 lg:pb-28"
+      className="relative overflow-hidden px-5 pb-20 pt-12 sm:pt-20 lg:pb-28"
       aria-labelledby="hero-heading"
     >
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-        {/* ---- Copy column ---- */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="mx-auto flex max-w-3xl flex-col items-center text-center"
+      >
+        {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center lg:text-right"
+          variants={item}
+          className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-4 py-2 text-base font-semibold text-drift"
         >
-          {/* Understated editorial pill — subtle border, quiet warm dot */}
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-3.5 py-1.5 text-sm font-semibold text-drift lg:mx-0">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
-            לייב בזום · יומיים מרוכזים
-          </div>
-
-          <h1
-            id="hero-heading"
-            className="mt-7 text-balance font-extrabold leading-[1.04] tracking-tight text-cloud text-[clamp(2.7rem,6.8vw,5.2rem)]"
-          >
-            לאתר, לנתח ולהגיש את ההצעה הראשונה שלך על נכס בארה״ב{" "}
-            <span className="text-gold">תוך 4 שעות לייב</span>
-          </h1>
-
-          <p className="mx-auto mt-6 max-w-xl text-balance text-xl leading-relaxed text-drift lg:mx-0">
-            בלי לשלם שקל על תוכנות ניתוח יקרות, בלי תיאוריות מיותרות ובלי להישמע
-            חובבן מול סוכני שטח מקומיים.
-          </p>
-
-          {/* bullets — a clean hairline-separated list, not icon cards */}
-          <ul className="mx-auto mt-8 max-w-xl divide-y divide-drift/10 border-y border-drift/10 lg:mx-0">
-            {bullets.map((b) => (
-              <li key={b} className="flex items-center gap-3 py-3.5 text-start">
-                <Check className="h-[18px] w-[18px] shrink-0 text-gold" strokeWidth={2.6} aria-hidden="true" />
-                <span className="text-lg font-semibold text-cloud sm:text-lg">{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Prominent dates */}
-          <div className="mx-auto mt-8 flex max-w-md items-center gap-2.5 rounded-xl border border-gold/40 bg-gold/10 px-4 py-2.5 lg:mx-0">
-            <CalendarDays className="h-5 w-5 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
-            <span className="ltr-nums text-xl font-extrabold text-gold">24 &amp; 26 באוגוסט</span>
-            <span className="text-gold/40" aria-hidden="true">·</span>
-            <span className="text-base font-semibold text-cloud/90">שעתיים בכל יום בלייב</span>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-md lg:mx-0">
-            <CtaButton onClick={scrollToCheckout}>
-              שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
-            </CtaButton>
-            <p className="mt-3.5 text-base text-drift">
-              🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
-            </p>
-          </div>
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
+          לייב בזום · יומיים מרוכזים
         </motion.div>
 
-        {/* ---- Event card (minimal, hairline, no glow) ---- */}
-        <motion.aside
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto w-full max-w-md"
-          aria-label="סיכום האירוע"
+        {/* Centered headline */}
+        <motion.h1
+          variants={item}
+          id="hero-heading"
+          className="mx-auto mt-7 max-w-4xl text-balance text-center font-extrabold leading-[1.03] tracking-tight text-cloud text-[clamp(2.6rem,7vw,5.4rem)]"
         >
-          <div className="overflow-hidden rounded-2xl border border-drift/15 bg-cloud/[0.02] shadow-card">
-            {/* header */}
-            <div className="flex items-center justify-between border-b border-drift/10 px-5 py-3.5">
-              <span className="text-sm font-bold uppercase tracking-[0.2em] text-drift">Live Workshop</span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-coral/15 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-coral">
-                <Radio className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden="true" /> Live
-              </span>
-            </div>
+          לאתר, לנתח ולהגיש את ההצעה הראשונה שלך על נכס בארה״ב{" "}
+          <span className="text-gold">תוך 4 שעות לייב</span>
+        </motion.h1>
 
-            {/* stage */}
-            <div className="border-b border-drift/10 px-6 py-10 text-center">
-              <p className="text-3xl font-extrabold tracking-tight text-cloud">
-                ניתוח עסקה חיה על המסך
-              </p>
-              <p className="mt-2 text-base text-drift">שידור אינטראקטיבי · סשן שאלות ותשובות פתוח</p>
-            </div>
+        {/* Subheadline */}
+        <motion.p
+          variants={item}
+          className="mx-auto mt-6 max-w-2xl text-balance text-xl leading-relaxed text-drift sm:text-2xl"
+        >
+          בלי לשלם שקל על תוכנות ניתוח יקרות, בלי תיאוריות מיותרות ובלי להישמע
+          חובבן מול סוכני שטח מקומיים.
+        </motion.p>
 
-            {/* stats — editorial 3-up separated by hairlines (no icon circles) */}
-            <div className="grid grid-cols-3 divide-x divide-drift/10 [direction:ltr]">
-              {stats.map((s) => (
-                <div key={s.label} className="px-3 py-4 text-center [direction:rtl]">
-                  <div className="text-lg font-extrabold text-cloud">{s.value}</div>
-                  <div className="mt-0.5 text-xs uppercase tracking-wide text-drift">{s.label}</div>
-                </div>
-              ))}
-            </div>
+        {/* Bullets — centered row */}
+        <motion.ul
+          variants={item}
+          className="mx-auto mt-9 flex w-full max-w-3xl flex-col items-stretch gap-3 sm:flex-row sm:justify-center"
+        >
+          {bullets.map((b) => (
+            <li
+              key={b}
+              className="flex items-center justify-center gap-2.5 rounded-xl border border-drift/12 bg-cloud/[0.02] px-4 py-3.5 text-lg font-semibold text-cloud sm:flex-1"
+            >
+              <Check className="h-5 w-5 shrink-0 text-gold" strokeWidth={2.6} aria-hidden="true" />
+              {b}
+            </li>
+          ))}
+        </motion.ul>
 
-            {/* date + price */}
-            <div className="flex items-center justify-between gap-3 border-t border-drift/10 bg-cloud/[0.02] px-5 py-4">
-              <span className="text-base font-semibold text-drift">
-                📅 {SITE.eventDates} · שעתיים בכל יום
-              </span>
-              <span className="shrink-0 text-right leading-none">
-                <span className="block text-xs font-bold uppercase tracking-wider text-drift">רק</span>
-                <span className="ltr-nums text-3xl font-extrabold text-gold">$97</span>
-              </span>
-            </div>
-          </div>
-        </motion.aside>
-      </div>
+        {/* Prominent dates + hours */}
+        <motion.div
+          variants={item}
+          className="mx-auto mt-9 flex flex-col items-center gap-1.5 rounded-2xl border border-gold/40 bg-gold/10 px-6 py-4 sm:flex-row sm:gap-3"
+        >
+          <span className="inline-flex items-center gap-2.5">
+            <CalendarDays className="h-6 w-6 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
+            <span className="ltr-nums text-2xl font-extrabold text-gold sm:text-3xl">
+              24 &amp; 26 באוגוסט
+            </span>
+          </span>
+          <span className="hidden text-gold/40 sm:block" aria-hidden="true">
+            |
+          </span>
+          <span className="text-lg font-bold text-cloud sm:text-xl">
+            <span className="ltr-nums">18:00</span> עד <span className="ltr-nums">20:00</span>
+          </span>
+          <span className="text-base font-semibold text-drift">(שעון ישראל)</span>
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div variants={item} className="mx-auto mt-8 w-full max-w-md">
+          <CtaButton onClick={scrollToCheckout}>
+            שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
+          </CtaButton>
+          <p className="mt-4 text-lg text-drift">
+            🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* Relocated outcome statement — prominent, no label, no icon */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mt-16 max-w-3xl rounded-3xl bg-gold px-8 py-11 text-center text-night sm:px-12"
+      >
+        <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)]">
+          יוצאים עם הצעה אמיתית, מוכנה להגשה
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-xl font-semibold leading-relaxed text-night/85">
+          על נכס אמיתי מתחת למחיר השוק, עם המספרים והתסריטים שמאחוריה.
+        </p>
+      </motion.div>
     </section>
   );
 }

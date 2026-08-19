@@ -14,10 +14,16 @@
   body {
     /* Crisp, flat Neverything base — no blurred gradient blobs. */
     @apply bg-night text-cloud font-sans antialiased;
-    /* UI/UX Pro Max: readable base — 18px body, unitless line-height 1.5+ */
-    font-size: 1.125rem; /* 18px default body */
+    /* Ultra-readable base: 18px mobile, 20px desktop, generous line-height */
+    font-size: 1.125rem; /* 18px */
     line-height: 1.6;
     overflow-x: hidden;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 1.25rem; /* 20px on desktop */
+    }
   }
 
   /* Tighter leading for large display headings (readability at scale) */

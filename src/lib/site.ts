@@ -2,8 +2,10 @@
 // Swap the placeholders below with the real event details before launch.
 
 export const SITE = {
-  // Two concentrated days, two live hours each.
+  // Two concentrated days, two live hours each (18:00–20:00 Israel time).
   eventDates: "24 & 26 באוגוסט",
+  eventHours: "18:00 עד 20:00 (שעון ישראל)",
+  eventDatesFull: "24 & 26 באוגוסט · 18:00 עד 20:00 (שעון ישראל)",
   eventFormat: "יומיים מרוכזים · שעתיים בכל יום בלייב בזום",
   eventFormatShort: "יומיים בלייב בזום · שעתיים בכל יום",
   day1: { date: "24 באוגוסט", label: "יום ראשון" },

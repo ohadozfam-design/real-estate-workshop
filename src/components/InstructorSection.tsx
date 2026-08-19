@@ -44,7 +44,7 @@ export default function InstructorSection() {
               <div className="mt-5">
                 <h3 className="text-3xl font-extrabold tracking-tight text-cloud">אוהד עוז</h3>
                 <p className="ltr-nums mt-0.5 text-base font-semibold text-drift">Ohad Ozalvo</p>
-                <p className="mt-4 text-lg leading-relaxed text-drift">
+                <p className="mt-4 text-xl leading-relaxed text-drift">
                   יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים.
                 </p>
               </div>
@@ -60,7 +60,7 @@ export default function InstructorSection() {
                     <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
                       {block.label}
                     </div>
-                    <p className="mt-3 text-lg leading-relaxed text-cloud/90">{block.body}</p>
+                    <p className="mt-3 text-xl leading-relaxed text-cloud/90">{block.body}</p>
                   </article>
                 </Reveal>
               ))}
@@ -78,7 +78,7 @@ export default function InstructorSection() {
                       className="flex items-center gap-3.5 bg-night px-4 py-3.5"
                     >
                       <item.icon className="h-[18px] w-[18px] shrink-0 text-gold" strokeWidth={2} aria-hidden="true" />
-                      <span className="text-lg leading-relaxed text-cloud/90">{item.text}</span>
+                      <span className="text-xl leading-relaxed text-cloud/90">{item.text}</span>
                     </li>
                   ))}
                 </ul>

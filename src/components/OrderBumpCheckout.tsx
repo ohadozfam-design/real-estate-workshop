@@ -104,7 +104,33 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
 
   return (
     <section id="checkout" className="scroll-mt-8 px-5 py-20 lg:py-28" aria-labelledby="checkout-heading">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl space-y-6">
+        {/* Guarantee — relocated here, right above the pricing */}
+        <div className="rounded-2xl border border-drift/15 bg-ateneo/25 p-7 sm:p-9">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-7">
+            <ShieldCheck
+              className="mx-auto h-11 w-11 shrink-0 text-gold sm:mx-0"
+              strokeWidth={1.6}
+              aria-hidden="true"
+            />
+            <div className="text-center sm:text-right">
+              <div className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
+                No Questions Asked
+              </div>
+              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
+                אחריות 100% שביעות רצון
+              </h2>
+              <p className="mt-3 max-w-2xl text-xl leading-relaxed text-cloud/85">
+                „אם תשתתף בסדנה ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
+                הודעה עד 24 שעות מסיום הסדנה וקבל בחזרה את מלוא הסכום ששילמת
+                (<span className="ltr-nums font-bold text-gold">$97</span>). כל המחשבונים
+                והתבניות נשארים אצלך.”
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Checkout card */}
         <div className="overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/15 shadow-card">
           {/* header */}
           <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
@@ -117,12 +143,15 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             >
               סיכום ההזמנה שלך
             </h2>
-            {/* Prominent dates badge */}
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-base font-bold text-gold">
-              <CalendarDays className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
+            {/* Prominent dates + hours badge */}
+            <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/30 bg-gold/10 px-5 py-2 text-lg font-bold text-gold">
+              <CalendarDays className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
               <span className="ltr-nums">{SITE.eventDates}</span>
-              <span className="text-gold/50" aria-hidden="true">·</span>
-              יומיים בלייב בזום
+              <span className="text-gold/50" aria-hidden="true">|</span>
+              <span>
+                <span className="ltr-nums">18:00</span> עד <span className="ltr-nums">20:00</span>
+              </span>
+              <span className="text-base font-semibold text-gold/80">(שעון ישראל)</span>
             </div>
           </div>
 
@@ -176,7 +205,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 >
                   {bumpSelected && <Check className="h-4 w-4" strokeWidth={3.5} />}
                 </span>
-                <span className="text-lg leading-relaxed text-cloud">
+                <span className="text-xl leading-relaxed text-cloud">
                   <span className="font-bold">כן! הוסף להזמנה שלי</span> את חבילת החוזים לעבודה מול
                   קבלנים ומוכרים פרטיים{" "}
                   <span className="font-semibold text-gold">(Off-Market &amp; Contractor Pack)</span>{" "}
