@@ -14,6 +14,14 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Optional fallback: static Stripe Payment Links, used only if the serverless
+  // API is unreachable or misconfigured (e.g. STRIPE_SECRET_KEY missing on the host).
+  function paymentLinkFallback(): string | undefined {
+    const base = import.meta.env.VITE_STRIPE_PAYMENT_URL_BASE;
+    const bump = import.meta.env.VITE_STRIPE_PAYMENT_URL_BUMP;
+    return bumpSelected ? bump || base : base;
+  }
+
   async function handleCheckout() {
     setIsSubmitting(true);
     setError(null);
@@ -24,17 +32,38 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
         body: JSON.stringify({ hasOrderBump: bumpSelected }),
       });
 
-      const data: { url?: string; error?: string } = await res
-        .json()
-        .catch(() => ({}));
+      // Read as text first so a non-JSON response (e.g. an HTML SPA fallback that
+      // means the /api route wasn't hit) can be logged instead of silently swallowed.
+      const rawBody = await res.text();
+      let data: { url?: string; error?: string } = {};
+      try {
+        data = rawBody ? JSON.parse(rawBody) : {};
+      } catch {
+        throw new Error(
+          `Non-JSON response from /api/create-checkout-session (status ${res.status}). ` +
+            `First bytes: ${rawBody.slice(0, 120)}`
+        );
+      }
 
       if (!res.ok || !data.url) {
-        throw new Error(data.error || "לא הצלחנו ליצור עמוד תשלום.");
+        throw new Error(
+          data.error || `Checkout API failed with status ${res.status}.`
+        );
       }
 
       // Redirect to Stripe's hosted Checkout page.
       window.location.href = data.url;
-    } catch {
+    } catch (err) {
+      // Full error in the console for easy tracing in production.
+      console.error("[checkout] create-checkout-session failed:", err);
+
+      const fallbackUrl = paymentLinkFallback();
+      if (fallbackUrl) {
+        console.warn("[checkout] falling back to Stripe Payment Link:", fallbackUrl);
+        window.location.href = fallbackUrl;
+        return;
+      }
+
       setError("אירעה שגיאה במעבר לתשלום. אנא נסו שוב בעוד רגע.");
       setIsSubmitting(false);
     }
