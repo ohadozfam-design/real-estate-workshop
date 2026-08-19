@@ -20,6 +20,12 @@ const track: { icon: LucideIcon; text: string }[] = [
   { icon: Mic, text: "שיתוף ידע שוטף מהשטח: פודקאסטים, קהילה ותוכן מקצועי." },
 ];
 
+const stats: { value: string; label: string }[] = [
+  { value: "40", label: "פרויקטי נדל״ן בארה״ב" },
+  { value: "6", label: "שנות ניסיון בתחום" },
+  { value: "30+", label: "תלמידים שכבר למדו" },
+];
+
 export default function InstructorSection() {
   return (
     <section className="px-5 py-20 lg:py-28" aria-labelledby="instructor-heading">
@@ -33,6 +39,22 @@ export default function InstructorSection() {
             >
               מי יעביר לך את הסדנה?
             </h2>
+          </div>
+        </Reveal>
+
+        {/* Authority stats */}
+        <Reveal delay={0.05}>
+          <div className="mt-10 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-drift/15 bg-drift/15">
+            {stats.map((s) => (
+              <div key={s.label} className="bg-night px-3 py-7 text-center sm:py-9">
+                <div className="ltr-nums font-extrabold tracking-tight text-gold text-[clamp(2.5rem,7vw,4.5rem)]">
+                  {s.value}
+                </div>
+                <div className="mx-auto mt-1.5 max-w-[10rem] text-base font-semibold leading-snug text-drift sm:text-lg">
+                  {s.label}
+                </div>
+              </div>
+            ))}
           </div>
         </Reveal>
 
