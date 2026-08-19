@@ -95,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       line_items: buildLineItems(hasOrderBump),
       // Capture the lead's contact details on the session.
       ...(email ? { customer_email: email } : {}),
-      metadata: { name, phone, email },
+      metadata: { name, phone, email, hasOrderBump: String(hasOrderBump) },
       success_url: `${origin}/?checkout=success`,
       cancel_url: `${origin}/?checkout=cancel`,
     });

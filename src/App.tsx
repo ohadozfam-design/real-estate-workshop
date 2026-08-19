@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeroSection from "./components/HeroSection";
 import LogisticsSection from "./components/LogisticsSection";
 import CurriculumSection from "./components/CurriculumSection";
@@ -7,9 +7,23 @@ import ValueStack from "./components/ValueStack";
 import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
+import ThankYouModal from "./components/ThankYouModal";
 
 export default function App() {
   const [bumpSelected, setBumpSelected] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+
+  // Detect the post-payment redirect (?checkout=success) on load.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") === "success") setShowThankYou(true);
+  }, []);
+
+  function closeThankYou() {
+    setShowThankYou(false);
+    // Clean the query param from the URL without a reload.
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -36,6 +50,7 @@ export default function App() {
       </footer>
 
       <StickyMobileCTA bumpSelected={bumpSelected} />
+      <ThankYouModal open={showThankYou} onClose={closeThankYou} />
     </div>
   );
 }

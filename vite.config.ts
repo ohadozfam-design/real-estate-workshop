@@ -46,6 +46,7 @@ function stripeCheckoutApi(secretKey: string | undefined): Plugin {
               name: String(name).trim(),
               phone: String(phone).trim(),
               email: String(email).trim(),
+              hasOrderBump: String(Boolean(hasOrderBump)),
             },
             success_url: `${origin}/?checkout=success`,
             cancel_url: `${origin}/?checkout=cancel`,
