@@ -6,14 +6,14 @@ const bonuses = [
     n: 1,
     name: "מחשבון הניתוח המהיר",
     en: "The 5-Minute Deal Analyzer Sheet",
-    desc: "קובץ מוכן לקבלת מחיר הצעה מקסימלי ורווחיות ב-4 נתונים.",
+    desc: "קובץ מוכן לקבלת מחיר הצעה מקסימלי ורווחיות מתוך 4 נתונים.",
     value: 297,
   },
   {
     n: 2,
     name: "תסריטי שיחה ומיילים מול סוכנים",
     en: "The Investor Authority Scripts",
-    desc: "טמפלייטים מילה-במילה באנגלית לשיחה והתכתבות מול סוכנים.",
+    desc: "טמפלייטים מילה במילה באנגלית לשיחה והתכתבות מול סוכנים.",
     value: 197,
   },
   {
@@ -77,7 +77,7 @@ export default function ValueStack() {
             </ul>
 
             {/* Summary */}
-            <div className="border-t border-drift/15 bg-ateneo/40 p-6 sm:p-8">
+            <div className="border-t border-drift/15 bg-cloud/[0.03] p-6 sm:p-8">
               <div className="flex items-center justify-between">
                 <span className="text-base font-semibold text-drift sm:text-lg">סה״כ שווי כולל</span>
                 <span className="ltr-nums text-2xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-3xl">

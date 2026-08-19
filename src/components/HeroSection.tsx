@@ -10,7 +10,7 @@ const bullets = [
 ];
 
 const stats = [
-  { value: "4 שעות", label: "עבודה מעשית" },
+  { value: "יומיים", label: "שעתיים בכל יום" },
   { value: "בזום", label: "שידור חי" },
   { value: "מוגבל", label: "מספר מקומות" },
 ];
@@ -29,12 +29,10 @@ export default function HeroSection() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="text-center lg:text-right"
         >
-          <div className="inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-coral">
-            <span className="relative flex h-2 w-2" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-coral" />
-            </span>
-            סדנת לייב אינטנסיבית בזום · מספר המקומות מוגבל
+          {/* Understated editorial pill — subtle border, quiet warm dot */}
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-3.5 py-1.5 text-[13px] font-semibold text-drift lg:mx-0">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
+            לייב בזום · יומיים מרוכזים, {SITE.eventDates}
           </div>
 
           <h1
@@ -42,7 +40,7 @@ export default function HeroSection() {
             className="mt-7 text-balance font-extrabold leading-[1.04] tracking-tight text-cloud text-[clamp(2.3rem,6vw,4.4rem)]"
           >
             לאתר, לנתח ולהגיש את ההצעה הראשונה שלך על נכס בארה״ב{" "}
-            <span className="text-gold">ב-4 שעות בלייב</span>
+            <span className="text-gold">תוך 4 שעות לייב</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-drift lg:mx-0">
@@ -62,7 +60,7 @@ export default function HeroSection() {
 
           <div className="mx-auto mt-9 max-w-md lg:mx-0">
             <CtaButton onClick={scrollToCheckout}>
-              שריין את המקום שלי בסדנה ב-<span className="ltr-nums">$97</span> בלבד
+              שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
             </CtaButton>
             <p className="mt-3.5 text-sm text-drift">
               🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
@@ -106,9 +104,9 @@ export default function HeroSection() {
             </div>
 
             {/* date + price */}
-            <div className="flex items-center justify-between gap-3 border-t border-drift/10 bg-ateneo/40 px-5 py-4">
+            <div className="flex items-center justify-between gap-3 border-t border-drift/10 bg-cloud/[0.02] px-5 py-4">
               <span className="text-sm font-semibold text-drift">
-                📅 {SITE.eventDatePlaceholder} · {SITE.eventTimePlaceholder}
+                📅 {SITE.eventDates} · שעתיים בכל יום
               </span>
               <span className="shrink-0 text-right leading-none">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-drift">רק</span>

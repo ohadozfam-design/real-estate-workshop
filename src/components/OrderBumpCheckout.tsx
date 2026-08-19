@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ShieldCheck, Lock, AlertCircle } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
-import { PRICING } from "../lib/site";
+import { PRICING, SITE } from "../lib/site";
 
 type Props = {
   bumpSelected: boolean;
@@ -70,9 +70,9 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   return (
     <section id="checkout" className="scroll-mt-8 px-5 py-16 lg:py-24" aria-labelledby="checkout-heading">
       <div className="mx-auto max-w-2xl">
-        <div className="overflow-hidden rounded-2xl border border-gold/25 bg-ateneo shadow-card">
+        <div className="overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/15 shadow-card">
           {/* header */}
-          <div className="border-b border-cloud/10 px-6 py-7 text-center sm:px-8">
+          <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
             <span className="text-xs font-bold uppercase tracking-[0.22em] text-gold">
               שריון מקום לסדנה
             </span>
@@ -82,6 +82,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             >
               סיכום ההזמנה שלך
             </h2>
+            <p className="mt-2 text-sm text-drift">יומיים בלייב בזום · {SITE.eventDates}</p>
           </div>
 
           <div className="p-6 sm:p-8">
@@ -113,7 +114,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               />
               <label
                 htmlFor="order-bump"
-                className={`relative flex cursor-pointer items-start gap-3 rounded-xl border-2 border-dashed p-4 pt-5 text-right transition-colors duration-300 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-ateneo ${
+                className={`relative flex cursor-pointer items-start gap-3 rounded-xl border-2 border-dashed p-4 pt-5 text-right transition-colors duration-300 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-night ${
                   bumpSelected
                     ? "border-gold bg-night/50"
                     : "border-gold/50 bg-night/30 hover:bg-night/45"
@@ -140,7 +141,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                   <span className="font-bold">כן! הוסף להזמנה שלי</span> את חבילת החוזים לעבודה מול
                   קבלנים ומוכרים פרטיים{" "}
                   <span className="font-semibold text-gold">(Off-Market &amp; Contractor Pack)</span>{" "}
-                  ב-<span className="ltr-nums font-bold">$27</span> בלבד{" "}
+                  תמורת <span className="ltr-nums font-bold">$27</span> בלבד{" "}
                   <span className="text-drift">
                     (במקום <span className="ltr-nums line-through">${PRICING.bumpOriginal}</span>).
                   </span>

@@ -1,5 +1,6 @@
 import { Trophy } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import { SITE } from "../lib/site";
 
 type Station = {
   n: number;
@@ -14,7 +15,7 @@ const stations: Station[] = [
     title: "איתור הצוות · סוכנים של יזמים",
     challenge: "רוב הסוכנים מורחים זמן ולא מבינים מה יזם מחפש.",
     solution:
-      "איך לאתר ולסנן את ה-5% המובילים של הסוכנים שיזינו אותך בעסקאות ויעבדו בשבילך.",
+      "איך לאתר ולסנן את חמשת האחוזים המובילים של הסוכנים שיזינו אותך בעסקאות ויעבדו בשבילך.",
   },
   {
     n: 2,
@@ -34,7 +35,7 @@ const stations: Station[] = [
     title: "נוסחת הזהב · חישוב שיפוץ והגשת ההצעה",
     challenge: "הערכות שיפוץ שגויות ששורפות את כל הרווח.",
     solution:
-      "נוסחת אצבע לתמחור שיפוץ מהיר בשטח, חישוב ה-MAO (מחיר הצעה מקסימלי), והגשת הצעה שמרוויחה כבר בקנייה.",
+      "נוסחת אצבע לתמחור שיפוץ מהיר בשטח, חישוב מחיר ההצעה המקסימלי (MAO), והגשת הצעה שמרוויחה כבר בקנייה.",
   },
 ];
 
@@ -52,8 +53,20 @@ export default function TreasureMap() {
               4 תחנות עד <span className="text-gold">תיבת האוצר</span>
             </h2>
             <p className="mx-auto mt-4 max-w-md text-drift">
-              מסלול עבודה מעשי — מהאתגר בים הפתוח אל המפתח שפותח כל תחנה.
+              מסלול עבודה מעשי על פני יומיים מרוכזים, מהאתגר בים הפתוח אל המפתח
+              שפותח כל תחנה.
             </p>
+
+            {/* Explicit 2 day → stations mapping */}
+            <div className="mx-auto mt-7 inline-flex flex-col items-center gap-y-2 rounded-2xl border border-drift/15 px-6 py-3 text-sm text-drift sm:flex-row sm:gap-x-7">
+              <span>
+                <span className="font-bold text-gold">{SITE.day1.date}</span> · תחנות 01, 02
+              </span>
+              <span className="hidden h-4 w-px bg-drift/20 sm:block" aria-hidden="true" />
+              <span>
+                <span className="font-bold text-gold">{SITE.day2.date}</span> · תחנות 03, 04
+              </span>
+            </div>
           </div>
         </Reveal>
 

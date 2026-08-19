@@ -6,18 +6,18 @@ import Reveal from "./ui/Reveal";
 const story: { label: string; body: string }[] = [
   {
     label: "המסע והנוכחות בשטח",
-    body: "אוהד הוא יזם נדל״ן שחי את השטח בארה״ב — בעיקר בשווקים של אוהיו ואינדיאנה. לא גורו של שקפים ותיאוריות, אלא יזם שמנהל עסקאות מורכבות מקצה לקצה: מאיתור נכסים מתחת למחיר השוק (Off-Market), דרך ניהול שיפוצים (Rehab) ועסקאות BRRRR, ועד השבחה, השכרה והחזקת פורטפוליו.",
+    body: "אוהד הוא יזם נדל״ן שחי את השטח בארה״ב, בעיקר בשווקים של אוהיו ואינדיאנה. לא גורו של שקפים ותיאוריות, אלא יזם שמנהל עסקאות מורכבות מקצה לקצה: מאיתור נכסים מתחת למחיר השוק (Off Market), דרך ניהול שיפוצים (Rehab) ועסקאות BRRRR, ועד השבחה, השכרה והחזקת פורטפוליו.",
   },
   {
     label: "השיטה המעשית · Zero Fluff",
-    body: "כל מה שתלמד נבנה מתוך הפרקטיקה היומיומית — שיחות אמיתיות מול ברוקרים, סוכנים, קבלנים וחברות טייטל. הסדנה מנגישה בדיוק את התהליך הזה: איך לדבר בשפה של השוק, לנתח עסקה ב-5 דקות, ולהגיש הצעה בביטחון — בלי להיתקע בפחדים ובלי תוכנות יקרות.",
+    body: "כל מה שתלמד נבנה מתוך הפרקטיקה היומיומית: שיחות אמיתיות מול ברוקרים, סוכנים, קבלנים וחברות טייטל. הסדנה מנגישה בדיוק את התהליך הזה, איך לדבר בשפה של השוק, לנתח עסקה תוך 5 דקות, ולהגיש הצעה בביטחון, בלי להיתקע בפחדים ובלי תוכנות יקרות.",
   },
 ];
 
 const track: { icon: LucideIcon; text: string }[] = [
-  { icon: HardHat, text: "עסקאות שטח אמיתיות — רכישות ב-Single Family וב-Multi Family." },
+  { icon: HardHat, text: "עסקאות שטח אמיתיות, רכישות Single Family וגם Multi Family." },
   { icon: Handshake, text: "ליווי והכשרת מחזורים של יזמים להגשת הצעות וסגירת עסקאות." },
-  { icon: Mic, text: "שיתוף ידע שוטף מהשטח — פודקאסטים, קהילה ותוכן מקצועי." },
+  { icon: Mic, text: "שיתוף ידע שוטף מהשטח: פודקאסטים, קהילה ותוכן מקצועי." },
 ];
 
 export default function InstructorSection() {
@@ -96,7 +96,7 @@ function InstructorPortrait() {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/30">
+    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-drift/15 bg-cloud/[0.03]">
       {imgFailed ? (
         <div className="flex h-full w-full items-center justify-center" role="img" aria-label="אוהד עוז">
           <span className="text-5xl font-extrabold text-gold">א״ע</span>
