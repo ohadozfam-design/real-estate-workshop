@@ -1,4 +1,3 @@
-import { Gift, ArrowLeft } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import { PRICING } from "../lib/site";
 
@@ -35,79 +34,71 @@ const bonuses = [
 
 export default function ValueStack() {
   return (
-    <section className="px-4 py-16 lg:py-24" aria-labelledby="value-heading">
+    <section className="px-5 py-16 lg:py-24" aria-labelledby="value-heading">
       <div className="mx-auto max-w-3xl">
         <Reveal>
           <div className="text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/[0.07] px-4 py-1.5 text-xs font-bold tracking-[0.15em] text-amber-400">
-              מה בדיוק מקבלים
-            </span>
+            <span className="eyebrow">מה מקבלים</span>
             <h2
               id="value-heading"
-              className="mt-5 text-3xl font-extrabold tracking-tight text-cloud-50 sm:text-4xl"
+              className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2rem,5vw,3.25rem)]"
             >
               כל הבונוסים שנכנסים לסדנה
             </h2>
           </div>
         </Reveal>
 
-        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/70 shadow-tactile-lg backdrop-blur-md">
-          <ul className="divide-y divide-slate-800/80">
-            {bonuses.map((b, i) => (
-              <Reveal key={b.n} delay={i * 0.07}>
-                <li className="flex items-start gap-4 p-5 transition-colors duration-300 hover:bg-amber-500/[0.03] sm:p-6">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-500/[0.08] text-amber-400 shadow-[0_0_20px_-8px_rgba(245,158,11,0.5)] ring-1 ring-inset ring-amber-500/25">
-                    <Gift className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+        <Reveal delay={0.06}>
+          <div className="mt-12 overflow-hidden rounded-2xl border border-drift/15">
+            <ul className="divide-y divide-drift/12">
+              {bonuses.map((b) => (
+                <li
+                  key={b.n}
+                  className="flex items-start gap-4 p-5 transition-colors duration-300 hover:bg-cloud/[0.02] sm:gap-5 sm:p-6"
+                >
+                  <span className="ltr-nums mt-0.5 shrink-0 text-lg font-extrabold text-gold">
+                    {String(b.n).padStart(2, "0")}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-[15px] font-bold tracking-tight text-cloud-50 sm:text-base">
-                      בונוס {b.n}: {b.name}
+                    <h3 className="text-[15px] font-bold tracking-tight text-cloud sm:text-base">
+                      {b.name}
                     </h3>
-                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-400/70">
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gold/80">
                       {b.en}
                     </p>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-300">{b.desc}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-drift">{b.desc}</p>
                   </div>
-                  <div className="shrink-0 text-left">
-                    <span className="rounded-lg border border-slate-800 bg-ink-900/70 px-2.5 py-1 text-sm font-bold text-cloud-50 shadow-tactile">
-                      <span className="text-slate-300">שווי: </span>
-                      <span className="ltr-nums">${b.value}</span>
-                    </span>
+                  <div className="shrink-0 whitespace-nowrap text-left text-sm text-drift">
+                    שווי{" "}
+                    <span className="ltr-nums font-bold text-cloud">${b.value}</span>
                   </div>
                 </li>
-              </Reveal>
-            ))}
-          </ul>
+              ))}
+            </ul>
 
-          {/* value summary */}
-          <Reveal>
-            <div className="border-t border-slate-800 bg-ink-900/50 p-6 sm:p-8">
+            {/* Summary */}
+            <div className="border-t border-drift/15 bg-ateneo/40 p-6 sm:p-8">
               <div className="flex items-center justify-between">
-                <span className="text-base font-semibold text-slate-300 sm:text-lg">
-                  סה״כ שווי כולל
-                </span>
-                <span className="ltr-nums text-2xl font-extrabold text-slate-300 line-through decoration-red-500/70 decoration-2 sm:text-3xl">
+                <span className="text-base font-semibold text-drift sm:text-lg">סה״כ שווי כולל</span>
+                <span className="ltr-nums text-2xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-3xl">
                   ${PRICING.totalStackValue}
                 </span>
               </div>
-              <div className="my-4 h-px hairline" />
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-lg font-extrabold text-cloud-50 sm:text-xl">
+              <div className="my-5 hairline" />
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                <span className="text-lg font-extrabold tracking-tight text-cloud sm:text-xl">
                   מחיר הצטרפות היום
                 </span>
-                <div className="flex items-center gap-3">
-                  <ArrowLeft className="hidden h-6 w-6 text-emerald-400 sm:block" aria-hidden="true" />
-                  <span className="inline-flex items-baseline gap-2 rounded-2xl bg-emerald-500/[0.1] px-5 py-2.5 shadow-tactile ring-1 ring-inset ring-emerald-500/40">
-                    <span className="ltr-nums text-4xl font-extrabold tracking-tight text-emerald-400 sm:text-5xl">
-                      $97
-                    </span>
-                    <span className="text-base font-bold text-emerald-300/90">בלבד</span>
+                <span className="inline-flex items-baseline gap-2">
+                  <span className="ltr-nums text-4xl font-extrabold tracking-tight text-gold sm:text-5xl">
+                    $97
                   </span>
-                </div>
+                  <span className="text-base font-bold text-drift">בלבד</span>
+                </span>
               </div>
             </div>
-          </Reveal>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -13,3 +13,7 @@ dist
 
 # Raw source photos (working originals — web assets live in public/images/)
 photos/
+
+# Design reference screenshots (working material, not app assets)
+exemples/
+examples/

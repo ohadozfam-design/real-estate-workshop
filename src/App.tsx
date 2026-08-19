@@ -25,8 +25,8 @@ export default function App() {
         <OrderBumpCheckout bumpSelected={bumpSelected} onToggle={setBumpSelected} />
       </main>
 
-      <footer className="border-t border-ink-500/40 px-4 py-8 text-center">
-        <p className="mx-auto max-w-2xl text-xs leading-relaxed text-slate-400">
+      <footer className="border-t border-drift/15 px-5 py-10 text-center">
+        <p className="mx-auto max-w-2xl text-xs leading-relaxed text-drift">
           כל הזכויות שמורות · הסדנה הינה תוכן חינוכי-פרקטי ואינה מהווה ייעוץ
           השקעות, ייעוץ מס או ייעוץ משפטי. תוצאות עשויות להשתנות בהתאם ליישום בפועל.
         </p>
@@ -39,8 +39,8 @@ export default function App() {
 
 function SectionDivider() {
   return (
-    <div className="mx-auto max-w-6xl px-4">
-      <div className="h-px hairline" />
+    <div className="mx-auto max-w-5xl px-5">
+      <div className="hairline" />
     </div>
   );
 }

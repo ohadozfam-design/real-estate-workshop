@@ -24,7 +24,7 @@ export default function StickyMobileCTA({ bumpSelected }: Props) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.06] bg-ink-900/90 p-3 backdrop-blur-xl lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-drift/15 bg-night/90 p-3 backdrop-blur-xl lg:hidden"
           style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
         >
           <motion.button
@@ -33,11 +33,10 @@ export default function StickyMobileCTA({ bumpSelected }: Props) {
             aria-label={`שריין מקום בסדנה בעלות של ${total} דולר`}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="focus-ring relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gold-cta px-5 py-3.5 text-base font-extrabold tracking-tight text-slate-950 shadow-cta"
+            className="focus-ring flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3.5 text-base font-bold tracking-tight text-night shadow-cta transition-colors hover:bg-[#ffca82]"
           >
-            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/50" aria-hidden="true" />
             <Lock className="h-[18px] w-[18px]" strokeWidth={2.5} aria-hidden="true" />
-            שריין מקום בסדנה - <span className="ltr-nums">${total}</span>
+            שריין מקום בסדנה · <span className="ltr-nums">${total}</span>
           </motion.button>
         </motion.div>
       )}
