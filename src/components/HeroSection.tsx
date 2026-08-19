@@ -111,9 +111,9 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mt-16 max-w-3xl rounded-3xl bg-gold px-8 py-11 text-center text-night sm:px-12"
+        className="mx-auto mt-16 max-w-4xl rounded-3xl bg-gold px-6 py-11 text-center text-night sm:px-12"
       >
-        <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)]">
+        <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)] md:whitespace-nowrap">
           יוצאים עם הצעה אמיתית, מוכנה להגשה
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-xl font-semibold leading-relaxed text-night/85">

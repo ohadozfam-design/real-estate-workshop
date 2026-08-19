@@ -30,12 +30,12 @@ export default function LogisticsSection() {
             {cells.map((c) => (
               <div
                 key={c.label}
-                className="bg-night p-6 transition-colors duration-300 hover:bg-cloud/[0.02]"
+                className="bg-night p-7 text-center transition-colors duration-300 hover:bg-cloud/[0.02]"
               >
-                <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
+                <h3 className="mx-auto text-2xl font-extrabold tracking-tight text-gold sm:text-3xl">
                   {c.label}
-                </div>
-                <p className="mt-3 text-xl leading-relaxed text-drift">{c.body}</p>
+                </h3>
+                <p className="mx-auto mt-3 text-xl leading-relaxed text-drift">{c.body}</p>
               </div>
             ))}
           </div>
