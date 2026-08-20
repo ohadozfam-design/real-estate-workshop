@@ -166,7 +166,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               {/* Prominent dates + hours badge */}
               <div className="inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/30 bg-gold/10 px-5 py-2 text-lg font-bold text-gold">
                 <CalendarDays className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                <span className="ltr-nums">{SITE.eventDates}</span>
+                <span>{SITE.eventDates}</span>
                 <span className="text-gold/50" aria-hidden="true">|</span>
                 <span>
                   <span className="ltr-nums">18:00</span> עד <span className="ltr-nums">20:00</span>
