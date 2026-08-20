@@ -2,11 +2,14 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-// ── Email configuration (server-side env only) ────────────────────────────────
+// ── Fulfillment configuration (server-side env only) ──────────────────────────
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SENDER_EMAIL = process.env.SENDER_EMAIL || "The K2 Academy <onboarding@resend.dev>";
 // Clean placeholder until the real meeting link is provided in the env.
 const ZOOM_LINK = process.env.ZOOM_LINK || "https://zoom.us/";
+// Google Sheet / CRM webhook + admin sales alert (both optional).
+const GOOGLE_SHEET_WEBHOOK_URL = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL;
 
 /**
  * Stripe webhook (Vercel Node serverless function) — fully self-contained.
@@ -154,25 +157,45 @@ export function renderConfirmationText(name: string, hasOrderBump: boolean): str
   return lines.join("\n");
 }
 
-/**
- * Fulfill a paid registration: send the branded confirmation email via Resend.
- * (A Supabase/DB insert can be added alongside this call.)
- */
-async function handlePaidRegistration(reg: PaidRegistration): Promise<void> {
-  console.log("[stripe-webhook] paid registration:", reg);
+/** Non-blocking dispatch of the buyer to a Google Sheet / CRM webhook. */
+async function dispatchToSheet(reg: PaidRegistration): Promise<void> {
+  if (!GOOGLE_SHEET_WEBHOOK_URL) {
+    console.warn("[stripe-webhook] GOOGLE_SHEET_WEBHOOK_URL not set — skipping sheet dispatch.");
+    return;
+  }
+  try {
+    await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        timestamp: new Date().toISOString(),
+        name: reg.name,
+        phone: reg.phone,
+        email: reg.email,
+        amount: reg.amountTotal,
+        currency: reg.currency,
+        hasOrderBump: reg.hasOrderBump,
+        tag: "Workshop_Aug26_Buyer",
+      }),
+    });
+    console.log("[stripe-webhook] buyer dispatched to sheet:", reg.email);
+  } catch (err) {
+    console.error("[stripe-webhook] sheet dispatch failed:", err instanceof Error ? err.message : err);
+  }
+}
 
+/** Branded confirmation email to the buyer (Zoom link + materials). */
+async function sendBuyerEmail(reg: PaidRegistration): Promise<void> {
   if (!RESEND_API_KEY) {
-    console.warn(
-      "[stripe-webhook] RESEND_API_KEY not set — skipping confirmation email.",
-      { to: reg.email || "(no email)" }
-    );
+    console.warn("[stripe-webhook] RESEND_API_KEY not set — skipping confirmation email.", {
+      to: reg.email || "(no email)",
+    });
     return;
   }
   if (!reg.email) {
     console.warn("[stripe-webhook] No email on the session — cannot send confirmation.");
     return;
   }
-
   try {
     const resend = new Resend(RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
@@ -182,20 +205,49 @@ async function handlePaidRegistration(reg: PaidRegistration): Promise<void> {
       html: renderConfirmationEmail(reg.name, reg.hasOrderBump),
       text: renderConfirmationText(reg.name, reg.hasOrderBump),
     });
-    if (error) {
-      console.error("[stripe-webhook] Resend send error:", error);
-    } else {
-      console.log("[stripe-webhook] confirmation email sent:", data?.id, "→", reg.email);
-    }
+    if (error) console.error("[stripe-webhook] Resend send error:", error);
+    else console.log("[stripe-webhook] confirmation email sent:", data?.id, "→", reg.email);
   } catch (err) {
-    console.error(
-      "[stripe-webhook] confirmation email failed:",
-      err instanceof Error ? err.message : err
-    );
+    console.error("[stripe-webhook] confirmation email failed:", err instanceof Error ? err.message : err);
   }
+}
 
-  // ── Optional: store the lead in a DB you own (Supabase) ─────────────────────
-  // if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) { ... }
+/** Instant sales-alert email to the admin. */
+async function notifyAdmin(reg: PaidRegistration): Promise<void> {
+  if (!RESEND_API_KEY || !ADMIN_NOTIFICATION_EMAIL) return;
+  const amount =
+    reg.amountTotal != null
+      ? `${(reg.amountTotal / 100).toFixed(2)} ${(reg.currency || "").toUpperCase()}`
+      : "—";
+  try {
+    const resend = new Resend(RESEND_API_KEY);
+    await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: ADMIN_NOTIFICATION_EMAIL,
+      subject: `🎉 מכירה חדשה בסדנה — ${reg.name || reg.email}`,
+      text: [
+        "רישום חדש לסדנה:",
+        `שם: ${reg.name || "—"}`,
+        `טלפון: ${reg.phone || "—"}`,
+        `אימייל: ${reg.email || "—"}`,
+        `סכום: ${amount}`,
+        `Order Bump: ${reg.hasOrderBump ? "כן" : "לא"}`,
+        `Session: ${reg.sessionId}`,
+      ].join("\n"),
+    });
+    console.log("[stripe-webhook] admin alert sent to", ADMIN_NOTIFICATION_EMAIL);
+  } catch (err) {
+    console.error("[stripe-webhook] admin alert failed:", err instanceof Error ? err.message : err);
+  }
+}
+
+/**
+ * Fulfill a paid registration. Each step is independent and non-blocking so a
+ * failure in one (e.g. sheet down) never stops the others or fails the webhook.
+ */
+async function handlePaidRegistration(reg: PaidRegistration): Promise<void> {
+  console.log("[stripe-webhook] paid registration:", reg);
+  await Promise.allSettled([dispatchToSheet(reg), sendBuyerEmail(reg), notifyAdmin(reg)]);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

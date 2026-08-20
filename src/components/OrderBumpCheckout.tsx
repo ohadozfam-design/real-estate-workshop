@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ShieldCheck, Lock, AlertCircle, CalendarDays } from "lucide-react";
+import { Check, ShieldCheck, Lock, AlertCircle, CalendarDays, Users } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
 import { PRICING, SITE } from "../lib/site";
+
+type Seats = { soldOut: boolean; remaining: number; total: number };
 
 type Props = {
   bumpSelected: boolean;
@@ -28,6 +30,16 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   const [lead, setLead] = useState<Lead>({ name: "", phone: "", email: "" });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [showErrors, setShowErrors] = useState(false);
+
+  // Live seat availability (fail-open: null while loading, treated as available).
+  const [seats, setSeats] = useState<Seats | null>(null);
+  useEffect(() => {
+    fetch("/api/seats")
+      .then((r) => r.json())
+      .then((d: Seats) => setSeats(d))
+      .catch(() => {});
+  }, []);
+  const soldOut = seats?.soldOut === true;
 
   function setField(key: keyof Lead, value: string) {
     setLead((prev) => ({ ...prev, [key]: value }));
@@ -150,10 +162,27 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               </span>
               <span className="text-base font-semibold text-gold/80">(שעון ישראל)</span>
             </div>
+
+            {/* Live seat status */}
+            {seats &&
+              (soldOut ? (
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
+                  <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                  הסדנה בתפוסה מלאה ({seats.total}/{seats.total})
+                </p>
+              ) : (
+                <p className="mt-4 text-lg font-bold text-coral">
+                  נותרו {seats.remaining} מקומות בלבד מתוך {seats.total}
+                </p>
+              ))}
           </div>
 
           <div className="p-6 sm:p-8">
-            {/* line items */}
+            {soldOut ? (
+              <SoldOutWaitlist total={seats?.total ?? 25} />
+            ) : (
+              <>
+                {/* line items */}
             <div className="space-y-2.5">
               <LineItem label="כרטיס לסדנת הלייב + כל 4 הבונוסים" price="$97" />
               <AnimatePresence initial={false}>
@@ -317,10 +346,140 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 </span>
               </div>
             </div>
+              </>
+            )}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function SoldOutWaitlist({ total }: { total: number }) {
+  const [lead, setLead] = useState<Lead>({ name: "", phone: "", email: "" });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [showErrors, setShowErrors] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function setField(key: keyof Lead, value: string) {
+    setLead((prev) => ({ ...prev, [key]: value }));
+    if (showErrors) setFieldErrors(validateLead({ ...lead, [key]: value }));
+  }
+
+  async function submit() {
+    const errs = validateLead(lead);
+    if (Object.keys(errs).length > 0) {
+      setShowErrors(true);
+      setFieldErrors(errs);
+      setError("נא למלא שם מלא, טלפון ואימייל תקינים.");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const r = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: lead.name.trim(),
+          phone: lead.phone.trim(),
+          email: lead.email.trim(),
+        }),
+      });
+      if (!r.ok) throw new Error(`waitlist failed (${r.status})`);
+      setSubmitted(true);
+    } catch (err) {
+      console.error("[waitlist] submit failed:", err);
+      setError("אירעה שגיאה. נסו שוב בעוד רגע.");
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="text-center">
+      <div className="inline-flex items-center gap-2 rounded-full border border-coral/40 bg-coral/10 px-4 py-1.5 text-base font-extrabold text-coral">
+        <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+        תפוסה מלאה ({total}/{total})
+      </div>
+      <h3 className="mt-4 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
+        כל המקומות למחזור הזה נתפסו
+      </h3>
+      <p className="mx-auto mt-3 max-w-lg text-lg leading-relaxed text-drift">
+        הצטרפו לרשימת ההמתנה ונעדכן אתכם מיד אם יתפנה מקום, או ראשונים לקראת
+        המחזור הבא.
+      </p>
+
+      {submitted ? (
+        <div className="mt-6 rounded-xl border border-gold/30 bg-gold/10 p-7 text-center">
+          <p className="text-2xl font-extrabold text-cloud">נרשמת לרשימת ההמתנה!</p>
+          <p className="mt-2 text-lg text-drift">נהיה בקשר ברגע שמתפנה מקום.</p>
+        </div>
+      ) : (
+        <div className="mt-6 text-right">
+          <div className="rounded-xl border border-drift/15 bg-night/40 p-5 sm:p-6">
+            <h4 className="text-center text-base font-bold uppercase tracking-[0.15em] text-gold">
+              רשימת המתנה
+            </h4>
+            <div className="mt-4 space-y-3.5">
+              <Field
+                id="wl-name"
+                label="שם מלא"
+                value={lead.name}
+                onChange={(v) => setField("name", v)}
+                autoComplete="name"
+                placeholder="ישראל ישראלי"
+                error={showErrors ? fieldErrors.name : undefined}
+              />
+              <Field
+                id="wl-phone"
+                label="טלפון / וואטסאפ"
+                type="tel"
+                inputMode="tel"
+                dir="ltr"
+                value={lead.phone}
+                onChange={(v) => setField("phone", v)}
+                autoComplete="tel"
+                placeholder="050 000 0000"
+                error={showErrors ? fieldErrors.phone : undefined}
+              />
+              <Field
+                id="wl-email"
+                label="כתובת אימייל"
+                type="email"
+                inputMode="email"
+                dir="ltr"
+                value={lead.email}
+                onChange={(v) => setField("email", v)}
+                autoComplete="email"
+                placeholder="name@email.com"
+                error={showErrors ? fieldErrors.email : undefined}
+              />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={submit}
+            disabled={submitting}
+            className="focus-ring mt-5 w-full rounded-full bg-gold px-6 py-4 text-lg font-bold text-night shadow-cta transition-colors hover:bg-[#ffca82] disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {submitting ? "רושמים אותך…" : "הוסיפו אותי לרשימת ההמתנה"}
+          </button>
+
+          {error && (
+            <p
+              role="alert"
+              className="mt-3 flex items-center justify-center gap-2 rounded-lg border border-coral/40 bg-coral/10 px-4 py-2.5 text-base font-semibold text-coral"
+            >
+              <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={2.2} aria-hidden="true" />
+              {error}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -22,6 +22,26 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 // eligible tax code for a live online workshop. Overridable via env.
 const TAX_CODE = process.env.STRIPE_TAX_CODE || "txcd_10000000";
 
+// Hard capacity cap. Sessions are tagged with WORKSHOP_ID so we count only this
+// cohort's paid seats (not unrelated Stripe sessions).
+const MAX_SEATS = Number(process.env.MAX_SEATS || 25);
+const WORKSHOP_ID = process.env.WORKSHOP_ID || "Workshop_Aug26";
+
+/** Count PAID checkout sessions belonging to this workshop. */
+async function countPaidSeats(stripe: Stripe): Promise<number> {
+  let count = 0;
+  const params: Stripe.Checkout.SessionListParams = { limit: 100 };
+  for (let page = 0; page < 5; page++) {
+    const res = await stripe.checkout.sessions.list(params);
+    for (const s of res.data) {
+      if (s.payment_status === "paid" && s.metadata?.workshop === WORKSHOP_ID) count++;
+    }
+    if (!res.has_more || res.data.length === 0) break;
+    params.starting_after = res.data[res.data.length - 1].id;
+  }
+  return count;
+}
+
 function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreateParams.LineItem[] {
   const items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
     {
@@ -78,6 +98,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const stripe = new Stripe(secretKey);
 
+    // Enforce the hard seat cap before creating a new payable session.
+    const paidSeats = await countPaidSeats(stripe);
+    if (paidSeats >= MAX_SEATS) {
+      return res.status(403).json({ error: "הסדנה בתפוסה מלאה", soldOut: true });
+    }
+
     // Vercel auto-parses JSON bodies, but guard against a string/undefined body too.
     const body: { hasOrderBump?: boolean; name?: string; phone?: string; email?: string } =
       typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body ?? {});
@@ -95,7 +121,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       line_items: buildLineItems(hasOrderBump),
       // Capture the lead's contact details on the session.
       ...(email ? { customer_email: email } : {}),
-      metadata: { name, phone, email, hasOrderBump: String(hasOrderBump) },
+      metadata: { name, phone, email, hasOrderBump: String(hasOrderBump), workshop: WORKSHOP_ID },
       success_url: `${origin}/?checkout=success`,
       cancel_url: `${origin}/?checkout=cancel`,
     });
