@@ -75,12 +75,12 @@ export default function ValueStack() {
           ))}
         </div>
 
-        {/* Social-proof quote bridging the bonus list and the value stack */}
+        {/* Social-proof headline bridging the bonus list and the value stack */}
         <Reveal delay={0.08}>
-          <blockquote className="mx-auto mt-10 max-w-3xl rounded-2xl border-r-4 border-gold bg-gold/[0.06] px-6 py-6 text-center text-xl font-semibold leading-relaxed text-cloud sm:text-2xl">
-            ״תלמידי הליווי שלנו משתמשים בכלים האלה יום יום וככה הם מגדילים פי 3 את
-            כמות ההצעות שהם מציעים ומביאים עסקאות מליגה אחרת.״
-          </blockquote>
+          <p className="mx-auto mt-12 max-w-3xl text-center text-xl font-bold leading-relaxed text-cloud md:text-2xl">
+            תלמידי הליווי שלנו משתמשים בכלים האלה יום יום וככה הם מגדילים פי 3 את
+            כמות ההצעות שהם מציעים ומביאים עסקאות מליגה אחרת.
+          </p>
         </Reveal>
 
         {/* Summary */}
