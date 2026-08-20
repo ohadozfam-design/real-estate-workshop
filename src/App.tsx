@@ -43,7 +43,11 @@ export default function App() {
       </main>
 
       <footer className="border-t border-drift/15 px-5 py-10 text-center">
-        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-drift">
+        <p className="text-lg font-extrabold tracking-tight text-cloud">
+          וורקשופ כניסה לעולם הנדל״ן
+        </p>
+        <p className="mt-1 text-sm font-semibold text-drift">עם אוהד עוז</p>
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-drift">
           כל הזכויות שמורות · הוורקשופ הינה תוכן חינוכי ופרקטי ואינה מהווה ייעוץ
           השקעות, ייעוץ מס או ייעוץ משפטי. תוצאות עשויות להשתנות בהתאם ליישום בפועל.
         </p>

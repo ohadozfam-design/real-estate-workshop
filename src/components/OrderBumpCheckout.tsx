@@ -180,8 +180,9 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                   הוורקשופ בתפוסה מלאה ({seats.total}/{seats.total})
                 </p>
               ) : (
-                <p className="mt-4 text-lg font-bold text-coral">
-                  נותרו {seats.remaining} מקומות בלבד מתוך {seats.total}
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
+                  <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                  <span className="ltr-nums">{seats.total}</span> מקומות בלבד
                 </p>
               ))}
           </div>

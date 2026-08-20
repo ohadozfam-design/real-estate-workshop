@@ -77,22 +77,24 @@ export default function ValueStack() {
 
         {/* Social-proof headline bridging the bonus list and the value stack */}
         <Reveal delay={0.08}>
-          <p className="mx-auto mt-12 max-w-3xl text-center text-xl font-bold leading-relaxed text-cloud md:text-2xl">
+          <p className="mx-auto my-14 max-w-3xl text-center text-xl font-bold leading-relaxed text-cloud md:my-16 md:text-2xl">
             תלמידי הליווי שלנו משתמשים בכלים האלה יום יום וככה הם מגדילים פי 3 את
             כמות ההצעות שהם מציעים ומביאים עסקאות מליגה אחרת.
           </p>
         </Reveal>
+      </div>
 
-        {/* Summary */}
+      {/* Price summary - its own distinct, well-separated visual block */}
+      <div className="mx-auto mt-16 max-w-2xl border-t border-drift/12 px-5 pt-16 md:mt-20 md:pt-20">
         <Reveal delay={0.1}>
-          <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-gold/25 bg-cloud/[0.03] p-6 sm:p-8">
+          <div className="rounded-2xl border border-gold/25 bg-cloud/[0.03] p-8 shadow-card sm:p-10">
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold text-drift sm:text-xl">סה״כ שווי כולל</span>
               <span className="ltr-nums text-3xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-4xl">
                 ${PRICING.totalStackValue}
               </span>
             </div>
-            <div className="my-5 hairline" />
+            <div className="my-6 hairline" />
             <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
               <span className="text-xl font-extrabold tracking-tight text-cloud sm:text-xl">
                 מחיר הצטרפות היום
