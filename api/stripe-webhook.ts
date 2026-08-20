@@ -221,7 +221,7 @@ async function notifyAdmin(reg: PaidRegistration): Promise<void> {
       : "—";
   try {
     const resend = new Resend(RESEND_API_KEY);
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: SENDER_EMAIL,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `🎉 מכירה חדשה בסדנה — ${reg.name || reg.email}`,
@@ -235,7 +235,8 @@ async function notifyAdmin(reg: PaidRegistration): Promise<void> {
         `Session: ${reg.sessionId}`,
       ].join("\n"),
     });
-    console.log("[stripe-webhook] admin alert sent to", ADMIN_NOTIFICATION_EMAIL);
+    if (error) console.error("[stripe-webhook] admin alert error:", error);
+    else console.log("[stripe-webhook] admin alert sent to", ADMIN_NOTIFICATION_EMAIL);
   } catch (err) {
     console.error("[stripe-webhook] admin alert failed:", err instanceof Error ? err.message : err);
   }
