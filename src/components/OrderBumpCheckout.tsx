@@ -161,30 +161,32 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             >
               סיכום ההזמנה שלך
             </h2>
-            {/* Prominent dates + hours badge */}
-            <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/30 bg-gold/10 px-5 py-2 text-lg font-bold text-gold">
-              <CalendarDays className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-              <span className="ltr-nums">{SITE.eventDates}</span>
-              <span className="text-gold/50" aria-hidden="true">|</span>
-              <span>
-                <span className="ltr-nums">18:00</span> עד <span className="ltr-nums">20:00</span>
-              </span>
-              <span className="text-base font-semibold text-gold/80">(שעון ישראל)</span>
-            </div>
+            {/* Dates + live seat status - stacked with clean breathing room */}
+            <div className="mt-6 flex flex-col items-center gap-3.5">
+              {/* Prominent dates + hours badge */}
+              <div className="inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/30 bg-gold/10 px-5 py-2 text-lg font-bold text-gold">
+                <CalendarDays className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                <span className="ltr-nums">{SITE.eventDates}</span>
+                <span className="text-gold/50" aria-hidden="true">|</span>
+                <span>
+                  <span className="ltr-nums">18:00</span> עד <span className="ltr-nums">20:00</span>
+                </span>
+                <span className="text-base font-semibold text-gold/80">(שעון ישראל)</span>
+              </div>
 
-            {/* Live seat status */}
-            {seats &&
-              (soldOut ? (
-                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
-                  <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                  הוורקשופ בתפוסה מלאה ({seats.total}/{seats.total})
-                </p>
-              ) : (
-                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
-                  <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                  <span className="ltr-nums">{seats.total}</span> מקומות בלבד
-                </p>
-              ))}
+              {seats &&
+                (soldOut ? (
+                  <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
+                    <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                    הוורקשופ בתפוסה מלאה ({seats.total}/{seats.total})
+                  </p>
+                ) : (
+                  <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
+                    <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                    <span className="ltr-nums">{seats.total}</span> מקומות בלבד
+                  </p>
+                ))}
+            </div>
           </div>
 
           <div className="p-6 sm:p-8">
