@@ -24,7 +24,7 @@ export default function LogisticsSection() {
   return (
     <section className="px-5 py-20 lg:py-28" aria-label="פרטים לוגיסטיים">
       <div className="mx-auto max-w-6xl">
-        {/* Editorial detail table — hairline separators, no icon cards */}
+        {/* Editorial detail table - hairline separators, no icon cards */}
         <Reveal>
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-drift/15 bg-drift/15 sm:grid-cols-2 lg:grid-cols-4">
             {cells.map((c) => (

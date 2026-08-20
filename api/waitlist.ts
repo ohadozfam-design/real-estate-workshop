@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 /**
- * Waitlist capture (POST /api/waitlist) — used when the workshop is sold out.
+ * Waitlist capture (POST /api/waitlist) - used when the workshop is sold out.
  * Body: { name, phone, email }
  * Dispatches the lead to GOOGLE_SHEET_WEBHOOK_URL tagged "Workshop_Waitlist".
  *
@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error("[waitlist] sheet dispatch failed:", err instanceof Error ? err.message : err);
       }
     } else {
-      console.warn("[waitlist] GOOGLE_SHEET_WEBHOOK_URL not set — waitlist lead:", payload);
+      console.warn("[waitlist] GOOGLE_SHEET_WEBHOOK_URL not set - waitlist lead:", payload);
     }
 
     return res.status(200).json({ ok: true });

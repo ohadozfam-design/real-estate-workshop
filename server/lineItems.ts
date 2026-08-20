@@ -2,7 +2,7 @@ import type Stripe from "stripe";
 
 /**
  * Stripe product tax code. Required when the account uses Managed Payments
- * (on by default) — without an *eligible* code Checkout rejects the line items.
+ * (on by default) - without an *eligible* code Checkout rejects the line items.
  * "General - Electronically Supplied Services" fits a live online workshop and
  * is Managed-Payments-eligible. Override via STRIPE_TAX_CODE if needed.
  */
@@ -20,7 +20,7 @@ export function buildLineItems(
     {
       price_data: {
         currency: "usd",
-        product_data: { name: "סדנת לייב: איתור וניתוח נכסים בארה״ב", tax_code: TAX_CODE },
+        product_data: { name: "וורקשופ לייב: איתור וניתוח נכסים בארה״ב", tax_code: TAX_CODE },
         unit_amount: 9700, // $97.00
       },
       quantity: 1,

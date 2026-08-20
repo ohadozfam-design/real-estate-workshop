@@ -10,7 +10,7 @@ const story: { label: string; body: string }[] = [
   },
   {
     label: "השיטה המעשית · Zero Fluff",
-    body: "כל מה שתלמד נבנה מתוך הפרקטיקה היומיומית: שיחות אמיתיות מול ברוקרים, סוכנים, קבלנים וחברות טייטל. הסדנה מנגישה בדיוק את התהליך הזה, איך לדבר בשפה של השוק, לנתח עסקה תוך 5 דקות, ולהגיש הצעה בביטחון, בלי להיתקע בפחדים ובלי תוכנות יקרות.",
+    body: "כל מה שתלמד נבנה מתוך הפרקטיקה היומיומית: שיחות אמיתיות מול ברוקרים, סוכנים, קבלנים וחברות טייטל. הוורקשופ מנגישה בדיוק את התהליך הזה, איך לדבר בשפה של השוק, לנתח עסקה תוך 5 דקות, ולהגיש הצעה בביטחון, בלי להיתקע בפחדים ובלי תוכנות יקרות.",
   },
 ];
 
@@ -23,7 +23,7 @@ const track: { icon: LucideIcon; text: string }[] = [
 const stats: { value: string; label: string }[] = [
   { value: "40", label: "פרויקטי נדל״ן בארה״ב" },
   { value: "6", label: "שנות ניסיון בתחום" },
-  { value: "30+", label: "תלמידים שכבר למדו" },
+  { value: "30+", label: "תלמידים" },
 ];
 
 export default function InstructorSection() {
@@ -37,7 +37,7 @@ export default function InstructorSection() {
               id="instructor-heading"
               className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2.25rem,5.6vw,3.8rem)]"
             >
-              מי יעביר לך את הסדנה?
+              מי יעביר לך את הוורקשופ?
             </h2>
           </div>
         </Reveal>
@@ -113,7 +113,7 @@ export default function InstructorSection() {
   );
 }
 
-/** Editorial portrait frame — real photo with a styled monogram fallback. */
+/** Editorial portrait frame - real photo with a styled monogram fallback. */
 function InstructorPortrait() {
   const [imgFailed, setImgFailed] = useState(false);
 
@@ -133,7 +133,7 @@ function InstructorPortrait() {
         />
       )}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-night/80 to-transparent px-4 pb-3 pt-10">
-        <span className="text-sm font-bold uppercase tracking-[0.18em] text-cloud">מנחה הסדנה</span>
+        <span className="text-sm font-bold uppercase tracking-[0.18em] text-cloud">מנחה הוורקשופ</span>
       </div>
     </div>
   );

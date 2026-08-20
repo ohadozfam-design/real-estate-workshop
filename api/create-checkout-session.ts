@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 /**
- * Production serverless handler (Vercel Node runtime) — fully self-contained.
+ * Production serverless handler (Vercel Node runtime) - fully self-contained.
  *
  * IMPORTANT: this file intentionally has NO relative imports outside the /api
  * boundary (e.g. it does not import ../server/lineItems). Vercel bundles each
@@ -18,7 +18,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  * metadata { name, phone }) so every lead and buyer is captured with full contact info.
  */
 
-// "General - Electronically Supplied Services" — the correct, Managed-Payments-
+// "General - Electronically Supplied Services" - the correct, Managed-Payments-
 // eligible tax code for a live online workshop. Overridable via env.
 const TAX_CODE = process.env.STRIPE_TAX_CODE || "txcd_10000000";
 
@@ -47,7 +47,7 @@ function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreatePar
     {
       price_data: {
         currency: "usd",
-        product_data: { name: "סדנת לייב: איתור וניתוח נכסים בארה״ב", tax_code: TAX_CODE },
+        product_data: { name: "וורקשופ לייב: איתור וניתוח נכסים בארה״ב", tax_code: TAX_CODE },
         unit_amount: 9700, // $97.00
       },
       quantity: 1,
@@ -69,7 +69,7 @@ function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreatePar
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS — set before anything else so even errors/preflight carry the headers.
+  // CORS - set before anything else so even errors/preflight carry the headers.
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -77,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  // Everything is wrapped so the lambda NEVER crashes into a 500 HTML screen —
+  // Everything is wrapped so the lambda NEVER crashes into a 500 HTML screen -
   // it always responds with structured JSON.
   try {
     if (req.method !== "POST") {
@@ -101,7 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Enforce the hard seat cap before creating a new payable session.
     const paidSeats = await countPaidSeats(stripe);
     if (paidSeats >= MAX_SEATS) {
-      return res.status(403).json({ error: "הסדנה בתפוסה מלאה", soldOut: true });
+      return res.status(403).json({ error: "הוורקשופ בתפוסה מלאה", soldOut: true });
     }
 
     // Vercel auto-parses JSON bodies, but guard against a string/undefined body too.

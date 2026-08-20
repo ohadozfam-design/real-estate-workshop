@@ -12,7 +12,7 @@
   }
 
   body {
-    /* Crisp, flat Neverything base — no blurred gradient blobs. */
+    /* Crisp, flat Neverything base - no blurred gradient blobs. */
     @apply bg-night text-cloud font-sans antialiased;
     /* Ultra-readable base: 18px mobile, 20px desktop, generous line-height */
     font-size: 1.125rem; /* 18px */
@@ -56,7 +56,7 @@
 }
 
 @layer components {
-  /* Uppercase eyebrow label — clean tracked gold text, no leading rule. */
+  /* Uppercase eyebrow label - clean tracked gold text, no leading rule. */
   .eyebrow {
     @apply inline-flex items-center text-sm font-bold uppercase tracking-[0.22em] text-gold;
   }
@@ -67,7 +67,7 @@
     text-wrap: balance;
   }
 
-  /* Accent text — solid Sea Buckthorn, crisp (no gradient). */
+  /* Accent text - solid Sea Buckthorn, crisp (no gradient). */
   .gold-text {
     color: #ffbf65;
   }

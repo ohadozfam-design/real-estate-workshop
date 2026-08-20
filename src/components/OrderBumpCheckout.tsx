@@ -6,6 +6,15 @@ import { PRICING, SITE } from "../lib/site";
 
 type Seats = { soldOut: boolean; remaining: number; total: number };
 
+// Every bonus itemized with its own value, so the full stack ($888) is visible
+// against the $97 price. Mirrors the bonus list in the ValueStack section.
+const includedBonuses = [
+  { name: "מחשבון הניתוח המהיר", value: 297 },
+  { name: "תסריטי שיחה ומיילים מול סוכנים", value: 197 },
+  { name: "צ׳קליסט תמחור שיפוץ מהיר", value: 197 },
+  { name: "מדד איתור וניתוח שווקים צומחים", value: 197 },
+];
+
 type Props = {
   bumpSelected: boolean;
   onToggle: (v: boolean) => void;
@@ -109,7 +118,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
         return;
       }
 
-      setError("אירעה שגיאה במעבר לתשלום. אנא נסו שוב בעוד רגע.");
+      setError("אירעה שגיאה במעבר לתשלום. אנא נסה שוב בעוד רגע.");
       setIsSubmitting(false);
     }
   }
@@ -117,7 +126,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   return (
     <section id="checkout" className="scroll-mt-8 px-5 py-20 lg:py-28" aria-labelledby="checkout-heading">
       <div className="mx-auto max-w-2xl space-y-6">
-        {/* Guarantee — relocated here, right above the pricing */}
+        {/* Guarantee - relocated here, right above the pricing */}
         <div className="rounded-2xl border border-drift/15 bg-ateneo/25 p-7 sm:p-9">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-7">
             <ShieldCheck
@@ -130,8 +139,8 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 אחריות 100% שביעות רצון
               </h2>
               <p className="mt-3 max-w-2xl text-xl leading-relaxed text-cloud/85">
-                „אם תשתתף בסדנה ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
-                הודעה עד 24 שעות מסיום הסדנה וקבל בחזרה את מלוא הסכום ששילמת
+                „אם תשתתף בוורקשופ ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
+                הודעה עד 24 שעות מסיום הוורקשופ וקבל בחזרה את מלוא הסכום ששילמת
                 (<span className="ltr-nums font-bold text-gold">$97</span>). כל המחשבונים
                 והתבניות נשארים אצלך.”
               </p>
@@ -144,7 +153,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
           {/* header */}
           <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
             <span className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
-              שריון מקום לסדנה
+              שריון מקום לוורקשופ
             </span>
             <h2
               id="checkout-heading"
@@ -168,7 +177,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               (soldOut ? (
                 <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
                   <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                  הסדנה בתפוסה מלאה ({seats.total}/{seats.total})
+                  הוורקשופ בתפוסה מלאה ({seats.total}/{seats.total})
                 </p>
               ) : (
                 <p className="mt-4 text-lg font-bold text-coral">
@@ -182,9 +191,44 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               <SoldOutWaitlist total={seats?.total ?? 25} />
             ) : (
               <>
-                {/* line items */}
-            <div className="space-y-2.5">
-              <LineItem label="כרטיס לסדנת הלייב + כל 4 הבונוסים" price="$97" />
+                {/* Itemized value stack - every bonus listed with its own value */}
+            <div className="space-y-3">
+              <div className="rounded-xl border border-drift/15 bg-night/40 p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-3 border-b border-drift/12 pb-3">
+                  <span className="text-lg font-bold text-cloud">
+                    כרטיס לוורקשופ הלייב · יומיים בלייב
+                  </span>
+                  <span className="shrink-0 text-sm font-extrabold uppercase tracking-wide text-emerald-400">
+                    כלול
+                  </span>
+                </div>
+                <ul className="mt-3.5 space-y-3">
+                  {includedBonuses.map((b, i) => (
+                    <li key={b.name} className="flex items-start justify-between gap-3">
+                      <span className="flex items-start gap-2 text-base font-semibold text-cloud/90">
+                        <Check
+                          className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400"
+                          strokeWidth={3}
+                          aria-hidden="true"
+                        />
+                        <span>
+                          <span className="text-drift">בונוס {String(i + 1).padStart(2, "0")}: </span>
+                          {b.name}
+                        </span>
+                      </span>
+                      <span className="ltr-nums shrink-0 text-base font-bold text-drift">
+                        שווי ${b.value}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 flex items-center justify-between border-t border-drift/12 pt-3.5">
+                  <span className="text-base font-bold text-cloud">שווי כולל</span>
+                  <span className="ltr-nums text-2xl font-extrabold text-drift line-through decoration-coral/80 decoration-2">
+                    ${PRICING.totalStackValue}
+                  </span>
+                </div>
+              </div>
               <AnimatePresence initial={false}>
                 {bumpSelected && (
                   <motion.div
@@ -246,7 +290,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             {/* ---- Lead capture form ---- */}
             <div className="rounded-xl border border-drift/15 bg-night/40 p-5 sm:p-6">
               <h3 className="text-base font-bold uppercase tracking-[0.15em] text-gold">הפרטים שלך</h3>
-              <p className="mt-1 text-sm text-drift">
+              <p className="mt-1 text-base text-drift">
                 כדי לשמור לך את המקום ולשלוח את הקישור לזום ואת כל החומרים.
               </p>
               <div className="mt-4 space-y-3.5">
@@ -316,13 +360,13 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               <CtaButton
                 onClick={handleCheckout}
                 loading={isSubmitting}
-                aria-label={`שריין את מקומי בסדנה עכשיו בעלות של ${total} דולר`}
+                aria-label={`שריין את מקומי בוורקשופ עכשיו בעלות של ${total} דולר`}
               >
                 {isSubmitting ? (
                   "מעבירים אותך לתשלום מאובטח…"
                 ) : (
                   <>
-                    שריין את מקומי בסדנה עכשיו · <span className="ltr-nums">${total}</span>
+                    שריין את מקומי בוורקשופ עכשיו · <span className="ltr-nums">${total}</span>
                   </>
                 )}
               </CtaButton>
@@ -337,7 +381,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 </p>
               )}
 
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-drift">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-base text-drift">
                 <span className="inline-flex items-center gap-1.5">
                   <ShieldCheck className="h-4 w-4 text-gold" aria-hidden="true" /> החזר כספי מלא 100%
                 </span>
@@ -392,7 +436,7 @@ function SoldOutWaitlist({ total }: { total: number }) {
       setSubmitted(true);
     } catch (err) {
       console.error("[waitlist] submit failed:", err);
-      setError("אירעה שגיאה. נסו שוב בעוד רגע.");
+      setError("אירעה שגיאה. נסה שוב בעוד רגע.");
       setSubmitting(false);
     }
   }
@@ -407,7 +451,7 @@ function SoldOutWaitlist({ total }: { total: number }) {
         כל המקומות למחזור הזה נתפסו
       </h3>
       <p className="mx-auto mt-3 max-w-lg text-lg leading-relaxed text-drift">
-        הצטרפו לרשימת ההמתנה ונעדכן אתכם מיד אם יתפנה מקום, או ראשונים לקראת
+        הצטרף לרשימת ההמתנה ונעדכן אותך מיד אם יתפנה מקום, או ראשונים לקראת
         המחזור הבא.
       </p>
 
@@ -465,7 +509,7 @@ function SoldOutWaitlist({ total }: { total: number }) {
             disabled={submitting}
             className="focus-ring mt-5 w-full rounded-full bg-gold px-6 py-4 text-lg font-bold text-night shadow-cta transition-colors hover:bg-[#ffca82] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {submitting ? "רושמים אותך…" : "הוסיפו אותי לרשימת ההמתנה"}
+            {submitting ? "רושמים אותך…" : "הוסף אותי לרשימת ההמתנה"}
           </button>
 
           {error && (

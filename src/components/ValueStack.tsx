@@ -43,11 +43,11 @@ export default function ValueStack() {
               id="value-heading"
               className="mt-5 font-extrabold tracking-tight text-cloud text-[clamp(2.25rem,5.6vw,3.8rem)]"
             >
-              כל מה שנכנס לסדנה
+              עוד נכסים שנשארים איתך
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-drift">
-              ארבעה כלים מעשיים שנשארים אצלכם לתמיד, ומחזירים את ההשקעה כבר בעסקה
-              הראשונה.
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
+              4 כלים חובה לכל יזם נדל״ן שפיתחנו באקדמיית K2 שחוסכים זמן, מגדילים
+              וודאות ושורת רווח.
             </p>
           </div>
         </Reveal>
@@ -74,6 +74,14 @@ export default function ValueStack() {
             </Reveal>
           ))}
         </div>
+
+        {/* Social-proof quote bridging the bonus list and the value stack */}
+        <Reveal delay={0.08}>
+          <blockquote className="mx-auto mt-10 max-w-3xl rounded-2xl border-r-4 border-gold bg-gold/[0.06] px-6 py-6 text-center text-xl font-semibold leading-relaxed text-cloud sm:text-2xl">
+            ״תלמידי הליווי שלנו משתמשים בכלים האלה יום יום וככה הם מגדילים פי 3 את
+            כמות ההצעות שהם מציעים ומביאים עסקאות מליגה אחרת.״
+          </blockquote>
+        </Reveal>
 
         {/* Summary */}
         <Reveal delay={0.1}>

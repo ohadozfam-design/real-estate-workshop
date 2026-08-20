@@ -57,7 +57,7 @@ export default function ThankYouModal({ open, onClose }: Props) {
               id="thankyou-title"
               className="mt-5 text-3xl font-extrabold tracking-tight text-cloud"
             >
-              הרשמתך לסדנה אושרה בהצלחה!
+              הרשמתך לוורקשופ אושרה בהצלחה!
             </h2>
 
             <p className="mt-3 text-lg leading-relaxed text-drift">
@@ -83,7 +83,7 @@ export default function ThankYouModal({ open, onClose }: Props) {
               מעולה, סגירה
             </button>
 
-            <p className="mt-4 text-sm text-drift">
+            <p className="mt-4 text-base text-drift">
               לא קיבלת מייל? בדוק גם בתיקיית הספאם, או פנה אלינו.
             </p>
           </motion.div>

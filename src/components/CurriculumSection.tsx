@@ -1,4 +1,3 @@
-import { Radio } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import { SITE } from "../lib/site";
 
@@ -18,7 +17,8 @@ const days: Day[] = [
       {
         n: 2,
         title: "בניית הצעת מחיר מדויקת וחישוב מספרים בשטח",
-        outcome: "מספרים מדויקים: עלות שיפוץ, מחיר הצעה מקסימלי (MAO) ורווח צפוי, בלי לנחש.",
+        outcome:
+          "תדע להגיע למספרים המדוייקים של עלויות השיפוץ, מה מחיר ההצעה המקסימאלי (MAO) ומה הרווח הצפוי שלך מבלי לנחש.",
       },
     ],
   },
@@ -46,42 +46,17 @@ export default function CurriculumSection() {
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="text-center">
-            <span className="eyebrow">תכנית הסדנה</span>
+            <span className="eyebrow">תכנית הוורקשופ</span>
             <h2
               id="curriculum-heading"
-              className="mt-5 text-balance font-extrabold tracking-tight text-cloud text-[clamp(2.25rem,5.6vw,3.8rem)]"
+              className="mx-auto mt-5 max-w-4xl text-balance font-extrabold tracking-tight text-cloud text-[clamp(2rem,4.8vw,3.3rem)]"
             >
-              תכנית העבודה ליומיים של הסדנה
+              תמיד רצית לקפוץ למים של הנדל״ן? זו תהיה הטבילה הראשונה שלך
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-xl leading-relaxed text-drift lg:max-w-none lg:whitespace-nowrap">
-              בדיוק מה עושים בכל יום, ומה תצאו איתו בסוף. ארבעה מודולים מעשיים, שניים בכל יום.
-            </p>
           </div>
         </Reveal>
 
-        {/* Live centerpiece — relocated from the hero */}
-        <Reveal delay={0.05}>
-          <div className="mt-12 overflow-hidden rounded-2xl border border-drift/15 bg-cloud/[0.02] shadow-card">
-            <div className="flex items-center justify-between border-b border-drift/10 px-6 py-4">
-              <span className="text-base font-bold uppercase tracking-[0.2em] text-drift">
-                Live Workshop
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-coral/15 px-3 py-1 text-sm font-bold uppercase tracking-wide text-coral">
-                <Radio className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" /> Live
-              </span>
-            </div>
-            <div className="px-6 py-12 text-center">
-              <p className="font-extrabold tracking-tight text-cloud text-[clamp(1.9rem,4.5vw,3rem)]">
-                ניתוח עסקה חיה על המסך
-              </p>
-              <p className="mt-3 text-xl text-drift">
-                שידור אינטראקטיבי · סשן שאלות ותשובות פתוח · {SITE.eventHours}
-              </p>
-            </div>
-          </div>
-        </Reveal>
-
-        <div className="mt-16 space-y-14">
+        <div className="mt-14 space-y-14">
           {days.map((day) => (
             <Reveal key={day.label}>
               <div>
@@ -113,7 +88,7 @@ export default function CurriculumSection() {
                         <h4 className="text-2xl font-bold tracking-tight text-cloud">{m.title}</h4>
                         <div className="mt-3 border-r-2 border-gold/60 pr-4">
                           <div className="text-sm font-bold uppercase tracking-wider text-gold">
-                            התוצאה שתצאו איתה
+                            התוצאה שתצא איתה
                           </div>
                           <p className="mt-1.5 text-xl leading-relaxed text-cloud/90">{m.outcome}</p>
                         </div>

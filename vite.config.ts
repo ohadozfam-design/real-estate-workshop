@@ -91,7 +91,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
                 console.error("[dev waitlist] sheet dispatch failed:", e);
               }
             } else {
-              console.warn("[dev waitlist] GOOGLE_SHEET_WEBHOOK_URL not set — lead:", payload);
+              console.warn("[dev waitlist] GOOGLE_SHEET_WEBHOOK_URL not set - lead:", payload);
             }
             return send(200, { ok: true });
           } catch (err) {
@@ -110,7 +110,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
           try {
             const stripe = new Stripe(secretKey);
             const paid = await countPaidSeats(stripe);
-            if (paid >= MAX_SEATS) return send(403, { error: "הסדנה בתפוסה מלאה", soldOut: true });
+            if (paid >= MAX_SEATS) return send(403, { error: "הוורקשופ בתפוסה מלאה", soldOut: true });
 
             const { hasOrderBump, name = "", phone = "", email = "" } = await readJson();
             const origin = (req.headers.origin as string) || "http://localhost:5173";
