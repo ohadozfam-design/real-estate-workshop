@@ -7,7 +7,7 @@ type Day = { label: string; date: string; modules: Module[] };
 const days: Day[] = [
   {
     label: "יום 1",
-    date: SITE.day1.date, // 24 באוגוסט
+    date: `${SITE.day1.label}, ${SITE.day1.date}`, // יום רביעי, 2 בספטמבר
     modules: [
       {
         n: 1,
@@ -24,7 +24,7 @@ const days: Day[] = [
   },
   {
     label: "יום 2",
-    date: SITE.day2.date, // 26 באוגוסט
+    date: `${SITE.day2.label}, ${SITE.day2.date}`, // יום חמישי, 3 בספטמבר
     modules: [
       {
         n: 3,

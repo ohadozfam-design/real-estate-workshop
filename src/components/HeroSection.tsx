@@ -90,7 +90,7 @@ export default function HeroSection() {
           <span className="inline-flex items-center gap-2.5">
             <CalendarDays className="h-6 w-6 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
             <span className="ltr-nums text-2xl font-extrabold text-gold sm:text-3xl">
-              26 &amp; 24 באוגוסט
+              2 &amp; 3 בספטמבר
             </span>
           </span>
           <span className="hidden text-gold/40 sm:block" aria-hidden="true">

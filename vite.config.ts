@@ -12,7 +12,7 @@ import { buildLineItems } from "./server/lineItems";
 function apiDevMiddleware(env: Record<string, string>): Plugin {
   const secretKey = env.STRIPE_SECRET_KEY;
   const MAX_SEATS = Number(env.MAX_SEATS || 25);
-  const WORKSHOP_ID = env.WORKSHOP_ID || "Workshop_Aug26";
+  const WORKSHOP_ID = env.WORKSHOP_ID || "Workshop_Sep2";
 
   async function countPaidSeats(stripe: Stripe): Promise<number> {
     let count = 0;

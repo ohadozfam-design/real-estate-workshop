@@ -10,7 +10,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  * server-side in create-checkout-session.ts, which is the source of truth.
  */
 const MAX_SEATS = Number(process.env.MAX_SEATS || 25);
-const WORKSHOP_ID = process.env.WORKSHOP_ID || "Workshop_Aug26";
+const WORKSHOP_ID = process.env.WORKSHOP_ID || "Workshop_Sep2";
 
 async function countPaidSeats(stripe: Stripe): Promise<number> {
   let count = 0;
