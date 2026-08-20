@@ -1,5 +1,12 @@
 import Stripe from "stripe";
+import { Resend } from "resend";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+
+// ── Email configuration (server-side env only) ────────────────────────────────
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const SENDER_EMAIL = process.env.SENDER_EMAIL || "The K2 Academy <onboarding@resend.dev>";
+// Clean placeholder until the real meeting link is provided in the env.
+const ZOOM_LINK = process.env.ZOOM_LINK || "https://zoom.us/";
 
 /**
  * Stripe webhook (Vercel Node serverless function) — fully self-contained.
@@ -14,6 +21,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  *        Event:  checkout.session.completed
  *   2. Copy the endpoint's "Signing secret" (whsec_…) into Vercel env as
  *        STRIPE_WEBHOOK_SECRET   (STRIPE_SECRET_KEY must also be set).
+ *   3. For the confirmation email, set RESEND_API_KEY (and optionally ZOOM_LINK,
+ *        SENDER_EMAIL). If RESEND_API_KEY is missing, the email is skipped with a
+ *        clean log line and the webhook still returns 200.
  *
  * Signature verification requires the RAW request body, so Vercel's automatic
  * body parsing is disabled below and the raw stream is read manually.
@@ -38,42 +48,154 @@ type PaidRegistration = {
   currency: string | null;
 };
 
+/** Minimal HTML-escape for values interpolated into the email. */
+function esc(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** Branded, RTL confirmation email (inline styles + tables for email clients). */
+export function renderConfirmationEmail(name: string, hasOrderBump: boolean): string {
+  const greetingName = name ? esc(name) : "וברוך הבא";
+  const bump = hasOrderBump
+    ? `
+    <tr><td style="padding:0 32px 8px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid rgba(253,137,115,0.4);border-radius:14px;background:rgba(253,137,115,0.10);">
+        <tr><td style="padding:20px 22px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FD8973;">בונוס נוסף שנפתח עבורך</div>
+          <div style="margin-top:8px;font-size:18px;font-weight:800;color:#F0EEEB;">Off-Market &amp; Contractor Pack</div>
+          <div style="margin-top:6px;font-size:15px;line-height:1.6;color:#CCD5DA;">חבילת החוזים לעבודה מול קבלנים ומוכרים פרטיים מחכה לך יחד עם שאר החומרים בלייב.</div>
+        </td></tr>
+      </table>
+    </td></tr>`
+    : "";
+
+  return `<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>אישור הרשמה</title></head>
+<body style="margin:0;padding:0;background:#0e1316;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0e1316;">
+    <tr><td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:#13181B;border:1px solid rgba(204,213,218,0.15);border-radius:20px;overflow:hidden;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;direction:rtl;text-align:right;">
+
+        <!-- Header -->
+        <tr><td style="padding:28px 32px;border-bottom:1px solid rgba(204,213,218,0.12);text-align:center;">
+          <span style="font-size:22px;font-weight:800;letter-spacing:1px;color:#FFBF65;">The K2 Academy</span>
+        </td></tr>
+
+        <!-- Greeting -->
+        <tr><td style="padding:32px 32px 8px;">
+          <h1 style="margin:0;font-size:26px;line-height:1.25;font-weight:800;color:#F0EEEB;">שלום ${greetingName}, שמחים לראות אותך איתנו!</h1>
+          <p style="margin:14px 0 0;font-size:17px;line-height:1.7;color:#CCD5DA;">מקומך בסדנה שמור ומובטח. ריכזנו כאן את כל פרטי ההתחברות.</p>
+        </td></tr>
+
+        <!-- Schedule card -->
+        <tr><td style="padding:16px 32px 8px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid rgba(204,213,218,0.15);border-radius:14px;background:rgba(0,58,108,0.18);">
+            <tr><td style="padding:22px 22px 6px;">
+              <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFBF65;">מועדי הסדנה</div>
+            </td></tr>
+            <tr><td style="padding:8px 22px;border-bottom:1px solid rgba(204,213,218,0.12);">
+              <div style="font-size:14px;color:#CCD5DA;">מפגש 1</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום שני, 24 באוגוסט &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+            </td></tr>
+            <tr><td style="padding:12px 22px 22px;">
+              <div style="font-size:14px;color:#CCD5DA;">מפגש 2</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום רביעי, 26 באוגוסט &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+            </td></tr>
+          </table>
+        </td></tr>
+
+        <!-- CTA -->
+        <tr><td style="padding:24px 32px 8px;text-align:center;">
+          <a href="${esc(ZOOM_LINK)}" target="_blank" style="display:inline-block;background:#FFBF65;color:#13181B;font-size:18px;font-weight:800;text-decoration:none;padding:16px 40px;border-radius:999px;">הצטרפות לסדנה בזום</a>
+        </td></tr>
+
+        <!-- Preparation note -->
+        <tr><td style="padding:12px 32px 8px;">
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#CCD5DA;">מומלץ להתחבר ממחשב נייד או נייח עם חיבור יציב לאינטרנט. כל התבניות והחומרים המעשיים יחכו לך בלייב.</p>
+        </td></tr>
+        ${bump}
+
+        <!-- Sign-off -->
+        <tr><td style="padding:20px 32px 32px;border-top:1px solid rgba(204,213,218,0.12);">
+          <p style="margin:0;font-size:16px;color:#F0EEEB;">נתראה בלייב,</p>
+          <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#FFBF65;">צוות The K2 Academy</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+/** Plain-text fallback for deliverability and text-only clients. */
+export function renderConfirmationText(name: string, hasOrderBump: boolean): string {
+  const lines = [
+    `שלום ${name || "וברוך הבא"}, שמחים לראות אותך איתנו!`,
+    `מקומך בסדנה שמור ומובטח.`,
+    ``,
+    `מועדי הסדנה:`,
+    `מפגש 1: יום שני, 24 באוגוסט | 18:00 עד 20:00 (שעון ישראל)`,
+    `מפגש 2: יום רביעי, 26 באוגוסט | 18:00 עד 20:00 (שעון ישראל)`,
+    ``,
+    `קישור לזום: ${ZOOM_LINK}`,
+    ``,
+    `מומלץ להתחבר ממחשב עם חיבור יציב לאינטרנט. כל התבניות והחומרים יחכו לך בלייב.`,
+  ];
+  if (hasOrderBump) {
+    lines.push(``, `בונוס: חבילת Off-Market & Contractor Pack פתוחה עבורך ותחכה לך בלייב.`);
+  }
+  lines.push(``, `צוות The K2 Academy`);
+  return lines.join("\n");
+}
+
 /**
- * Single place to fulfill a paid registration.
- * TODO: plug in your email provider and/or database here.
+ * Fulfill a paid registration: send the branded confirmation email via Resend.
+ * (A Supabase/DB insert can be added alongside this call.)
  */
 async function handlePaidRegistration(reg: PaidRegistration): Promise<void> {
   console.log("[stripe-webhook] paid registration:", reg);
 
-  // ── 1) Email the Zoom link + materials (Resend) ─────────────────────────────
-  // if (process.env.RESEND_API_KEY && reg.email) {
-  //   const { Resend } = await import("resend");
-  //   const resend = new Resend(process.env.RESEND_API_KEY);
-  //   await resend.emails.send({
-  //     from: "סדנת נדל״ן <no-reply@your-domain.com>",
-  //     to: reg.email,
-  //     subject: "אישור הרשמה + קישור לזום",
-  //     html: `<p>שלום ${reg.name}, נרשמת בהצלחה! הקישור לזום: ...</p>`,
-  //   });
-  // }
+  if (!RESEND_API_KEY) {
+    console.warn(
+      "[stripe-webhook] RESEND_API_KEY not set — skipping confirmation email.",
+      { to: reg.email || "(no email)" }
+    );
+    return;
+  }
+  if (!reg.email) {
+    console.warn("[stripe-webhook] No email on the session — cannot send confirmation.");
+    return;
+  }
 
-  // ── 2) Store the lead in a DB you own (Supabase) ────────────────────────────
-  // if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  //   const { createClient } = await import("@supabase/supabase-js");
-  //   const supabase = createClient(
-  //     process.env.SUPABASE_URL,
-  //     process.env.SUPABASE_SERVICE_ROLE_KEY
-  //   );
-  //   await supabase.from("registrations").insert({
-  //     session_id: reg.sessionId,
-  //     name: reg.name,
-  //     phone: reg.phone,
-  //     email: reg.email,
-  //     order_bump: reg.hasOrderBump,
-  //     amount_total: reg.amountTotal,
-  //     currency: reg.currency,
-  //   });
-  // }
+  try {
+    const resend = new Resend(RESEND_API_KEY);
+    const { data, error } = await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: reg.email,
+      subject: "ההרשמה שלך לסדנת הנדל״ן אושרה | פרטי ההתחברות והקישור לזום",
+      html: renderConfirmationEmail(reg.name, reg.hasOrderBump),
+      text: renderConfirmationText(reg.name, reg.hasOrderBump),
+    });
+    if (error) {
+      console.error("[stripe-webhook] Resend send error:", error);
+    } else {
+      console.log("[stripe-webhook] confirmation email sent:", data?.id, "→", reg.email);
+    }
+  } catch (err) {
+    console.error(
+      "[stripe-webhook] confirmation email failed:",
+      err instanceof Error ? err.message : err
+    );
+  }
+
+  // ── Optional: store the lead in a DB you own (Supabase) ─────────────────────
+  // if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) { ... }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
