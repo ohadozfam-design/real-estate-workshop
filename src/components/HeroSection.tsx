@@ -4,9 +4,10 @@ import CtaButton from "./ui/CtaButton";
 import { scrollToCheckout } from "../lib/site";
 
 const bullets = [
-  "תנתח עסקאות אמיתיות בזמן אמת.",
-  "תקבל תסריטים מוכנים באנגלית מול סוכנים.",
-  "תחשב MAO ורווח צפוי ישירות בשטח.",
+  "תשלוט באיתור שיטתי של נכסים בהזדמנות אמיתית On-Market ו-Off-Market",
+  "תדע להגיע תוך דקות למספרים המדויקים: עלויות שיפוץ, מחיר הצעה מקסימלי (MAO) והרווח הצפוי מבלי לנחש",
+  "תחזיק במערכת עבודה מסודרת שמייצרת ומגישה הצעות מחיר באופן עקבי בכל שבוע",
+  "יהיה לך את הביטחון המלא לזהות עסקאות זהב ולהפוך אותן לרווח מיידי",
 ];
 
 // Staggered entrance: badge, H1, subheadline, and CTA fade in + slide up on load.
@@ -50,7 +51,7 @@ export default function HeroSection() {
           className="mx-auto mt-7 max-w-4xl text-balance text-center font-extrabold leading-[1.03] tracking-tight text-cloud text-[clamp(2.4rem,6.4vw,4.8rem)]"
         >
           <span className="text-gold">תוך 4 שעות בלייב</span>{" "}
-          תגיש את ההצעה הראשונה שלך על נכס בארה״ב בהתחייבות
+          תבנה מנוע לאיתור וניתוח שיזרים לך עסקאות נדל״ן בארה״ב מדי חודש
         </motion.h1>
 
         {/* Subheadline */}
@@ -58,26 +59,26 @@ export default function HeroSection() {
           variants={item}
           className="mx-auto mt-6 max-w-2xl text-balance text-xl leading-relaxed text-drift sm:text-2xl"
         >
-          בלי לשלם שקל על תוכנות ניתוח יקרות, בלי תיאוריות מיותרות ובלי להישמע
-          חובבן מול סוכני שטח מקומיים.
+          בלי לנחש מספרים, בלי להסתמך על מזל ובלי להתפזר. שיטת עבודה של יזמים
+          מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם הצעות קבוע על השולחן.
         </motion.p>
 
-        {/* Bullets - centered row */}
+        {/* Bullets - 2-column grid, top-aligned for longer lines */}
         <motion.ul
           variants={item}
-          className="mx-auto mt-9 flex w-full max-w-3xl flex-col items-stretch gap-3 sm:flex-row sm:justify-center"
+          className="mx-auto mt-9 grid w-full max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2"
         >
           {bullets.map((b) => (
             <li
               key={b}
-              className="flex items-center justify-center gap-3 rounded-xl border border-drift/12 bg-cloud/[0.02] px-4 py-4 text-lg font-semibold text-cloud sm:flex-1"
+              className="flex items-start gap-3 rounded-xl border border-drift/12 bg-cloud/[0.02] px-4 py-4 text-right text-lg font-semibold leading-relaxed text-cloud"
             >
               <CheckCircle2
-                className="h-8 w-8 shrink-0 text-emerald-400"
+                className="mt-0.5 h-7 w-7 shrink-0 text-emerald-400"
                 strokeWidth={2.4}
                 aria-hidden="true"
               />
-              {b}
+              <span>{b}</span>
             </li>
           ))}
         </motion.ul>
