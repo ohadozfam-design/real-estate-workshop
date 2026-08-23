@@ -51,7 +51,7 @@ export default function HeroSection() {
           className="mx-auto mt-7 max-w-4xl text-balance text-center font-extrabold leading-[1.03] tracking-tight text-cloud text-[clamp(2.4rem,6.4vw,4.8rem)]"
         >
           <span className="text-gold">תוך 4 שעות בלייב</span>{" "}
-          תבנה מנוע לאיתור וניתוח שיזרים לך עסקאות נדל״ן בארה״ב מדי חודש
+          תבנה מנוע לאיתור וניתוח שיזרים לך עסקאות נדל״ן בארה״ב בכל חודש
         </motion.h1>
 
         {/* Subheadline */}
