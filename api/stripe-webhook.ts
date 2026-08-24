@@ -92,14 +92,14 @@ export function renderConfirmationEmail(name: string, hasOrderBump: boolean): st
         <!-- Greeting -->
         <tr><td style="padding:32px 32px 8px;">
           <h1 style="margin:0;font-size:26px;line-height:1.25;font-weight:800;color:#F0EEEB;">שלום ${greetingName}, שמחים לראות אותך איתנו!</h1>
-          <p style="margin:14px 0 0;font-size:17px;line-height:1.7;color:#CCD5DA;">מקומך בוורקשופ שמור ומובטח. ריכזנו כאן את כל פרטי ההתחברות.</p>
+          <p style="margin:14px 0 0;font-size:17px;line-height:1.7;color:#CCD5DA;">מקומך בסדנה שמור ומובטח. ריכזנו כאן את כל פרטי ההתחברות.</p>
         </td></tr>
 
         <!-- Schedule card -->
         <tr><td style="padding:16px 32px 8px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid rgba(204,213,218,0.15);border-radius:14px;background:rgba(0,58,108,0.18);">
             <tr><td style="padding:22px 22px 6px;">
-              <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFBF65;">מועדי הוורקשופ</div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFBF65;">מועדי הסדנה</div>
             </td></tr>
             <tr><td style="padding:8px 22px;border-bottom:1px solid rgba(204,213,218,0.12);">
               <div style="font-size:14px;color:#CCD5DA;">מפגש 1</div>
@@ -114,7 +114,7 @@ export function renderConfirmationEmail(name: string, hasOrderBump: boolean): st
 
         <!-- CTA -->
         <tr><td style="padding:24px 32px 8px;text-align:center;">
-          <a href="${esc(ZOOM_LINK)}" target="_blank" style="display:inline-block;background:#FFBF65;color:#13181B;font-size:18px;font-weight:800;text-decoration:none;padding:16px 40px;border-radius:999px;">הצטרף לוורקשופ בזום</a>
+          <a href="${esc(ZOOM_LINK)}" target="_blank" style="display:inline-block;background:#FFBF65;color:#13181B;font-size:18px;font-weight:800;text-decoration:none;padding:16px 40px;border-radius:999px;">הצטרף לסדנה בזום</a>
         </td></tr>
 
         <!-- Preparation note -->
@@ -140,9 +140,9 @@ export function renderConfirmationEmail(name: string, hasOrderBump: boolean): st
 export function renderConfirmationText(name: string, hasOrderBump: boolean): string {
   const lines = [
     `שלום ${name || "וברוך הבא"}, שמחים לראות אותך איתנו!`,
-    `מקומך בוורקשופ שמור ומובטח.`,
+    `מקומך בסדנה שמור ומובטח.`,
     ``,
-    `מועדי הוורקשופ:`,
+    `מועדי הסדנה:`,
     `מפגש 1: יום רביעי, 2 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
     `מפגש 2: יום חמישי, 3 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
     ``,
@@ -201,7 +201,7 @@ async function sendBuyerEmail(reg: PaidRegistration): Promise<void> {
     const { data, error } = await resend.emails.send({
       from: SENDER_EMAIL,
       to: reg.email,
-      subject: "ההרשמה שלך לוורקשופ הנדל״ן אושרה | פרטי ההתחברות והקישור לזום",
+      subject: "ההרשמה שלך לסדנה הנדל״ן אושרה | פרטי ההתחברות והקישור לזום",
       html: renderConfirmationEmail(reg.name, reg.hasOrderBump),
       text: renderConfirmationText(reg.name, reg.hasOrderBump),
     });
@@ -224,9 +224,9 @@ async function notifyAdmin(reg: PaidRegistration): Promise<void> {
     const { error } = await resend.emails.send({
       from: SENDER_EMAIL,
       to: ADMIN_NOTIFICATION_EMAIL,
-      subject: `🎉 מכירה חדשה בוורקשופ - ${reg.name || reg.email}`,
+      subject: `🎉 מכירה חדשה בסדנה - ${reg.name || reg.email}`,
       text: [
-        "רישום חדש לוורקשופ:",
+        "רישום חדש לסדנה:",
         `שם: ${reg.name || "-"}`,
         `טלפון: ${reg.phone || "-"}`,
         `אימייל: ${reg.email || "-"}`,

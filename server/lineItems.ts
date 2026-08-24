@@ -20,7 +20,7 @@ export function buildLineItems(
     {
       price_data: {
         currency: "usd",
-        product_data: { name: "וורקשופ כניסה לעולם הנדל״ן", tax_code: TAX_CODE },
+        product_data: { name: "סדנת כניסה לעולם הנדל״ן", tax_code: TAX_CODE },
         unit_amount: 9700, // $97.00
       },
       quantity: 1,

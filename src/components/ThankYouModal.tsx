@@ -57,7 +57,7 @@ export default function ThankYouModal({ open, onClose }: Props) {
               id="thankyou-title"
               className="mt-5 text-3xl font-extrabold tracking-tight text-cloud"
             >
-              הרשמתך לוורקשופ אושרה בהצלחה!
+              הרשמתך לסדנה אושרה בהצלחה!
             </h2>
 
             <p className="mt-3 text-lg leading-relaxed text-drift">

@@ -139,8 +139,8 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 אחריות 100% שביעות רצון
               </h2>
               <p className="mt-3 max-w-2xl text-xl leading-relaxed text-cloud/85">
-                „אם תשתתף בוורקשופ ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
-                הודעה עד 24 שעות מסיום הוורקשופ וקבל בחזרה את מלוא הסכום ששילמת
+                „אם תשתתף בסדנה ותרגיש שלא קיבלת לפחות פי 10 מערך ההשקעה שלך, שלח
+                הודעה עד 24 שעות מסיום הסדנה וקבל בחזרה את מלוא הסכום ששילמת
                 (<span className="ltr-nums font-bold text-gold">$97</span>). כל המחשבונים
                 והתבניות נשארים אצלך.”
               </p>
@@ -153,7 +153,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
           {/* header */}
           <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
             <span className="text-sm font-bold uppercase tracking-[0.22em] text-gold">
-              שריון מקום לוורקשופ
+              שריון מקום לסדנה
             </span>
             <h2
               id="checkout-heading"
@@ -178,7 +178,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 (soldOut ? (
                   <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
                     <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                    הוורקשופ בתפוסה מלאה ({seats.total}/{seats.total})
+                    הסדנה בתפוסה מלאה ({seats.total}/{seats.total})
                   </p>
                 ) : (
                   <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
@@ -199,7 +199,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               <div className="rounded-xl border border-drift/15 bg-night/40 p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-3 border-b border-drift/12 pb-3">
                   <span className="text-lg font-bold text-cloud">
-                    כרטיס לוורקשופ הלייב · יומיים בלייב
+                    כרטיס לסדנה הלייב · יומיים בלייב
                   </span>
                   <span className="shrink-0 text-sm font-extrabold uppercase tracking-wide text-emerald-400">
                     כלול
@@ -363,13 +363,13 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
               <CtaButton
                 onClick={handleCheckout}
                 loading={isSubmitting}
-                aria-label={`שריין את מקומי בוורקשופ עכשיו בעלות של ${total} דולר`}
+                aria-label={`שריין את מקומי בסדנה עכשיו בעלות של ${total} דולר`}
               >
                 {isSubmitting ? (
                   "מעבירים אותך לתשלום מאובטח…"
                 ) : (
                   <>
-                    שריין את מקומי בוורקשופ עכשיו · <span className="ltr-nums">${total}</span>
+                    שריין את מקומי בסדנה עכשיו · <span className="ltr-nums">${total}</span>
                   </>
                 )}
               </CtaButton>

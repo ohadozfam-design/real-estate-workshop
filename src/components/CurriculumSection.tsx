@@ -44,7 +44,7 @@ export default function CurriculumSection() {
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="text-center">
-            <span className="eyebrow">תכנית הוורקשופ</span>
+            <span className="eyebrow">תכנית הסדנה</span>
             <h2
               id="curriculum-heading"
               className="mx-auto mt-5 max-w-4xl text-balance font-extrabold tracking-tight text-cloud text-[clamp(2rem,4.8vw,3.3rem)]"

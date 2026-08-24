@@ -47,7 +47,7 @@ function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreatePar
     {
       price_data: {
         currency: "usd",
-        product_data: { name: "וורקשופ כניסה לעולם הנדל״ן", tax_code: TAX_CODE },
+        product_data: { name: "סדנת כניסה לעולם הנדל״ן", tax_code: TAX_CODE },
         unit_amount: 9700, // $97.00
       },
       quantity: 1,
@@ -101,7 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Enforce the hard seat cap before creating a new payable session.
     const paidSeats = await countPaidSeats(stripe);
     if (paidSeats >= MAX_SEATS) {
-      return res.status(403).json({ error: "הוורקשופ בתפוסה מלאה", soldOut: true });
+      return res.status(403).json({ error: "הסדנה בתפוסה מלאה", soldOut: true });
     }
 
     // Vercel auto-parses JSON bodies, but guard against a string/undefined body too.

@@ -41,7 +41,7 @@ export default function HeroSection() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
           </span>
-          וורקשופ אונליין · יומיים · 4 שעות
+          סדנה אונליין · יומיים · 4 שעות
         </motion.div>
 
         {/* Centered headline */}
@@ -106,10 +106,10 @@ export default function HeroSection() {
         {/* CTA */}
         <motion.div variants={item} className="mx-auto mt-8 w-full max-w-md">
           <CtaButton onClick={scrollToCheckout}>
-            שריין את המקום שלי בוורקשופ במחיר <span className="ltr-nums">$97</span> בלבד
+            שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
           </CtaButton>
           <p className="mt-4 text-lg text-drift">
-            🔒 100% אחריות להחזר כספי מלא בסיום הוורקשופ ללא שאלות.
+            🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
           </p>
           <p className="mt-2 text-base font-semibold text-coral">
             המקומות מוגבלים כדי לשמור על סשן שאלות ותשובות אישי בלייב.
