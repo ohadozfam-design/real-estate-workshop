@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, ShieldCheck, Lock, AlertCircle, CalendarDays, Users } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
 import { PRICING, SITE } from "../lib/site";
+import { trackCtaClick } from "../lib/track";
 
 type Seats = { soldOut: boolean; remaining: number; total: number };
 
@@ -77,6 +78,11 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
 
     setIsSubmitting(true);
     setError(null);
+
+    // Analytics: record the checkout CTA click right before opening Stripe.
+    // Fire-and-forget (sendBeacon) - never blocks the redirect.
+    trackCtaClick();
+
     try {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",

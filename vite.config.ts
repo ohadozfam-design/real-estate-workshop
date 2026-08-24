@@ -58,6 +58,66 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
           }
         }
 
+        // ── POST /api/track-event ──────────────────────────────────────────
+        if (path === "/api/track-event") {
+          if (req.method !== "POST") return send(405, { error: "Method Not Allowed" });
+          try {
+            const raw = await readJson();
+            const event = raw.event === "cta_click" ? "cta_click" : "page_view";
+            const deviceType = raw.deviceType === "mobile" ? "mobile" : "desktop";
+            const iso = String(raw.timestamp ?? "").slice(0, 40) || new Date().toISOString();
+            let timestampIsrael = iso;
+            try {
+              timestampIsrael = new Intl.DateTimeFormat("en-GB", {
+                timeZone: "Asia/Jerusalem",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+              }).format(new Date(iso));
+            } catch {
+              /* keep iso */
+            }
+            const clip = (v: unknown, n = 256) => String(v ?? "").trim().slice(0, n);
+            const payload = {
+              tag: "Workshop_Analytics",
+              timestampIsrael,
+              timestamp: iso,
+              event,
+              deviceType,
+              path: clip(raw.path),
+              referrer: clip(raw.referrer),
+              utm_source: clip(raw.utm_source, 128),
+              utm_medium: clip(raw.utm_medium, 128),
+              utm_campaign: clip(raw.utm_campaign, 128),
+            };
+            if (env.GOOGLE_SHEET_WEBHOOK_URL) {
+              try {
+                await fetch(env.GOOGLE_SHEET_WEBHOOK_URL, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(payload),
+                  redirect: "follow",
+                });
+              } catch (e) {
+                console.error("[dev track-event] sheet dispatch failed:", e);
+              }
+            } else {
+              console.warn("[dev track-event] GOOGLE_SHEET_WEBHOOK_URL not set - event:", payload);
+            }
+            res.statusCode = 204;
+            res.end();
+            return;
+          } catch (err) {
+            res.statusCode = 204;
+            res.end();
+            return;
+          }
+        }
+
         // ── POST /api/waitlist ─────────────────────────────────────────────
         if (path === "/api/waitlist") {
           if (req.method !== "POST") return send(405, { error: "Method Not Allowed" });
