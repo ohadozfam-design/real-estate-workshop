@@ -96,9 +96,6 @@ export default function StudentSuccess() {
                   <div className="flex grow flex-col px-6 pb-6 pt-3">
                     <div className="flex items-center justify-between gap-3">
                       <h3 className="text-2xl font-extrabold tracking-tight text-cloud">{s.name}</h3>
-                      <span className="shrink-0 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-sm font-bold text-gold">
-                        תלמיד K2
-                      </span>
                     </div>
 
                     {s.location && (
