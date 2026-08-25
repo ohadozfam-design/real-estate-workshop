@@ -1,132 +1,214 @@
 /**
- * Google Apps Script — Analytics sink for the K2 landing page.
+ * K2 Landing Page — Google Sheets webhook (Code.gs)
  * ---------------------------------------------------------------------------
- * The Vercel endpoint /api/track-event POSTs analytics events to this Web App
- * (the same GOOGLE_SHEET_WEBHOOK_URL already used for buyers/waitlist), tagged
- * "Workshop_Analytics". This script:
- *   1. Auto-creates the "Analytics" tab + header row if missing.
- *   2. Appends one row per event.
- *   3. Creates/refreshes a "Summary" tab with live funnel formulas.
+ * Handles three POST payloads routed by `tag`:
+ *   • Workshop_Analytics      → Analytics tab, ONE UPSERTED ROW PER SESSION
+ *   • Workshop_Waitlist       → Waitlist tab (append)
+ *   • *_Buyer (e.g. Workshop_Sep2_Buyer) → Buyers tab (append)
  *
- * HOW TO INSTALL
- *   1. Open the Google Sheet → Extensions → Apps Script.
- *   2. Merge the `if (data.tag === 'Workshop_Analytics')` branch shown in
- *      doPost() below into your EXISTING doPost (keep your buyer/waitlist
- *      branches), then paste the helper functions.
- *   3. Deploy → Manage deployments → edit the active Web App deployment →
- *      Deploy (this republishes; the /exec URL stays the same).
- *   4. Set BUYERS_SHEET_NAME below to the tab where paid buyers are written.
+ * The Vercel /api/track-event endpoint sends a session snapshot (keyed by
+ * sessionId) on load, on each new scroll milestone, on the CTA click, and on
+ * page exit. This script finds the row with that sessionId and UPDATES it, or
+ * APPENDS it the first time — so every visitor is a single clean row.
  *
- * Analytics columns:
- *   Timestamp (Israel Time) | Event Type | Device | UTM Source | UTM Campaign | Referrer | Path
+ * INSTALL
+ *   1. Google Sheet → Extensions → Apps Script → paste this into Code.gs.
+ *   2. Set the CONFIG tab names below to match your existing buyers/waitlist tabs.
+ *   3. Deploy → Manage deployments → edit the active Web App → Deploy
+ *      (the /exec URL stays the same).
+ *   NOTE: if an "Analytics" tab already exists from an older version, delete it
+ *   once so it is recreated with the new single-row headers below.
+ *
+ * Analytics columns (A–J; J = Session ID key, safe to hide):
+ *   Timestamp (Israel Time) | Device | Time on Page (Seconds) | Max Scroll Depth |
+ *   Clicked CTA? | UTM Source | UTM Campaign | Phone | Lead ID | Session ID
  */
 
-var ANALYTICS_SHEET = "Analytics";
-var SUMMARY_SHEET = "Summary";
-// The tab your paid-buyer rows land in (used for the purchase count/formula).
-// Adjust to match your setup (e.g. "Workshop_Sep2_Buyer" or "Buyers").
-var BUYERS_SHEET_NAME = "Workshop_Sep2_Buyer";
+/*** ─────────────  CONFIG — set these to match YOUR tabs  ───────────── ***/
+var CONFIG = {
+  buyersSheet: "Buyers", // ← set to your EXISTING buyers tab name
+  waitlistSheet: "Waitlist", // ← set to your EXISTING waitlist tab name
+  analyticsSheet: "Analytics",
+  summarySheet: "Summary",
+};
 
 var ANALYTICS_HEADERS = [
   "Timestamp (Israel Time)",
-  "Event Type",
   "Device",
+  "Time on Page (Seconds)",
+  "Max Scroll Depth",
+  "Clicked CTA?",
   "UTM Source",
   "UTM Campaign",
-  "Referrer",
-  "Path",
-  "Detail", // scroll depth (e.g. "50%") or session duration (e.g. "42s")
-  "Phone", // captured from ?phone= lead param
-  "Lead ID", // captured from ?uid= / ?lead_id=
+  "Phone",
+  "Lead ID",
+  "Session ID",
 ];
+var SESSION_ID_COL = 10; // column J
 
-/**
- * Merge this branch into your existing doPost(e).
- * Example minimal doPost:
- */
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-    if (data.tag === "Workshop_Analytics") {
-      handleAnalytics_(data, ss);
-      return ContentService
-        .createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // ---- keep your existing buyer / waitlist branches here ----
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: String(err) }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-/** GET returns a health string (handy for a quick browser check). */
+/*** ─────────────────────────  ENTRY POINTS  ───────────────────────── ***/
 function doGet() {
   return ContentService.createTextOutput("Webhook is live and running!");
 }
 
-/** Append one analytics event; auto-create the tab + headers on first write. */
-function handleAnalytics_(data, ss) {
-  var sheet = ss.getSheetByName(ANALYTICS_SHEET);
-  if (!sheet) {
-    sheet = ss.insertSheet(ANALYTICS_SHEET);
-    sheet.appendRow(ANALYTICS_HEADERS);
-    sheet.getRange(1, 1, 1, ANALYTICS_HEADERS.length).setFontWeight("bold");
-    sheet.setFrozenRows(1);
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(20000); // serialize writes so concurrent beacons don't clash
+  } catch (err) {
+    // Could not get a lock — proceed rather than dropping the event.
   }
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var tag = String(data.tag || "");
 
-  sheet.appendRow([
-    data.timestampIsrael || data.timestamp || new Date(),
-    data.event || "",
-    data.deviceType || "",
-    data.utm_source || "",
-    data.utm_campaign || "",
-    data.referrer || "",
-    data.path || "",
-    data.detail || "",
-    data.phone || "",
-    data.uid || "",
-  ]);
+    if (tag === "Workshop_Analytics") {
+      handleAnalytics_(data, ss);
+    } else if (tag === "Workshop_Waitlist") {
+      handleWaitlist_(data, ss);
+    } else if (tag.slice(-6) === "_Buyer") {
+      handleBuyer_(data, ss);
+    } else {
+      handleBuyer_(data, ss); // sensible default for any other lead payload
+    }
 
-  ensureSummary_(ss); // keep the funnel metrics live
+    return json_({ status: "success" });
+  } catch (err) {
+    return json_({ status: "error", message: String(err) });
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (e2) {}
+  }
 }
 
-/** Create/refresh the Summary tab with live funnel formulas. Idempotent. */
-function ensureSummary_(ss) {
-  var s = ss.getSheetByName(SUMMARY_SHEET);
-  if (!s) s = ss.insertSheet(SUMMARY_SHEET, 0);
+/*** ───────────────────  ANALYTICS (single-row upsert)  ─────────────── ***/
+function handleAnalytics_(data, ss) {
+  var sheet = getOrCreateSheet_(ss, CONFIG.analyticsSheet, ANALYTICS_HEADERS);
+  var sid = String(data.sessionId || "");
 
-  var A = ANALYTICS_SHEET;
-  var pageViews = '=COUNTIF(' + A + "!B:B,\"page_view\")";
-  var ctaClicks = '=COUNTIF(' + A + "!B:B,\"cta_click\")";
-  // Purchases: count non-empty rows in the buyers tab (minus header), guarded
-  // so a missing/renamed tab shows 0 instead of #REF.
+  var row = [
+    data.timestampIsrael || toIsraelTime_(data.timestamp), // A arrival time
+    data.device || "", // B
+    (Number(data.seconds) || 0) + "s", // C time on page
+    data.maxScroll || "0%", // D max scroll
+    data.ctaClicked ? "Yes" : "No", // E clicked CTA?
+    data.utm_source || "", // F
+    data.utm_campaign || "", // G
+    data.phone || "", // H
+    data.uid || "", // I lead id
+    sid, // J session id (key)
+  ];
+
+  var rowIndex = sid ? findSessionRow_(sheet, sid) : -1;
+
+  if (rowIndex === -1) {
+    sheet.appendRow(row);
+  } else {
+    // Preserve the original arrival timestamp (column A) across updates.
+    var existingA = sheet.getRange(rowIndex, 1).getValue();
+    if (existingA) row[0] = existingA;
+    sheet.getRange(rowIndex, 1, 1, row.length).setValues([row]);
+  }
+
+  ensureSummary_(ss);
+}
+
+/** Return the 1-based row index whose Session ID matches, or -1. */
+function findSessionRow_(sheet, sid) {
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return -1;
+  var ids = sheet.getRange(2, SESSION_ID_COL, lastRow - 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]) === sid) return i + 2; // +2: header row + 0-index
+  }
+  return -1;
+}
+
+/*** ─────────────────────  WAITLIST / BUYERS (append)  ─────────────── ***/
+function handleWaitlist_(data, ss) {
+  var headers = ["Timestamp (Israel Time)", "Name", "Phone", "Email"];
+  var sheet = getOrCreateSheet_(ss, CONFIG.waitlistSheet, headers);
+  sheet.appendRow([
+    toIsraelTime_(data.timestamp),
+    data.name || "",
+    data.phone || "",
+    data.email || "",
+  ]);
+}
+
+function handleBuyer_(data, ss) {
+  var headers = [
+    "Timestamp (Israel Time)",
+    "Name",
+    "Phone",
+    "Email",
+    "Amount (USD)",
+    "Order Bump",
+    "Tag",
+  ];
+  var sheet = getOrCreateSheet_(ss, CONFIG.buyersSheet, headers);
+  var usd = data.amount != null && data.amount !== "" ? Number(data.amount) / 100 : "";
+  sheet.appendRow([
+    toIsraelTime_(data.timestamp),
+    data.name || "",
+    data.phone || "",
+    data.email || "",
+    usd,
+    data.hasOrderBump ? "Yes" : "No",
+    data.tag || "",
+  ]);
+}
+
+/*** ─────────────────────────────  SUMMARY  ────────────────────────── ***/
+function ensureSummary_(ss) {
+  var s = ss.getSheetByName(CONFIG.summarySheet);
+  if (!s) s = ss.insertSheet(CONFIG.summarySheet, 0);
+
+  var A = "'" + CONFIG.analyticsSheet + "'";
+  // One row per session -> Total Sessions = filled rows in the Session ID column.
+  var sessions = "=MAX(0, COUNTA(" + A + "!J2:J))";
+  var ctaClicks = "=COUNTIF(" + A + "!E:E,\"Yes\")";
   var purchases =
-    '=IFERROR(MAX(0, COUNTA(INDIRECT("' +
-    BUYERS_SHEET_NAME +
-    '!A2:A"))), 0)';
+    "=IFERROR(MAX(0, COUNTA(INDIRECT(\"'" + CONFIG.buyersSheet + "'!A2:A\"))), 0)";
 
   var rows = [
     ["K2 Landing Page — Funnel Summary", ""],
-    ["Total Page Views", pageViews],
+    ["Total Sessions", sessions],
     ["Total CTA Clicks", ctaClicks],
     ["Total Purchases", purchases],
     ["Click-through Rate (CTR %)", "=IF(B2=0,0,B3/B2)"],
     ["Purchase Conversion Rate (%)", "=IF(B2=0,0,B4/B2)"],
   ];
-
   s.getRange(1, 1, rows.length, 2).setValues(rows);
   s.getRange("A1:B1").merge().setFontWeight("bold").setFontSize(12);
   s.getRange("A2:A6").setFontWeight("bold");
-  s.getRange("B5:B6").setNumberFormat("0.0%"); // CTR + conversion as percentages
+  s.getRange("B5:B6").setNumberFormat("0.0%");
   s.setColumnWidth(1, 240);
   s.setColumnWidth(2, 140);
+}
+
+/*** ─────────────────────────────  HELPERS  ────────────────────────── ***/
+function getOrCreateSheet_(ss, name, headers) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function toIsraelTime_(iso) {
+  var d = iso ? new Date(iso) : new Date();
+  if (isNaN(d.getTime())) d = new Date();
+  return Utilities.formatDate(d, "Asia/Jerusalem", "dd/MM/yyyy HH:mm:ss");
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
+    ContentService.MimeType.JSON
+  );
 }

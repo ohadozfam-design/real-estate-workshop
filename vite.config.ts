@@ -63,9 +63,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
           if (req.method !== "POST") return send(405, { error: "Method Not Allowed" });
           try {
             const raw = await readJson();
-            const allowed = ["page_view", "cta_click", "scroll_depth", "time_on_page"];
-            const event = allowed.includes(raw.event) ? raw.event : "page_view";
-            const deviceType = raw.deviceType === "mobile" ? "mobile" : "desktop";
+            const device = raw.device === "mobile" ? "mobile" : "desktop";
             const iso = String(raw.timestamp ?? "").slice(0, 40) || new Date().toISOString();
             let timestampIsrael = iso;
             try {
@@ -83,23 +81,17 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
               /* keep iso */
             }
             const clip = (v: unknown, n = 256) => String(v ?? "").trim().slice(0, n);
-            const depth = clip(raw.depth, 8);
-            const seconds =
-              raw.seconds === undefined || raw.seconds === null || raw.seconds === ""
-                ? ""
-                : `${Number(raw.seconds)}s`;
             const payload = {
               tag: "Workshop_Analytics",
+              sessionId: clip(raw.sessionId, 64),
               timestampIsrael,
               timestamp: iso,
-              event,
-              deviceType,
-              path: clip(raw.path),
-              referrer: clip(raw.referrer),
+              device,
+              seconds: Math.max(0, Math.round(Number(raw.seconds) || 0)),
+              maxScroll: clip(raw.maxScroll, 8) || "0%",
+              ctaClicked: raw.ctaClicked === true || raw.ctaClicked === "true" || raw.ctaClicked === 1,
               utm_source: clip(raw.utm_source, 128),
-              utm_medium: clip(raw.utm_medium, 128),
               utm_campaign: clip(raw.utm_campaign, 128),
-              detail: depth || seconds,
               phone: clip(raw.phone, 64),
               uid: clip(raw.uid, 64),
             };
