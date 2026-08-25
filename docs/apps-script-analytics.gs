@@ -100,18 +100,22 @@ function handleAnalytics_(data, ss) {
   var rowIndex = sid ? findSessionRow_(sheet, sid) : -1;
 
   if (rowIndex === -1) {
-    // First sighting of this session: append the full 10-column row (A..J).
-    sheet.appendRow([
-      data.timestampIsrael || toIsraelTime_(data.timestamp), // A arrival time
-      data.device || "", // B
-      timeCell, // C time on page
-      scrollCell, // D max scroll
-      ctaCell, // E clicked CTA?
-      data.utm_source || "", // F
-      data.utm_campaign || "", // G
-      data.phone || "", // H
-      data.uid || "", // I lead id
-      sid, // J session id (key)
+    // First sighting: write the full 10-column row with an explicit A..J range so
+    // sessionId is GUARANTEED to land in column 10 (J) - never a 9-vs-10 drift.
+    var insertAt = sheet.getLastRow() + 1;
+    sheet.getRange(insertAt, 1, 1, 10).setValues([
+      [
+        data.timestampIsrael || toIsraelTime_(data.timestamp), // A arrival time
+        data.device || "", // B
+        timeCell, // C time on page
+        scrollCell, // D max scroll
+        ctaCell, // E clicked CTA?
+        data.utm_source || "", // F
+        data.utm_campaign || "", // G
+        data.phone || "", // H
+        data.uid || "", // I lead id
+        sid, // J session id (key)
+      ],
     ]);
   } else {
     // Existing session: update ONLY Time (C), Max Scroll (D), Clicked CTA? (E).
@@ -122,17 +126,30 @@ function handleAnalytics_(data, ss) {
   ensureSummary_(ss);
 }
 
-/** Write the 10 headers cleanly across A1:J1, undoing any accidental merges. */
+/**
+ * Self-healing headers: force-overwrite row 1 across A1:J1 on EVERY write so a
+ * corrupted/merged/older header row is repaired and all 10 columns stay strictly
+ * separate. Column J therefore always holds "Session ID" for the upsert scan.
+ */
 function ensureAnalyticsHeaders_(sheet) {
-  var range = sheet.getRange(1, 1, 1, ANALYTICS_HEADERS.length); // A1:J1
-  try {
-    range.breakApart(); // undo merged cells that would shift the headers
-  } catch (e) {
-    /* nothing merged - fine */
-  }
-  range.setValues([ANALYTICS_HEADERS]);
-  range.setFontWeight("bold");
+  sheet.getRange("A1:J1").breakApart(); // undo any merged cells that shift headers
+  sheet
+    .getRange(1, 1, 1, ANALYTICS_HEADERS.length) // A1:J1, exactly 10 cells
+    .setValues([ANALYTICS_HEADERS])
+    .setFontWeight("bold")
+    .setBackground("#D1FAE5");
   sheet.setFrozenRows(1);
+}
+
+/**
+ * One-time manual repair: run this from the Apps Script editor (Run ▶) to fix
+ * the Analytics header row immediately, without waiting for the next event.
+ */
+function repairAnalyticsHeaders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.analyticsSheet);
+  if (!sheet) sheet = ss.insertSheet(CONFIG.analyticsSheet);
+  ensureAnalyticsHeaders_(sheet);
 }
 
 /** Return the 1-based row index whose Session ID (column J) matches, or -1. */

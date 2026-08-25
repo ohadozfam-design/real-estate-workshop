@@ -50,7 +50,7 @@ export default function App() {
 
       <footer className="border-t border-drift/15 px-5 py-10 text-center">
         <p className="text-lg font-extrabold tracking-tight text-cloud">
-          סדנת כניסה לעולם הנדל״ן
+          סדנת מנוע העסקאות ל2 נכסים בחודש
         </p>
         <p className="mt-1 text-sm font-semibold text-drift">עם אוהד עוז</p>
         <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-drift">
