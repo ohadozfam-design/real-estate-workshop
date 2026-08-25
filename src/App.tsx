@@ -4,6 +4,7 @@ import LogisticsSection from "./components/LogisticsSection";
 import CurriculumSection from "./components/CurriculumSection";
 import InstructorSection from "./components/InstructorSection";
 import ValueStack from "./components/ValueStack";
+import StudentSuccess from "./components/StudentSuccess";
 import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
@@ -43,6 +44,8 @@ export default function App() {
         <InstructorSection />
         <SectionDivider />
         <ValueStack />
+        <SectionDivider />
+        <StudentSuccess />
         <SectionDivider />
         <FaqSection />
         <OrderBumpCheckout bumpSelected={bumpSelected} onToggle={setBumpSelected} />
