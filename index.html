@@ -4,34 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#13181B" />
-
-    <!-- Meta (Facebook) Pixel — only initializes when VITE_META_PIXEL_ID is set. -->
-    <script>
-      !(function (f, b, e, v, n, t, s) {
-        if (f.fbq) return;
-        n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = !0;
-        n.version = "2.0";
-        n.queue = [];
-        t = b.createElement(e);
-        t.async = !0;
-        t.src = v;
-        s = b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t, s);
-      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-      (function () {
-        var PIXEL_ID = "%VITE_META_PIXEL_ID%";
-        // Guard against an unset/unreplaced env var so we never init a bogus pixel.
-        if (PIXEL_ID && PIXEL_ID.indexOf("%") === -1) {
-          fbq("init", PIXEL_ID);
-          fbq("track", "PageView");
-        }
-      })();
-    </script>
+    <!-- Meta Pixel is initialized in client JS (src/lib/track.ts) from
+         import.meta.env.VITE_META_PIXEL_ID, so the HTML has no build-time env
+         tokens to replace. -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
@@ -72,16 +47,6 @@
     <title>סדנת כניסה לעולם הנדל״ן</title>
   </head>
   <body>
-    <!-- Meta Pixel <noscript> fallback (valid only in body, not head). -->
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display: none"
-        alt=""
-        src="https://www.facebook.com/tr?id=%VITE_META_PIXEL_ID%&ev=PageView&noscript=1"
-      />
-    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

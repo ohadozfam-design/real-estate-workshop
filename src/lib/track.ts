@@ -134,6 +134,54 @@ function sendSession(extra?: Extra): void {
   }
 }
 
+/**
+ * Initialize the Meta (Facebook) Pixel from VITE_META_PIXEL_ID, entirely in JS
+ * (no build-time HTML env tokens). Silently no-ops when the id is unset/empty,
+ * so builds never break and no bogus pixel is created.
+ */
+function initMetaPixel(): void {
+  const pixelId = import.meta.env.VITE_META_PIXEL_ID;
+  if (!pixelId || typeof pixelId !== "string") return;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const w = window as any;
+  if (w.fbq) {
+    // Already bootstrapped - just (re)track a PageView.
+    try {
+      w.fbq("init", pixelId);
+      w.fbq("track", "PageView");
+    } catch {
+      /* ignore */
+    }
+    return;
+  }
+
+  // Canonical Meta Pixel bootstrap (loader + queue), injected at runtime.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const n: any = function (...args: unknown[]) {
+    n.callMethod ? n.callMethod.apply(n, args) : n.queue.push(args);
+  };
+  w.fbq = n;
+  if (!w._fbq) w._fbq = n;
+  n.push = n;
+  n.loaded = true;
+  n.version = "2.0";
+  n.queue = [];
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://connect.facebook.net/en_US/fbevents.js";
+  const first = document.getElementsByTagName("script")[0];
+  first?.parentNode?.insertBefore(script, first);
+
+  try {
+    n("init", pixelId);
+    n("track", "PageView");
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Safe Meta Pixel track (no-op if the pixel isn't configured/loaded). */
 function fbqTrack(event: string): void {
   try {
@@ -168,6 +216,7 @@ function scrollMilestone(pct: number): number {
 export function initTracking(): () => void {
   if (typeof window === "undefined") return () => {};
 
+  initMetaPixel(); // fires fbq PageView when VITE_META_PIXEL_ID is configured
   state(); // establish sessionId + arrival up front
   sendSession(); // initial upsert (creates the row)
 
