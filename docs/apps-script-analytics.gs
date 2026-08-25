@@ -35,6 +35,9 @@ var ANALYTICS_HEADERS = [
   "UTM Campaign",
   "Referrer",
   "Path",
+  "Detail", // scroll depth (e.g. "50%") or session duration (e.g. "42s")
+  "Phone", // captured from ?phone= lead param
+  "Lead ID", // captured from ?uid= / ?lead_id=
 ];
 
 /**
@@ -88,6 +91,9 @@ function handleAnalytics_(data, ss) {
     data.utm_campaign || "",
     data.referrer || "",
     data.path || "",
+    data.detail || "",
+    data.phone || "",
+    data.uid || "",
   ]);
 
   ensureSummary_(ss); // keep the funnel metrics live

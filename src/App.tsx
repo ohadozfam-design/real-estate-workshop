@@ -8,15 +8,15 @@ import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
 import ThankYouModal from "./components/ThankYouModal";
-import { trackPageView } from "./lib/track";
+import { initTracking } from "./lib/track";
 
 export default function App() {
   const [bumpSelected, setBumpSelected] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
 
-  // Fire a single page_view per browser session (guarded in trackPageView).
+  // Analytics: page_view (once/session) + scroll-depth and time-on-page listeners.
   useEffect(() => {
-    trackPageView();
+    return initTracking();
   }, []);
 
   // Detect the post-payment redirect (?checkout=success) on load.

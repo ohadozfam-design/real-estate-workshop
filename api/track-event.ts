@@ -13,7 +13,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
  * still return 204 so the browser's beacon never surfaces an error to the user.
  */
 
-type EventType = "page_view" | "cta_click";
+type EventType = "page_view" | "cta_click" | "scroll_depth" | "time_on_page";
+const ALLOWED_EVENTS: EventType[] = ["page_view", "cta_click", "scroll_depth", "time_on_page"];
 
 const clip = (v: unknown, max = 512): string =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -53,9 +54,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const body: Record<string, unknown> =
       typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body ?? {});
 
-    const event: EventType = body.event === "cta_click" ? "cta_click" : "page_view";
+    const event: EventType = ALLOWED_EVENTS.includes(body.event as EventType)
+      ? (body.event as EventType)
+      : "page_view";
     const deviceType = body.deviceType === "mobile" ? "mobile" : "desktop";
     const isoTimestamp = clip(body.timestamp, 40) || new Date().toISOString();
+
+    // Unified "detail" column: scroll depth (e.g. "50%") or duration (e.g. "42s").
+    const depth = clip(body.depth, 8);
+    const seconds =
+      body.seconds === undefined || body.seconds === null || body.seconds === ""
+        ? ""
+        : `${Number(body.seconds)}s`;
+    const detail = depth || seconds;
 
     const payload = {
       tag: "Workshop_Analytics",
@@ -70,6 +81,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       utm_source: clip(body.utm_source, 128),
       utm_medium: clip(body.utm_medium, 128),
       utm_campaign: clip(body.utm_campaign, 128),
+      detail,
+      phone: clip(body.phone, 64),
+      uid: clip(body.uid, 64),
     };
 
     const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
