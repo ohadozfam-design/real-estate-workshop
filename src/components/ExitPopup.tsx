@@ -23,8 +23,10 @@ export default function ExitPopup() {
   const nameError = name.trim().length < 2 ? "נא למלא שם מלא" : undefined;
   const phoneError = !isValidIsraeliPhone(phone) ? "נא למלא מספר טלפון ישראלי תקין" : undefined;
 
-  // Triggers: desktop exit-intent (mouse to top) + mobile/fallback scroll >65%.
-  // Capped to once per browser session via sessionStorage.
+  // Triggers (capped once per session):
+  //   • Desktop exit-intent (mouse toward the top)   — only after 15s on page.
+  //   • Mobile/fallback scroll past 65%              — only after 15s on page.
+  //   • Timed fallback for active readers            — fires once at 45s.
   useEffect(() => {
     let done = false;
     try {
@@ -34,6 +36,12 @@ export default function ExitPopup() {
     }
     // Skip on the post-payment thank-you view (already converted).
     if (new URLSearchParams(window.location.search).get("checkout") === "success") return;
+    if (done) return;
+
+    const startedAt = Date.now();
+    const MIN_DELAY_MS = 15000; // don't interrupt early reading
+    const FALLBACK_MS = 45000; // active reader who never exits/scrolls enough
+    const onPageMs = () => Date.now() - startedAt;
 
     const trigger = () => {
       if (done) return;
@@ -47,10 +55,13 @@ export default function ExitPopup() {
       cleanup();
     };
 
+    // Exit-intent + scroll only qualify once the visitor has read for 15s.
     const onMouseOut = (e: MouseEvent) => {
+      if (onPageMs() < MIN_DELAY_MS) return;
       if (!e.relatedTarget && e.clientY <= 0) trigger(); // left towards the top
     };
     const onScroll = () => {
+      if (onPageMs() < MIN_DELAY_MS) return;
       const doc = document.documentElement;
       const scrollable = doc.scrollHeight - window.innerHeight;
       if (scrollable > 0 && window.scrollY / scrollable >= 0.65) trigger();
@@ -59,12 +70,15 @@ export default function ExitPopup() {
     const isMobile =
       window.matchMedia("(max-width: 767px)").matches || "ontouchstart" in window;
 
+    // Timed fallback: fire once at 45s if nothing else triggered first.
+    const fallbackTimer = window.setTimeout(trigger, FALLBACK_MS);
+
     function cleanup() {
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(fallbackTimer);
     }
 
-    if (done) return;
     if (isMobile) {
       window.addEventListener("scroll", onScroll, { passive: true });
     } else {
