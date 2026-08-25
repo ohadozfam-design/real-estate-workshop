@@ -92,7 +92,7 @@ function handleAnalytics_(data, ss) {
   // older/misaligned header row so live upserts can find column J reliably.
   ensureAnalyticsHeaders_(sheet);
 
-  var sid = String(data.sessionId || "");
+  var sid = String(data.sessionId || "").trim();
   var timeCell = (Number(data.seconds) || 0) + "s"; // column C
   var scrollCell = data.maxScroll || "0%"; // column D
   var ctaCell = data.ctaClicked ? "Yes" : "No"; // column E
@@ -152,13 +152,18 @@ function repairAnalyticsHeaders() {
   ensureAnalyticsHeaders_(sheet);
 }
 
-/** Return the 1-based row index whose Session ID (column J) matches, or -1. */
+/**
+ * Return the 1-based row index whose Session ID (column J / col 10) matches, or
+ * -1. Both sides are trimmed so stray whitespace never breaks the upsert match.
+ */
 function findSessionRow_(sheet, sid) {
+  var key = String(sid || "").trim();
+  if (!key) return -1;
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return -1;
   var ids = sheet.getRange(2, SESSION_ID_COL, lastRow - 1, 1).getValues(); // column 10 = J
   for (var i = 0; i < ids.length; i++) {
-    if (String(ids[i][0]) === sid) return i + 2; // +2: header row + 0-index
+    if (String(ids[i][0]).trim() === key) return i + 2; // +2: header row + 0-index
   }
   return -1;
 }
