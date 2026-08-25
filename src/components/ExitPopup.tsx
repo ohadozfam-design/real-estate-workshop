@@ -23,10 +23,12 @@ export default function ExitPopup() {
   const nameError = name.trim().length < 2 ? "נא למלא שם מלא" : undefined;
   const phoneError = !isValidIsraeliPhone(phone) ? "נא למלא מספר טלפון ישראלי תקין" : undefined;
 
-  // Triggers (capped once per session):
-  //   • Desktop exit-intent (mouse toward the top)   — only after 15s on page.
-  //   • Mobile/fallback scroll past 65%              — only after 15s on page.
-  //   • Timed fallback for active readers            — fires once at 45s.
+  // STRICT exit-intent only - no timers, no scroll-depth trigger:
+  //   • Desktop: mouse leaves the viewport toward the top (clientY <= 10).
+  //   • Mobile/touch: the tab is hidden / the page is being left
+  //     (visibilitychange -> hidden, or pagehide) - never mid-scroll.
+  //   • Never shown once the checkout section has entered the viewport.
+  //   • Capped to once per browser session.
   useEffect(() => {
     let done = false;
     try {
@@ -38,13 +40,32 @@ export default function ExitPopup() {
     if (new URLSearchParams(window.location.search).get("checkout") === "success") return;
     if (done) return;
 
-    const startedAt = Date.now();
-    const MIN_DELAY_MS = 15000; // don't interrupt early reading
-    const FALLBACK_MS = 45000; // active reader who never exits/scrolls enough
-    const onPageMs = () => Date.now() - startedAt;
+    // Checkout protection: once #checkout has entered the viewport, never show
+    // the popup (don't interrupt a user heading to pay). Passive observer only.
+    let reachedCheckout = false;
+    const checkoutEl = document.getElementById("checkout");
+    let io: IntersectionObserver | undefined;
+    if (checkoutEl && "IntersectionObserver" in window) {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            reachedCheckout = true;
+            io?.disconnect();
+          }
+        },
+        { threshold: 0 }
+      );
+      io.observe(checkoutEl);
+    }
+    const inCheckout = () => {
+      if (reachedCheckout) return true;
+      if (!checkoutEl) return false;
+      const r = checkoutEl.getBoundingClientRect();
+      return r.top < window.innerHeight && r.bottom > 0;
+    };
 
     const trigger = () => {
-      if (done) return;
+      if (done || inCheckout()) return; // never block the checkout section
       done = true;
       try {
         sessionStorage.setItem(SHOWN_FLAG, "1");
@@ -55,36 +76,31 @@ export default function ExitPopup() {
       cleanup();
     };
 
-    // Exit-intent + scroll only qualify once the visitor has read for 15s.
+    // Desktop: genuine exit intent - cursor leaves the top edge of the viewport.
     const onMouseOut = (e: MouseEvent) => {
-      if (onPageMs() < MIN_DELAY_MS) return;
-      if (!e.relatedTarget && e.clientY <= 0) trigger(); // left towards the top
+      if (!e.relatedTarget && e.clientY <= 10) trigger();
     };
-    const onScroll = () => {
-      if (onPageMs() < MIN_DELAY_MS) return;
-      const doc = document.documentElement;
-      const scrollable = doc.scrollHeight - window.innerHeight;
-      if (scrollable > 0 && window.scrollY / scrollable >= 0.65) trigger();
+    // Mobile/touch: leaving the tab/page is the only exit signal (no cursor).
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") trigger();
     };
+    const onPageHide = () => trigger();
 
-    const isMobile =
+    const isTouch =
       window.matchMedia("(max-width: 767px)").matches || "ontouchstart" in window;
-
-    // Timed fallback: fire once at 45s if nothing else triggered first.
-    const fallbackTimer = window.setTimeout(trigger, FALLBACK_MS);
 
     function cleanup() {
       document.removeEventListener("mouseout", onMouseOut);
-      window.removeEventListener("scroll", onScroll);
-      window.clearTimeout(fallbackTimer);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onPageHide);
+      io?.disconnect();
     }
 
-    if (isMobile) {
-      window.addEventListener("scroll", onScroll, { passive: true });
+    if (isTouch) {
+      document.addEventListener("visibilitychange", onVisibility);
+      window.addEventListener("pagehide", onPageHide);
     } else {
       document.addEventListener("mouseout", onMouseOut);
-      // Scroll also acts as a desktop fallback if they never exit toward the top.
-      window.addEventListener("scroll", onScroll, { passive: true });
     }
     return cleanup;
   }, []);
