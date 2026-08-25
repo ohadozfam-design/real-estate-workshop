@@ -34,7 +34,7 @@ const days: Day[] = [
       "מודל ה-Wholesaling: איך להעביר עסקה טובה ליזם אחר ולגזור רווח מהיר בלי הון עצמי",
     ],
     outcome:
-      "תדע להגיע למספרים המדוייקים של עלויות השיפוץ, מה מחיר ההצעה המקסימאלי (MAO) ומה הרווח הצפוי שלך מבלי לנחש, ותשלוט במערכת שממשיכה לייצר לך הצעות באופן שוטף.",
+      "תציע לפחות 5 הצעות מחיר בכל יום. תיצור קשר עם בעלי המקצוע הנכונים ותדע איך להביא מהם עסקאות מתחת למחיר השוק",
   },
 ];
 
@@ -49,8 +49,11 @@ export default function CurriculumSection() {
               id="curriculum-heading"
               className="mx-auto mt-5 max-w-4xl text-balance font-extrabold tracking-tight text-cloud text-[clamp(2rem,4.8vw,3.3rem)]"
             >
-              תמיד רצית לקפוץ למים של הנדל״ן? זו תהיה הטבילה הראשונה שלך
+              הגשתי כמה הצעות אבל זה לא עבד. אני רוצה להתחיל לבנות צוות ולעלות על חוזים
             </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
+              אני כבר 4 חודשים בתחום ולא מצליח לעלות על עסקה
+            </p>
           </div>
         </Reveal>
 

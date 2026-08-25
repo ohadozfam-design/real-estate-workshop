@@ -15,7 +15,7 @@ const story: { label: string; body: string }[] = [
 ];
 
 const track: { icon: LucideIcon; text: string }[] = [
-  { icon: HardHat, text: "עסקאות שטח אמיתיות, רכישות Single Family וגם Multi Family." },
+  { icon: HardHat, text: "עסקאות שטח אמיתיות, רכישות Single Family ופרוטפוליו/ים." },
   { icon: Handshake, text: "ליווי והכשרת מחזורים של יזמים להגשת הצעות וסגירת עסקאות." },
   { icon: Mic, text: "שיתוף ידע שוטף מהשטח: פודקאסטים, קהילה ותוכן מקצועי." },
 ];

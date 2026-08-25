@@ -4,10 +4,10 @@ import CtaButton from "./ui/CtaButton";
 import { scrollToCheckout } from "../lib/site";
 
 const bullets = [
-  "תשלוט באיתור שיטתי של נכסים בהזדמנות אמיתית On-Market ו-Off-Market",
-  "תדע להגיע תוך דקות למספרים המדויקים: עלויות שיפוץ, מחיר הצעה מקסימלי (MAO) והרווח הצפוי מבלי לנחש",
+  "תדע איך ליצור קשר עם בעלי מקצוע שישלחו לך עסקאות טובות בכל חודש.",
+  "תנתח עסקה בפחות מ5 דקות, ותציע לפחות 5 הצעות נכונות ביום",
   "תחזיק במערכת עבודה מסודרת שמייצרת ומגישה הצעות מחיר באופן עקבי בכל שבוע",
-  "יהיה לך את הביטחון המלא לזהות עסקאות זהב ולהפוך אותן לרווח מיידי",
+  "תרכוש מהר את האמון של הסוכנים ובעלי המקצוע כך שירצו לעבוד איתך",
 ];
 
 // Staggered entrance: badge, H1, subheadline, and CTA fade in + slide up on load.
@@ -125,10 +125,10 @@ export default function HeroSection() {
         className="mx-auto mt-16 max-w-4xl rounded-3xl bg-gold px-6 py-11 text-center text-night sm:px-12"
       >
         <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)] md:whitespace-nowrap">
-          תצא עם הצעה אמיתית, מוכנה להגשה
+          תיכנס ללפחות 2 חוזים בכל חודש
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-xl font-semibold leading-relaxed text-night/85">
-          על נכס אמיתי מתחת למחיר השוק, עם המספרים והתסריטים שמאחוריה.
+          כך שתוכל לקנות ולמכור נכסים טובים ולהרוויח כסף כבר עכשיו
         </p>
       </motion.div>
     </section>
