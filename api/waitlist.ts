@@ -19,11 +19,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const body: { name?: string; phone?: string; email?: string } =
+    const body: { name?: string; phone?: string; email?: string; source?: string } =
       typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body ?? {});
     const name = (body.name ?? "").trim();
     const phone = (body.phone ?? "").trim();
     const email = (body.email ?? "").trim();
+    const source = (body.source ?? "").trim().slice(0, 64);
 
     // Name + phone are required; email is optional (validated only when present)
     // so lighter lead forms (e.g. the exit popup: name + phone only) can post here.
@@ -40,6 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       name,
       phone,
       email,
+      source,
       tag: "Workshop_Waitlist",
     };
 

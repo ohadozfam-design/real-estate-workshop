@@ -463,6 +463,7 @@ function SoldOutWaitlist({ total }: { total: number }) {
           name: lead.name.trim(),
           phone: lead.phone.trim(),
           email: lead.email.trim(),
+          source: "sold_out",
         }),
       });
       if (!r.ok) throw new Error(`waitlist failed (${r.status})`);

@@ -127,6 +127,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
             const name = String(raw.name ?? "").trim();
             const phone = String(raw.phone ?? "").trim();
             const email = String(raw.email ?? "").trim();
+            const source = String(raw.source ?? "").trim().slice(0, 64);
             if (name.length < 2 || phone.replace(/\D/g, "").length < 9) {
               return send(400, { error: "נא למלא שם מלא וטלפון תקין." });
             }
@@ -138,6 +139,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
               name,
               phone,
               email,
+              source,
               tag: "Workshop_Waitlist",
             };
             if (env.GOOGLE_SHEET_WEBHOOK_URL) {

@@ -170,13 +170,14 @@ function findSessionRow_(sheet, sid) {
 
 /*** ─────────────────────  WAITLIST / BUYERS (append)  ─────────────── ***/
 function handleWaitlist_(data, ss) {
-  var headers = ["Timestamp (Israel Time)", "Name", "Phone", "Email"];
+  var headers = ["Timestamp (Israel Time)", "Name", "Phone", "Email", "Source"];
   var sheet = getOrCreateSheet_(ss, CONFIG.waitlistSheet, headers);
   sheet.appendRow([
     toIsraelTime_(data.timestamp),
     data.name || "",
     data.phone || "",
     data.email || "",
+    data.source || "", // e.g. "exit_popup" or "sold_out"
   ]);
 }
 
