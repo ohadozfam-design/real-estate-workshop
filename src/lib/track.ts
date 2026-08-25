@@ -198,8 +198,10 @@ export function initTracking(): () => void {
   const beat = () => {
     if (document.visibilityState === "visible") sendSession();
   };
-  const timeouts = [5000, 15000].map((ms) => window.setTimeout(beat, ms));
-  const interval = window.setInterval(beat, 30000); // 30s, 60s, 90s, ...
+  // Early ticks so the row leaves 0s almost immediately (1s, 5s, 15s), then a
+  // steady 30s heartbeat (30s, 60s, 90s, ...).
+  const timeouts = [1000, 5000, 15000].map((ms) => window.setTimeout(beat, ms));
+  const interval = window.setInterval(beat, 30000);
 
   return () => {
     window.removeEventListener("scroll", onScroll);

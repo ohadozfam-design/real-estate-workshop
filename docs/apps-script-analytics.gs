@@ -85,41 +85,61 @@ function doPost(e) {
 
 /*** ───────────────────  ANALYTICS (single-row upsert)  ─────────────── ***/
 function handleAnalytics_(data, ss) {
-  var sheet = getOrCreateSheet_(ss, CONFIG.analyticsSheet, ANALYTICS_HEADERS);
-  var sid = String(data.sessionId || "");
+  var sheet = ss.getSheetByName(CONFIG.analyticsSheet);
+  if (!sheet) sheet = ss.insertSheet(CONFIG.analyticsSheet);
 
-  var row = [
-    data.timestampIsrael || toIsraelTime_(data.timestamp), // A arrival time
-    data.device || "", // B
-    (Number(data.seconds) || 0) + "s", // C time on page
-    data.maxScroll || "0%", // D max scroll
-    data.ctaClicked ? "Yes" : "No", // E clicked CTA?
-    data.utm_source || "", // F
-    data.utm_campaign || "", // G
-    data.phone || "", // H
-    data.uid || "", // I lead id
-    sid, // J session id (key)
-  ];
+  // ALWAYS enforce the exact 10-column header row (A1:J1) - this also repairs an
+  // older/misaligned header row so live upserts can find column J reliably.
+  ensureAnalyticsHeaders_(sheet);
+
+  var sid = String(data.sessionId || "");
+  var timeCell = (Number(data.seconds) || 0) + "s"; // column C
+  var scrollCell = data.maxScroll || "0%"; // column D
+  var ctaCell = data.ctaClicked ? "Yes" : "No"; // column E
 
   var rowIndex = sid ? findSessionRow_(sheet, sid) : -1;
 
   if (rowIndex === -1) {
-    sheet.appendRow(row);
+    // First sighting of this session: append the full 10-column row (A..J).
+    sheet.appendRow([
+      data.timestampIsrael || toIsraelTime_(data.timestamp), // A arrival time
+      data.device || "", // B
+      timeCell, // C time on page
+      scrollCell, // D max scroll
+      ctaCell, // E clicked CTA?
+      data.utm_source || "", // F
+      data.utm_campaign || "", // G
+      data.phone || "", // H
+      data.uid || "", // I lead id
+      sid, // J session id (key)
+    ]);
   } else {
-    // Preserve the original arrival timestamp (column A) across updates.
-    var existingA = sheet.getRange(rowIndex, 1).getValue();
-    if (existingA) row[0] = existingA;
-    sheet.getRange(rowIndex, 1, 1, row.length).setValues([row]);
+    // Existing session: update ONLY Time (C), Max Scroll (D), Clicked CTA? (E).
+    // Arrival time (A), device, UTM, phone, lead id and session id are left as-is.
+    sheet.getRange(rowIndex, 3, 1, 3).setValues([[timeCell, scrollCell, ctaCell]]);
   }
 
   ensureSummary_(ss);
 }
 
-/** Return the 1-based row index whose Session ID matches, or -1. */
+/** Write the 10 headers cleanly across A1:J1, undoing any accidental merges. */
+function ensureAnalyticsHeaders_(sheet) {
+  var range = sheet.getRange(1, 1, 1, ANALYTICS_HEADERS.length); // A1:J1
+  try {
+    range.breakApart(); // undo merged cells that would shift the headers
+  } catch (e) {
+    /* nothing merged - fine */
+  }
+  range.setValues([ANALYTICS_HEADERS]);
+  range.setFontWeight("bold");
+  sheet.setFrozenRows(1);
+}
+
+/** Return the 1-based row index whose Session ID (column J) matches, or -1. */
 function findSessionRow_(sheet, sid) {
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return -1;
-  var ids = sheet.getRange(2, SESSION_ID_COL, lastRow - 1, 1).getValues();
+  var ids = sheet.getRange(2, SESSION_ID_COL, lastRow - 1, 1).getValues(); // column 10 = J
   for (var i = 0; i < ids.length; i++) {
     if (String(ids[i][0]) === sid) return i + 2; // +2: header row + 0-index
   }
