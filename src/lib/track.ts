@@ -1,13 +1,15 @@
 // Single-row-per-session analytics.
 //
-// Instead of emitting a row per event, each visitor is ONE row in the Analytics
-// sheet, keyed by a sessionId. The client keeps live session state (max scroll,
-// CTA clicked, elapsed seconds) and sends "upsert" beacons to /api/track-event;
-// the Apps Script updates the matching row (or appends it on first sight).
+// Each visitor is ONE row in the Analytics sheet, keyed by a sessionId. The
+// client keeps live session state (max scroll, CTA clicked, elapsed seconds)
+// and sends "upsert" beacons to /api/track-event; the Apps Script updates the
+// matching row (or appends it on first sight).
 //
-// Sends happen on: initial load, each new scroll milestone, the CTA click, and
-// page exit (visibilitychange -> hidden / pagehide). All via sendBeacon (with a
-// keepalive fetch fallback) so nothing blocks the UI or the checkout redirect.
+// Updates fire on: initial load, every new scroll milestone, the CTA click, a
+// periodic heartbeat (5s, 15s, 30s, 60s, then every 30s), and page exit. We do
+// NOT rely on pagehide/visibilitychange alone (mobile browsers throttle/drop
+// them) - the heartbeat guarantees time-on-page keeps advancing. All sends use
+// sendBeacon (keepalive fetch fallback) so nothing blocks the UI or checkout.
 // No cookies; only device class, UTM tags and ?phone / ?uid lead params.
 
 type Extra = Record<string, string | number | boolean>;
@@ -24,9 +26,12 @@ const MAXSCROLL_KEY = "k2_maxscroll";
 const CTA_KEY = "k2_cta";
 const TRACK_URL = "/api/track-event";
 
-/* ── session-state helpers (persisted in sessionStorage) ─────────────────── */
+/* ── session state (in-memory primary, sessionStorage mirror) ────────────── */
 
-function ss(): Storage | null {
+type SessionState = { id: string; arrival: string; maxScroll: number; cta: boolean };
+let S: SessionState | null = null;
+
+function storage(): Storage | null {
   try {
     return window.sessionStorage;
   } catch {
@@ -36,70 +41,68 @@ function ss(): Storage | null {
 
 function genId(): string {
   try {
-    if (crypto?.randomUUID) return crypto.randomUUID();
+    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
   } catch {
-    /* fall through */
+    /* fall through to the timestamp-random id */
   }
-  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function sessionId(): string {
-  const store = ss();
-  if (!store) return genId();
-  let id = store.getItem(SID_KEY);
-  if (!id) {
-    id = genId();
-    store.setItem(SID_KEY, id);
+/** Lazily build the session state, restoring from sessionStorage when possible. */
+function state(): SessionState {
+  if (S) return S;
+  const store = storage();
+  let id = "";
+  let arrival = "";
+  let maxScroll = 0;
+  let cta = false;
+  try {
+    if (store) {
+      id = store.getItem(SID_KEY) || "";
+      arrival = store.getItem(ARRIVAL_KEY) || "";
+      maxScroll = Number(store.getItem(MAXSCROLL_KEY) || 0) || 0;
+      cta = store.getItem(CTA_KEY) === "1";
+    }
+  } catch {
+    /* storage blocked - fall back to fresh in-memory values */
   }
-  return id;
+  if (!id) id = genId(); // ALWAYS have a non-empty sessionId
+  if (!arrival) arrival = new Date().toISOString();
+  S = { id, arrival, maxScroll, cta };
+  mirror(SID_KEY, id);
+  mirror(ARRIVAL_KEY, arrival);
+  return S;
 }
 
-function arrivalIso(): string {
-  const store = ss();
-  if (!store) return new Date().toISOString();
-  let iso = store.getItem(ARRIVAL_KEY);
-  if (!iso) {
-    iso = new Date().toISOString();
-    store.setItem(ARRIVAL_KEY, iso);
+function mirror(key: string, value: string): void {
+  try {
+    storage()?.setItem(key, value);
+  } catch {
+    /* storage blocked - in-memory state is still authoritative */
   }
-  return iso;
 }
 
 function elapsedSeconds(): number {
-  const started = new Date(arrivalIso()).getTime();
+  const started = new Date(state().arrival).getTime();
   return Math.max(0, Math.round((Date.now() - started) / 1000));
-}
-
-function maxScroll(): number {
-  const store = ss();
-  return store ? Number(store.getItem(MAXSCROLL_KEY) || 0) : 0;
-}
-function setMaxScroll(v: number): void {
-  ss()?.setItem(MAXSCROLL_KEY, String(v));
-}
-
-function ctaClicked(): boolean {
-  return ss()?.getItem(CTA_KEY) === "1";
-}
-function setCtaClicked(): void {
-  ss()?.setItem(CTA_KEY, "1");
 }
 
 function deviceType(): "mobile" | "desktop" {
   return window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
 }
 
-/* ── the single-row session payload + upsert send ───────────────────────── */
+/* ── payload + upsert send ──────────────────────────────────────────────── */
 
 function buildPayload(extra?: Extra) {
+  const s = state();
   const params = new URLSearchParams(window.location.search);
   return {
-    sessionId: sessionId(),
-    timestamp: arrivalIso(), // arrival time (fixed for the session)
+    sessionId: s.id, // the row key - guaranteed non-empty
+    timestamp: s.arrival, // arrival time (fixed for the session)
     device: deviceType(),
     seconds: elapsedSeconds(),
-    maxScroll: `${maxScroll()}%`,
-    ctaClicked: ctaClicked(),
+    maxScroll: `${s.maxScroll}%`,
+    ctaClicked: s.cta,
     utm_source: params.get("utm_source") || "",
     utm_medium: params.get("utm_medium") || "",
     utm_campaign: params.get("utm_campaign") || "",
@@ -144,8 +147,9 @@ function fbqTrack(event: string): void {
 
 /** Checkout CTA click - mark the session and update the row before Stripe. */
 export function trackCtaClick(): void {
-  setCtaClicked();
-  sendSession({ ctaClicked: true });
+  state().cta = true;
+  mirror(CTA_KEY, "1");
+  sendSession();
   fbqTrack("InitiateCheckout");
 }
 
@@ -158,17 +162,14 @@ function scrollMilestone(pct: number): number {
 }
 
 /**
- * Initialize session tracking: create/refresh the session row on load, bump it
- * on each new scroll milestone, and finalize it (latest time + scroll) on exit.
- * Returns a cleanup fn that detaches the listeners.
+ * Initialize session tracking: write the row on load, update it on each new
+ * scroll milestone, on a heartbeat, and on exit. Returns a cleanup fn.
  */
 export function initTracking(): () => void {
   if (typeof window === "undefined") return () => {};
 
-  // Establish the session and write the initial row.
-  sessionId();
-  arrivalIso();
-  sendSession();
+  state(); // establish sessionId + arrival up front
+  sendSession(); // initial upsert (creates the row)
 
   const onScroll = () => {
     const doc = document.documentElement;
@@ -176,24 +177,35 @@ export function initTracking(): () => void {
     const pct =
       scrollable <= 0 ? 100 : Math.min(100, Math.round((window.scrollY / scrollable) * 100));
     const milestone = scrollMilestone(pct);
-    if (milestone > maxScroll()) {
-      setMaxScroll(milestone);
+    if (milestone > state().maxScroll) {
+      state().maxScroll = milestone;
+      mirror(MAXSCROLL_KEY, String(milestone));
       sendSession(); // row now reflects the deeper scroll
     }
   };
 
-  const finalize = () => {
+  const onExit = () => sendSession();
+  const onVisibility = () => {
     if (document.visibilityState === "hidden") sendSession();
   };
-  const onPageHide = () => sendSession();
 
   window.addEventListener("scroll", onScroll, { passive: true });
-  document.addEventListener("visibilitychange", finalize);
-  window.addEventListener("pagehide", onPageHide);
+  document.addEventListener("visibilitychange", onVisibility);
+  window.addEventListener("pagehide", onExit);
+
+  // Heartbeat: keep time-on-page + max scroll flowing even if exit beacons drop.
+  // Only when the tab is visible, to avoid redundant background writes.
+  const beat = () => {
+    if (document.visibilityState === "visible") sendSession();
+  };
+  const timeouts = [5000, 15000].map((ms) => window.setTimeout(beat, ms));
+  const interval = window.setInterval(beat, 30000); // 30s, 60s, 90s, ...
 
   return () => {
     window.removeEventListener("scroll", onScroll);
-    document.removeEventListener("visibilitychange", finalize);
-    window.removeEventListener("pagehide", onPageHide);
+    document.removeEventListener("visibilitychange", onVisibility);
+    window.removeEventListener("pagehide", onExit);
+    timeouts.forEach((t) => window.clearTimeout(t));
+    window.clearInterval(interval);
   };
 }
