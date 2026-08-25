@@ -25,8 +25,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const phone = (body.phone ?? "").trim();
     const email = (body.email ?? "").trim();
 
-    if (name.length < 2 || phone.replace(/\D/g, "").length < 9 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ error: "נא למלא שם מלא, טלפון ואימייל תקינים." });
+    // Name + phone are required; email is optional (validated only when present)
+    // so lighter lead forms (e.g. the exit popup: name + phone only) can post here.
+    if (name.length < 2 || phone.replace(/\D/g, "").length < 9) {
+      return res.status(400).json({ error: "נא למלא שם מלא וטלפון תקין." });
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: "כתובת האימייל אינה תקינה." });
     }
 
     const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;

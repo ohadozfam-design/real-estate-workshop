@@ -127,12 +127,11 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
             const name = String(raw.name ?? "").trim();
             const phone = String(raw.phone ?? "").trim();
             const email = String(raw.email ?? "").trim();
-            if (
-              name.length < 2 ||
-              phone.replace(/\D/g, "").length < 9 ||
-              !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-            ) {
-              return send(400, { error: "נא למלא שם מלא, טלפון ואימייל תקינים." });
+            if (name.length < 2 || phone.replace(/\D/g, "").length < 9) {
+              return send(400, { error: "נא למלא שם מלא וטלפון תקין." });
+            }
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+              return send(400, { error: "כתובת האימייל אינה תקינה." });
             }
             const payload = {
               timestamp: new Date().toISOString(),

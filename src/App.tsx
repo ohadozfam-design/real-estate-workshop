@@ -9,6 +9,7 @@ import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
 import ThankYouModal from "./components/ThankYouModal";
+import ExitPopup from "./components/ExitPopup";
 import { initTracking } from "./lib/track";
 
 export default function App() {
@@ -41,11 +42,11 @@ export default function App() {
         <SectionDivider />
         <CurriculumSection />
         <SectionDivider />
+        <StudentSuccess />
+        <SectionDivider />
         <InstructorSection />
         <SectionDivider />
         <ValueStack />
-        <SectionDivider />
-        <StudentSuccess />
         <SectionDivider />
         <FaqSection />
         <OrderBumpCheckout bumpSelected={bumpSelected} onToggle={setBumpSelected} />
@@ -64,6 +65,7 @@ export default function App() {
 
       <StickyMobileCTA bumpSelected={bumpSelected} />
       <ThankYouModal open={showThankYou} onClose={closeThankYou} />
+      <ExitPopup />
     </div>
   );
 }
