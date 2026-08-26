@@ -48,28 +48,28 @@ export default function HeroSection() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="mx-auto flex max-w-3xl flex-col items-center text-center"
+        className="mx-auto flex max-w-5xl flex-col items-center text-center"
       >
         {/* Badge */}
         <motion.div
           variants={item}
-          className="inline-flex items-center gap-2.5 rounded-full border border-drift/20 bg-cloud/[0.03] px-4 py-2 text-base font-semibold text-drift"
+          className="inline-flex items-center gap-2.5 rounded-full border border-drift/25 bg-cloud/[0.04] px-6 py-2.5 text-lg font-bold text-cloud"
         >
           <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
           </span>
-          סדנה אונליין · יומיים · 4 שעות
+          סדנה אונליין
         </motion.div>
 
-        {/* Centered headline */}
+        {/* Centered headline - stretches across the width on desktop */}
         <motion.h1
           variants={item}
           id="hero-heading"
-          className="mx-auto mt-7 max-w-4xl text-balance text-center font-extrabold leading-[1.03] tracking-tight text-cloud text-[clamp(2.4rem,6.4vw,4.8rem)]"
+          className="mx-auto mt-7 w-full max-w-5xl text-center font-extrabold leading-[1.05] tracking-tight text-cloud text-4xl sm:text-5xl lg:text-6xl"
         >
-          <span className="text-gold">תוך 4 שעות בלייב</span>{" "}
-          תבנה מנוע לאיתור וניתוח שיזרים לך עסקאות נדל״ן בארה״ב בכל חודש
+          <span className="text-gold">ב-4 שעות בלייב</span>, נקים מנוע עסקאות שיסגור
+          לך 2 עסקאות בחודש
         </motion.h1>
 
         {/* Subheadline */}
