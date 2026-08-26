@@ -63,6 +63,23 @@ export default function HeroSection() {
           מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם הצעות קבוע על השולחן.
         </motion.p>
 
+        {/* VSL video - responsive 16:9, click-to-play with controls */}
+        <motion.div
+          variants={item}
+          className="mx-auto mt-9 w-full max-w-3xl overflow-hidden rounded-2xl border border-drift/20 bg-night shadow-card"
+        >
+          <video
+            className="aspect-video h-full w-full"
+            controls
+            playsInline
+            preload="metadata"
+            poster="/vsl/0826-poster.jpg"
+          >
+            <source src="/vsl/0826.mp4" type="video/mp4" />
+            הדפדפן שלך אינו תומך בהצגת וידאו.
+          </video>
+        </motion.div>
+
         {/* Bullets - 2-column grid, top-aligned for longer lines */}
         <motion.ul
           variants={item}
