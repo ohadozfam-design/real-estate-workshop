@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
@@ -21,6 +22,23 @@ const item = {
 };
 
 export default function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [enlarged, setEnlarged] = useState(false);
+
+  useEffect(() => {
+    // Autoplay muted on load (browsers block autoplay with sound), then enlarge
+    // the player 2 seconds later to draw attention.
+    const v = videoRef.current;
+    if (v) {
+      v.muted = true;
+      v.play().catch(() => {
+        /* autoplay may be blocked - controls/poster still available */
+      });
+    }
+    const timer = window.setTimeout(() => setEnlarged(true), 2000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <section
       className="relative overflow-hidden px-5 pb-20 pt-12 sm:pt-20 lg:pb-28"
@@ -63,16 +81,21 @@ export default function HeroSection() {
           מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם הצעות קבוע על השולחן.
         </motion.p>
 
-        {/* VSL video - responsive 16:9, click-to-play with controls */}
+        {/* VSL video - autoplays muted on load, then enlarges after 2s */}
         <motion.div
           variants={item}
-          className="mx-auto mt-9 w-full max-w-3xl overflow-hidden rounded-2xl border border-drift/20 bg-night shadow-card"
+          className={`mx-auto mt-9 w-full overflow-hidden rounded-2xl border border-drift/20 bg-night shadow-card transition-[max-width] duration-700 ease-out ${
+            enlarged ? "max-w-5xl" : "max-w-3xl"
+          }`}
         >
           <video
+            ref={videoRef}
             className="aspect-video h-full w-full"
             controls
+            autoPlay
+            muted
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/vsl/0826-poster.jpg"
           >
             <source src="/vsl/0826.mp4" type="video/mp4" />
