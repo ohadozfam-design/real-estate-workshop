@@ -68,7 +68,7 @@ export default function HeroSection() {
           id="hero-heading"
           className="mx-auto mt-7 w-full max-w-5xl text-center font-extrabold leading-[1.05] tracking-tight text-cloud text-4xl sm:text-5xl lg:text-6xl"
         >
-          <span className="text-gold">ב-4 שעות בלייב</span>, נקים מנוע עסקאות שיסגור
+          <span className="text-gold">ב-4 שעות בלייב</span> נקים מנוע עסקאות שיסגור
           לך 2 עסקאות בחודש
         </motion.h1>
 
