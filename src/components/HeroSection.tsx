@@ -96,9 +96,9 @@ export default function HeroSection() {
             muted
             playsInline
             preload="auto"
-            poster="/vsl/0826-poster.jpg"
+            poster="/vsl/vsl-v2-poster.jpg"
           >
-            <source src="/vsl/0826.mp4" type="video/mp4" />
+            <source src="/vsl/vsl-v2.mp4" type="video/mp4" />
             הדפדפן שלך אינו תומך בהצגת וידאו.
           </video>
         </motion.div>
