@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
+import VslPlayer from "./VslPlayer";
 import { scrollToCheckout } from "../lib/site";
 
 const bullets = [
@@ -22,19 +23,10 @@ const item = {
 };
 
 export default function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [enlarged, setEnlarged] = useState(false);
 
   useEffect(() => {
-    // Autoplay muted on load (browsers block autoplay with sound), then enlarge
-    // the player 2 seconds later to draw attention.
-    const v = videoRef.current;
-    if (v) {
-      v.muted = true;
-      v.play().catch(() => {
-        /* autoplay may be blocked - controls/poster still available */
-      });
-    }
+    // Enlarge the video player 2 seconds after load to draw attention.
     const timer = window.setTimeout(() => setEnlarged(true), 2000);
     return () => window.clearTimeout(timer);
   }, []);
@@ -81,26 +73,15 @@ export default function HeroSection() {
           מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם הצעות קבוע על השולחן.
         </motion.p>
 
-        {/* VSL video - autoplays muted on load, then enlarges after 2s */}
+        {/* VSL player - silent preview loop, click to play full video with sound.
+            Enlarges from max-w-3xl to max-w-5xl 2s after load to draw attention. */}
         <motion.div
           variants={item}
-          className={`mx-auto mt-9 w-full overflow-hidden rounded-2xl border border-drift/20 bg-night shadow-card transition-[max-width] duration-700 ease-out ${
+          className={`mx-auto mt-9 w-full transition-[max-width] duration-700 ease-out ${
             enlarged ? "max-w-5xl" : "max-w-3xl"
           }`}
         >
-          <video
-            ref={videoRef}
-            className="aspect-video h-full w-full"
-            controls
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            poster="/vsl/vsl-v2-poster.jpg"
-          >
-            <source src="/vsl/vsl-v2.mp4" type="video/mp4" />
-            הדפדפן שלך אינו תומך בהצגת וידאו.
-          </video>
+          <VslPlayer />
         </motion.div>
 
         {/* Bullets - 2-column grid, top-aligned for longer lines */}
