@@ -37,24 +37,17 @@ export default function App() {
     <div className="relative min-h-screen">
       <main className="pb-24 lg:pb-0">
         <HeroSection />
-        <SectionDivider />
         <CaseStudies />
-        <SectionDivider />
         <LogisticsSection />
-        <SectionDivider />
         <CurriculumSection />
-        <SectionDivider />
         <StudentSuccess />
-        <SectionDivider />
         <InstructorSection />
-        <SectionDivider />
         <ValueStack />
-        <SectionDivider />
         <FaqSection />
         <OrderBumpCheckout bumpSelected={bumpSelected} onToggle={setBumpSelected} />
       </main>
 
-      <footer className="border-t border-drift/15 px-5 py-10 text-center">
+      <footer className="px-5 py-10 text-center">
         <p className="text-lg font-extrabold tracking-tight text-cloud">
           סדנת מנוע העסקאות ל2 נכסים בחודש
         </p>
@@ -67,14 +60,6 @@ export default function App() {
 
       <StickyMobileCTA bumpSelected={bumpSelected} />
       <ThankYouModal open={showThankYou} onClose={closeThankYou} />
-    </div>
-  );
-}
-
-function SectionDivider() {
-  return (
-    <div className="mx-auto max-w-5xl px-5">
-      <div className="hairline" />
     </div>
   );
 }

@@ -85,7 +85,7 @@ export default function ValueStack() {
       </div>
 
       {/* Price summary - its own distinct, well-separated visual block */}
-      <div className="mx-auto mt-16 max-w-2xl border-t border-drift/12 px-5 pt-16 md:mt-20 md:pt-20">
+      <div className="mx-auto mt-16 max-w-2xl px-5 pt-4 md:mt-20 md:pt-6">
         <Reveal delay={0.1}>
           <div className="rounded-2xl border border-gold/25 bg-cloud/[0.03] p-8 shadow-card sm:p-10">
             <div className="flex items-center justify-between">
