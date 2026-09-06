@@ -175,7 +175,7 @@ async function dispatchToSheet(reg: PaidRegistration): Promise<void> {
         amount: reg.amountTotal,
         currency: reg.currency,
         hasOrderBump: reg.hasOrderBump,
-        tag: "Workshop_Sep2_Buyer",
+        tag: "Workshop_Sep16_Buyer",
       }),
     });
     console.log("[stripe-webhook] buyer dispatched to sheet:", reg.email);

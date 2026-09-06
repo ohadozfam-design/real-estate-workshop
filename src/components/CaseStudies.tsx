@@ -43,7 +43,7 @@ export default function CaseStudies() {
               id="cases-heading"
               className="mx-auto mt-5 max-w-3xl text-balance font-extrabold tracking-tight text-cloud text-[clamp(2rem,4.8vw,3.3rem)]"
             >
-              מה כותבים בוגרי הסדנה הקודמת
+              מה כותבים בוגרי הסדנאות הקודמות
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
               הודעות אמת שקיבלנו מתלמידים אחרי הסדנה. לחצו על תמונה כדי להגדיל.

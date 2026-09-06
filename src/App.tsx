@@ -38,13 +38,13 @@ export default function App() {
       <main className="pb-24 lg:pb-0">
         <HeroSection />
         <SectionDivider />
+        <CaseStudies />
+        <SectionDivider />
         <LogisticsSection />
         <SectionDivider />
         <CurriculumSection />
         <SectionDivider />
         <StudentSuccess />
-        <SectionDivider />
-        <CaseStudies />
         <SectionDivider />
         <InstructorSection />
         <SectionDivider />

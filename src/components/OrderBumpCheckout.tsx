@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ShieldCheck, Lock, AlertCircle, CalendarDays, Users } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
 import { PRICING, SITE } from "../lib/site";
 import { trackCtaClick } from "../lib/track";
-
-type Seats = { soldOut: boolean; remaining: number; total: number };
 
 // Direct WhatsApp question link (972 = Israel; local 0542689675).
 const WHATSAPP_HREF =
@@ -54,15 +52,9 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [showErrors, setShowErrors] = useState(false);
 
-  // Live seat availability (fail-open: null while loading, treated as available).
-  const [seats, setSeats] = useState<Seats | null>(null);
-  useEffect(() => {
-    fetch("/api/seats")
-      .then((r) => r.json())
-      .then((d: Seats) => setSeats(d))
-      .catch(() => {});
-  }, []);
-  const soldOut = seats?.soldOut === true;
+  // Sold-out is driven ONLY by the backend cap (a 403 on checkout) - the UI never
+  // fetches or displays exact seat figures, only an evergreen scarcity badge.
+  const [soldOut, setSoldOut] = useState(false);
 
   function setField(key: keyof Lead, value: string) {
     setLead((prev) => ({ ...prev, [key]: value }));
@@ -111,7 +103,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
       // Read as text first so a non-JSON response (e.g. an HTML SPA fallback that
       // means the /api route wasn't hit) can be logged instead of silently swallowed.
       const rawBody = await res.text();
-      let data: { url?: string; error?: string } = {};
+      let data: { url?: string; error?: string; soldOut?: boolean } = {};
       try {
         data = rawBody ? JSON.parse(rawBody) : {};
       } catch {
@@ -119,6 +111,13 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
           `Non-JSON response from /api/create-checkout-session (status ${res.status}). ` +
             `First bytes: ${rawBody.slice(0, 120)}`
         );
+      }
+
+      // Backend seat cap reached -> switch to the sold-out waitlist (no numbers).
+      if (res.status === 403 || data.soldOut) {
+        setSoldOut(true);
+        setIsSubmitting(false);
+        return;
       }
 
       if (!res.ok || !data.url) {
@@ -196,24 +195,26 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 <span className="text-base font-semibold text-gold/80">(שעון ישראל)</span>
               </div>
 
-              {seats &&
-                (soldOut ? (
-                  <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
-                    <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                    הסדנה בתפוסה מלאה ({seats.total}/{seats.total})
-                  </p>
-                ) : (
-                  <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
-                    <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                    <span className="ltr-nums">{seats.total}</span> מקומות בלבד
-                  </p>
-                ))}
+              {soldOut ? (
+                <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-lg font-extrabold text-coral">
+                  <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
+                  הסדנה בתפוסה מלאה
+                </p>
+              ) : (
+                <p className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5 text-base font-extrabold text-coral sm:text-lg">
+                  <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral opacity-75" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-coral" />
+                  </span>
+                  מספר המקומות מוגבל - נותרו מקומות אחרונים
+                </p>
+              )}
             </div>
           </div>
 
           <div className="p-6 sm:p-8">
             {soldOut ? (
-              <SoldOutWaitlist total={seats?.total ?? 25} />
+              <SoldOutWaitlist />
             ) : (
               <>
                 {/* Itemized value stack - every bonus listed with its own value */}
@@ -435,7 +436,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   );
 }
 
-function SoldOutWaitlist({ total }: { total: number }) {
+function SoldOutWaitlist() {
   const [lead, setLead] = useState<Lead>({ name: "", phone: "", email: "" });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [showErrors, setShowErrors] = useState(false);
@@ -482,7 +483,7 @@ function SoldOutWaitlist({ total }: { total: number }) {
     <div className="text-center">
       <div className="inline-flex items-center gap-2 rounded-full border border-coral/40 bg-coral/10 px-4 py-1.5 text-base font-extrabold text-coral">
         <Users className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-        תפוסה מלאה ({total}/{total})
+        תפוסה מלאה
       </div>
       <h3 className="mt-4 text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
         כל המקומות למחזור הזה נתפסו
