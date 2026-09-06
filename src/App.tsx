@@ -5,6 +5,7 @@ import CurriculumSection from "./components/CurriculumSection";
 import InstructorSection from "./components/InstructorSection";
 import ValueStack from "./components/ValueStack";
 import StudentSuccess from "./components/StudentSuccess";
+import CaseStudies from "./components/CaseStudies";
 import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
@@ -42,6 +43,8 @@ export default function App() {
         <CurriculumSection />
         <SectionDivider />
         <StudentSuccess />
+        <SectionDivider />
+        <CaseStudies />
         <SectionDivider />
         <InstructorSection />
         <SectionDivider />

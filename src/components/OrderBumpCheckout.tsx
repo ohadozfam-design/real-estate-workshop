@@ -167,8 +167,11 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
           </div>
         </div>
 
-        {/* Checkout card */}
-        <div className="overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/15 shadow-card">
+        {/* Checkout card - sticky CTA scroll target (the offer, not the guarantee) */}
+        <div
+          id="pricing"
+          className="scroll-mt-6 overflow-hidden rounded-2xl border border-drift/15 bg-ateneo/15 shadow-card"
+        >
           {/* header */}
           <div className="border-b border-drift/10 px-6 py-7 text-center sm:px-8">
             <span className="text-sm font-bold uppercase tracking-[0.22em] text-gold">

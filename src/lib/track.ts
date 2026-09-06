@@ -24,6 +24,18 @@ const SID_KEY = "k2_sid";
 const ARRIVAL_KEY = "k2_arrival";
 const MAXSCROLL_KEY = "k2_maxscroll";
 const CTA_KEY = "k2_cta";
+// Owner/admin exclusion: a persistent localStorage flag that suppresses ALL
+// analytics for this browser (set once via ?admin=true / ?preview=true).
+const IGNORE_KEY = "k2_ignore_analytics";
+
+/** True when this browser is flagged to be excluded from analytics. */
+function analyticsIgnored(): boolean {
+  try {
+    return window.localStorage.getItem(IGNORE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 const TRACK_URL = "/api/track-event";
 
 /* ── session state (in-memory primary, sessionStorage mirror) ────────────── */
@@ -117,6 +129,7 @@ function buildPayload(extra?: Extra) {
 /** Fire-and-forget upsert. Prefers sendBeacon; falls back to keepalive fetch. */
 function sendSession(extra?: Extra): void {
   if (typeof window === "undefined") return;
+  if (analyticsIgnored()) return; // owner/admin traffic is never recorded
   try {
     const body = JSON.stringify(buildPayload(extra));
     if (navigator.sendBeacon) {
@@ -216,7 +229,22 @@ function scrollMilestone(pct: number): number {
 export function initTracking(): () => void {
   if (typeof window === "undefined") return () => {};
 
+  // Admin/preview exclusion: ?admin=true or ?preview=true permanently flags this
+  // browser so the owner's own visits never inflate the analytics.
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("admin") === "true" || params.get("preview") === "true") {
+      window.localStorage.setItem(IGNORE_KEY, "true");
+    }
+  } catch {
+    /* localStorage unavailable - nothing to persist */
+  }
+
   initMetaPixel(); // fires fbq PageView when VITE_META_PIXEL_ID is configured
+
+  // Excluded browsers send nothing (no session, scroll, time-on-page or CTA).
+  if (analyticsIgnored()) return () => {};
+
   state(); // establish sessionId + arrival up front
   sendSession(); // initial upsert (creates the row)
 

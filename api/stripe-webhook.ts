@@ -103,11 +103,11 @@ export function renderConfirmationEmail(name: string, hasOrderBump: boolean): st
             </td></tr>
             <tr><td style="padding:8px 22px;border-bottom:1px solid rgba(204,213,218,0.12);">
               <div style="font-size:14px;color:#CCD5DA;">מפגש 1</div>
-              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום רביעי, 2 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום רביעי, 16 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
             </td></tr>
             <tr><td style="padding:12px 22px 22px;">
               <div style="font-size:14px;color:#CCD5DA;">מפגש 2</div>
-              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום חמישי, 3 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום חמישי, 17 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
             </td></tr>
           </table>
         </td></tr>
@@ -143,8 +143,8 @@ export function renderConfirmationText(name: string, hasOrderBump: boolean): str
     `מקומך בסדנה שמור ומובטח.`,
     ``,
     `מועדי הסדנה:`,
-    `מפגש 1: יום רביעי, 2 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
-    `מפגש 2: יום חמישי, 3 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
+    `מפגש 1: יום רביעי, 16 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
+    `מפגש 2: יום חמישי, 17 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
     ``,
     `קישור לזום: ${ZOOM_LINK}`,
     ``,

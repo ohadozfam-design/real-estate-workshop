@@ -30,6 +30,25 @@ export default function VslPlayer() {
     });
   }, []);
 
+  // Resume the preview loop if a tab/visibility change paused it (only while the
+  // full VSL hasn't been activated - never override the user's manual pause).
+  useEffect(() => {
+    const resume = () => {
+      const v = videoRef.current;
+      if (v && !active && document.visibilityState === "visible" && v.paused) {
+        v.play().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", resume);
+    window.addEventListener("pageshow", resume);
+    window.addEventListener("focus", resume);
+    return () => {
+      document.removeEventListener("visibilitychange", resume);
+      window.removeEventListener("pageshow", resume);
+      window.removeEventListener("focus", resume);
+    };
+  }, [active]);
+
   const activate = () => {
     if (active) return;
     const v = videoRef.current;
