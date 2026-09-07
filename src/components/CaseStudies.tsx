@@ -34,7 +34,7 @@ export default function CaseStudies() {
   }, [open]);
 
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="cases-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="cases-heading">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="text-center">

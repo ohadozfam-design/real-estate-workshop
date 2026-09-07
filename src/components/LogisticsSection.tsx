@@ -22,7 +22,7 @@ const cells = [
 
 export default function LogisticsSection() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-label="פרטים לוגיסטיים">
+    <section className="px-5 py-16 md:py-24" aria-label="פרטים לוגיסטיים">
       <div className="mx-auto max-w-6xl">
         {/* Editorial detail table - hairline separators, no icon cards */}
         <Reveal>

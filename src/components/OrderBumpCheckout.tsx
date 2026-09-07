@@ -142,7 +142,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
   }
 
   return (
-    <section id="checkout" className="scroll-mt-8 px-5 py-20 lg:py-28" aria-labelledby="checkout-heading">
+    <section id="checkout" className="scroll-mt-8 px-5 py-16 md:py-24" aria-labelledby="checkout-heading">
       <div className="mx-auto max-w-2xl space-y-6">
         {/* Guarantee - relocated here, right above the pricing */}
         <div className="rounded-2xl border border-drift/15 bg-ateneo/25 p-7 sm:p-9">

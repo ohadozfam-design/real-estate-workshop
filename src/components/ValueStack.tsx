@@ -5,28 +5,24 @@ const bonuses = [
   {
     n: 1,
     name: "מחשבון הניתוח המהיר",
-    en: "The 5-Minute Deal Analyzer Sheet",
     desc: "קובץ מוכן לקבלת מחיר הצעה מקסימלי ורווחיות מתוך 4 נתונים.",
     value: 297,
   },
   {
     n: 2,
     name: "תסריטי שיחה ומיילים מול סוכנים",
-    en: "The Investor Authority Scripts",
     desc: "הקובץ המלא, מוכן להעתקה מילה במילה, לשיחות ולמיילים מול סוכנים.",
     value: 197,
   },
   {
     n: 3,
     name: "צ'קליסט תמחור שיפוץ מהיר",
-    en: "The Fast Rehab Estimator Cheat-Sheet",
     desc: "טבלת אצבע להערכת שיפוץ בשטח.",
     value: 197,
   },
   {
     n: 4,
     name: "מדד איתור וניתוח שווקים צומחים",
-    en: "The Top-Market Scorecard",
     desc: "כלי עזר לבחירת שוק מנצח בארה״ב.",
     value: 197,
   },
@@ -34,7 +30,7 @@ const bonuses = [
 
 export default function ValueStack() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="value-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="value-heading">
       <div className="mx-auto max-w-4xl">
         <Reveal>
           <div className="text-center">
@@ -56,20 +52,19 @@ export default function ValueStack() {
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {bonuses.map((b, i) => (
             <Reveal key={b.n} delay={i * 0.06}>
-              <div className="flex h-full flex-col rounded-2xl border border-drift/15 bg-cloud/[0.02] p-6 transition-colors duration-300 hover:border-gold/35">
+              <div className="flex h-full flex-col rounded-2xl border border-drift/25 bg-cloud/[0.04] p-6 transition-colors duration-300 hover:border-gold/35 sm:p-8">
                 <div className="flex items-center justify-between gap-3">
                   <span className="ltr-nums text-sm font-bold uppercase tracking-[0.16em] text-drift">
                     בונוס {String(b.n).padStart(2, "0")}
                   </span>
-                  <span className="ltr-nums rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-base font-extrabold text-gold">
+                  <span className="ltr-nums rounded-full border border-gold/40 bg-gold/15 px-3.5 py-1 text-lg font-extrabold text-gold">
                     שווי ${b.value}
                   </span>
                 </div>
-                <h3 className="mt-4 text-xl font-bold tracking-tight text-cloud">{b.name}</h3>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-gold/70">
-                  {b.en}
-                </p>
-                <p className="mt-3 text-xl leading-relaxed text-drift">{b.desc}</p>
+                <h3 className="mt-4 text-xl font-bold tracking-tight text-cloud md:text-2xl">
+                  {b.name}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-drift md:text-lg">{b.desc}</p>
               </div>
             </Reveal>
           ))}

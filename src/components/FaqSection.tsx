@@ -30,7 +30,7 @@ const faqs = [
 
 export default function FaqSection() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="faq-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="faq-heading">
       <div className="mx-auto max-w-3xl">
         <Reveal>
           <div className="text-center">

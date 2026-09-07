@@ -40,7 +40,7 @@ const days: Day[] = [
 
 export default function CurriculumSection() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="curriculum-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="curriculum-heading">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="text-center">
@@ -62,38 +62,42 @@ export default function CurriculumSection() {
             <Reveal key={day.label}>
               <div>
                 {/* Day header */}
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-drift/15 pb-4">
-                  <h3 className="text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-drift/15 pb-5">
+                  <span className="inline-flex items-center rounded-full bg-gold/15 px-5 py-2 text-xl font-extrabold text-gold sm:text-2xl">
                     {day.label}
-                  </h3>
-                  <span className="text-lg font-bold text-gold">· {day.date}</span>
+                  </span>
+                  <span className="text-xl font-bold text-cloud/80 sm:text-2xl">{day.date}</span>
                 </div>
 
                 {/* Day theme + live points */}
-                <div className="pt-7">
-                  <h4 className="text-2xl font-bold tracking-tight text-cloud sm:text-[1.75rem]">
+                <div className="pt-8">
+                  <h4 className="text-3xl font-extrabold tracking-tight text-cloud md:text-4xl">
                     {day.title}
                   </h4>
 
-                  <ul className="mt-6 space-y-4">
+                  <ul className="mt-7 space-y-5">
                     {day.points.map((p) => (
-                      <li key={p} className="flex items-start gap-3.5">
+                      <li key={p} className="flex items-start gap-4">
                         <CheckCircle2
-                          className="mt-0.5 h-6 w-6 shrink-0 text-emerald-400"
-                          strokeWidth={2.3}
+                          className="mt-0.5 h-8 w-8 shrink-0 text-emerald-400"
+                          strokeWidth={2.4}
                           aria-hidden="true"
                         />
-                        <span className="text-lg leading-relaxed text-cloud/90 sm:text-xl">{p}</span>
+                        <span className="text-lg font-medium leading-relaxed text-cloud md:text-xl">
+                          {p}
+                        </span>
                       </li>
                     ))}
                   </ul>
 
                   {/* Outcome */}
-                  <div className="mt-8 border-r-2 border-gold/60 pr-4">
-                    <div className="text-sm font-bold uppercase tracking-wider text-gold">
+                  <div className="mt-9 border-r-4 border-gold/60 pr-5">
+                    <div className="text-base font-bold uppercase tracking-wider text-gold">
                       התוצאה שתצא איתה
                     </div>
-                    <p className="mt-1.5 text-xl leading-relaxed text-cloud/90">{day.outcome}</p>
+                    <p className="mt-2 text-xl font-medium leading-relaxed text-cloud md:text-2xl">
+                      {day.outcome}
+                    </p>
                   </div>
                 </div>
               </div>

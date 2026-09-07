@@ -33,7 +33,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative overflow-hidden px-5 pb-20 pt-12 sm:pt-20 lg:pb-28"
+      className="relative overflow-hidden px-5 pb-16 pt-12 sm:pt-16 md:pb-24"
       aria-labelledby="hero-heading"
     >
       <motion.div
@@ -92,10 +92,10 @@ export default function HeroSection() {
           {bullets.map((b) => (
             <li
               key={b}
-              className="flex items-start gap-3 rounded-xl border border-drift/12 bg-cloud/[0.02] px-4 py-4 text-right text-lg font-semibold leading-relaxed text-cloud"
+              className="flex items-start gap-3.5 rounded-2xl border border-drift/25 bg-cloud/[0.04] p-6 text-right text-lg font-semibold leading-relaxed text-cloud md:text-xl"
             >
               <CheckCircle2
-                className="mt-0.5 h-7 w-7 shrink-0 text-emerald-400"
+                className="mt-0.5 h-8 w-8 shrink-0 text-emerald-400"
                 strokeWidth={2.4}
                 aria-hidden="true"
               />

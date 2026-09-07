@@ -8,10 +8,6 @@ const story: { label: string; body: string }[] = [
     label: "המסע והנוכחות בשטח",
     body: "אוהד הוא יזם נדל״ן שחי את השטח בארה״ב, בעיקר בשווקים של אוהיו ואינדיאנה. לא גורו של שקפים ותיאוריות, אלא יזם שמנהל עסקאות מורכבות מקצה לקצה: מאיתור נכסים מתחת למחיר השוק (Off Market), דרך ניהול שיפוצים (Rehab) ועסקאות BRRRR, ועד השבחה, השכרה והחזקת פורטפוליו.",
   },
-  {
-    label: "השיטה המעשית · Zero Fluff",
-    body: "כל מה שתלמד נבנה מתוך הפרקטיקה היומיומית: שיחות אמיתיות מול ברוקרים, סוכנים, קבלנים וחברות טייטל. הסדנה מנגישה בדיוק את התהליך הזה, איך לדבר בשפה של השוק, לנתח עסקה תוך 5 דקות, ולהגיש הצעה בביטחון, בלי להיתקע בפחדים ובלי תוכנות יקרות.",
-  },
 ];
 
 const track: { icon: LucideIcon; text: string }[] = [
@@ -28,7 +24,7 @@ const stats: { value: string; label: string }[] = [
 
 export default function InstructorSection() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="instructor-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="instructor-heading">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div>
@@ -50,7 +46,7 @@ export default function InstructorSection() {
                 <div className="ltr-nums font-extrabold tracking-tight text-gold text-[clamp(2.5rem,7vw,4.5rem)]">
                   {s.value}
                 </div>
-                <div className="mx-auto mt-1.5 max-w-[10rem] text-base font-semibold leading-snug text-drift sm:text-lg">
+                <div className="mx-auto mt-1.5 max-w-[11rem] text-lg font-semibold leading-snug text-drift sm:text-xl">
                   {s.label}
                 </div>
               </div>
@@ -64,9 +60,9 @@ export default function InstructorSection() {
             <div className="md:sticky md:top-8">
               <InstructorPortrait />
               <div className="mt-5">
-                <h3 className="text-3xl font-extrabold tracking-tight text-cloud">אוהד עוז</h3>
-                <p className="ltr-nums mt-0.5 text-base font-semibold text-drift">Ohad Ozalvo</p>
-                <p className="mt-4 text-xl leading-relaxed text-drift">
+                <h3 className="text-3xl font-extrabold tracking-tight text-cloud md:text-4xl">אוהד עוז</h3>
+                <p className="ltr-nums mt-1 text-lg font-semibold text-drift">Ohad Ozalvo</p>
+                <p className="mt-4 text-xl leading-relaxed text-drift md:text-2xl">
                   יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים.
                 </p>
               </div>
@@ -78,11 +74,11 @@ export default function InstructorSection() {
             <div className="divide-y divide-drift/12 border-y border-drift/12">
               {story.map((block, i) => (
                 <Reveal key={block.label} delay={i * 0.06}>
-                  <article className="py-7">
-                    <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
+                  <article className="py-8">
+                    <div className="text-base font-bold uppercase tracking-[0.18em] text-gold">
                       {block.label}
                     </div>
-                    <p className="mt-3 text-xl leading-relaxed text-cloud/90">{block.body}</p>
+                    <p className="mt-3 text-xl leading-relaxed text-cloud md:text-2xl">{block.body}</p>
                   </article>
                 </Reveal>
               ))}
@@ -90,17 +86,17 @@ export default function InstructorSection() {
 
             <Reveal delay={0.12}>
               <div className="mt-8">
-                <div className="text-sm font-bold uppercase tracking-[0.18em] text-gold">
+                <div className="text-base font-bold uppercase tracking-[0.18em] text-gold">
                   ההוכחה בשטח
                 </div>
                 <ul className="mt-4 space-y-px overflow-hidden rounded-xl bg-drift/15">
                   {track.map((item) => (
                     <li
                       key={item.text}
-                      className="flex items-center gap-3.5 bg-night px-4 py-3.5"
+                      className="flex items-center gap-4 bg-night px-5 py-4"
                     >
-                      <item.icon className="h-[18px] w-[18px] shrink-0 text-gold" strokeWidth={2} aria-hidden="true" />
-                      <span className="text-xl leading-relaxed text-cloud/90">{item.text}</span>
+                      <item.icon className="h-6 w-6 shrink-0 text-gold" strokeWidth={2} aria-hidden="true" />
+                      <span className="text-lg leading-relaxed text-cloud md:text-xl">{item.text}</span>
                     </li>
                   ))}
                 </ul>

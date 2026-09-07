@@ -43,7 +43,7 @@ const stories: Story[] = [
 
 export default function StudentSuccess() {
   return (
-    <section className="px-5 py-20 lg:py-28" aria-labelledby="success-heading">
+    <section className="px-5 py-16 md:py-24" aria-labelledby="success-heading">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="text-center">
