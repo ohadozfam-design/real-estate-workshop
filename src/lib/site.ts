@@ -3,14 +3,14 @@
 
 export const SITE = {
   // Two concentrated days, two live hours each (18:00 to 20:00 Israel time).
-  // Two concentrated days: 27 September (day 1) and 29 September (day 2), 2026.
-  eventDates: "27 & 29 בספטמבר",
+  // Two concentrated days: 29 September (day 1) and 30 September (day 2), 2026.
+  eventDates: "29 & 30 בספטמבר",
   eventHours: "18:00 עד 20:00 (שעון ישראל)",
-  eventDatesFull: "27 & 29 בספטמבר · 18:00 עד 20:00 (שעון ישראל)",
+  eventDatesFull: "29 & 30 בספטמבר · 18:00 עד 20:00 (שעון ישראל)",
   eventFormat: "יומיים מרוכזים · שעתיים בכל יום בלייב בזום",
   eventFormatShort: "יומיים בלייב בזום · שעתיים בכל יום",
-  day1: { date: "27 בספטמבר", label: "יום ראשון" },
-  day2: { date: "29 בספטמבר", label: "יום שלישי" },
+  day1: { date: "29 בספטמבר", label: "יום שלישי" },
+  day2: { date: "30 בספטמבר", label: "יום רביעי" },
   checkoutHref: "#pricing",
 } as const;
 
