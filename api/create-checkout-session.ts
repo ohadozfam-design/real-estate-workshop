@@ -122,7 +122,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Capture the lead's contact details on the session.
       ...(email ? { customer_email: email } : {}),
       metadata: { name, phone, email, hasOrderBump: String(hasOrderBump), workshop: WORKSHOP_ID },
-      success_url: `${origin}/?checkout=success`,
+      success_url: `${origin}/thank-you`,
       cancel_url: `${origin}/?checkout=cancel`,
     });
 

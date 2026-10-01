@@ -9,29 +9,30 @@ import CaseStudies from "./components/CaseStudies";
 import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
-import ThankYouModal from "./components/ThankYouModal";
+import ThankYouPage from "./components/ThankYouPage";
 import { initTracking } from "./lib/track";
+
+// Stripe's success_url redirects to /thank-you. We also accept the legacy
+// ?checkout=success query param so older/cached checkout links keep working.
+function isThankYouRoute() {
+  if (typeof window === "undefined") return false;
+  const path = window.location.pathname.replace(/\/+$/, "");
+  if (path === "/thank-you") return true;
+  return new URLSearchParams(window.location.search).get("checkout") === "success";
+}
 
 export default function App() {
   const [bumpSelected, setBumpSelected] = useState(false);
-  const [showThankYou, setShowThankYou] = useState(false);
+  const [thankYou] = useState(isThankYouRoute);
 
   // Analytics: page_view (once/session) + scroll-depth and time-on-page listeners.
+  // Skip on the thank-you page so post-purchase visits don't skew landing metrics.
   useEffect(() => {
+    if (thankYou) return;
     return initTracking();
-  }, []);
+  }, [thankYou]);
 
-  // Detect the post-payment redirect (?checkout=success) on load.
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("checkout") === "success") setShowThankYou(true);
-  }, []);
-
-  function closeThankYou() {
-    setShowThankYou(false);
-    // Clean the query param from the URL without a reload.
-    window.history.replaceState({}, "", window.location.pathname);
-  }
+  if (thankYou) return <ThankYouPage />;
 
   return (
     <div className="relative min-h-screen">
@@ -59,7 +60,6 @@ export default function App() {
       </footer>
 
       <StickyMobileCTA bumpSelected={bumpSelected} />
-      <ThankYouModal open={showThankYou} onClose={closeThankYou} />
     </div>
   );
 }
