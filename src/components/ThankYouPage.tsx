@@ -36,19 +36,19 @@ export default function ThankYouPage() {
             התשלום התקבל וההרשמה שלך לסדנה אושרה!
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-drift sm:text-xl">
-            שמחים שהצטרפת. כל פרטי ההתחברות לסדנה כבר בדרך אליך למייל — רוב
+            שמחים שהצטרפת. כל פרטי ההתחברות לסדנה כבר בדרך אליך למייל, ורוב
             הפרטים שתצטרך נמצאים כאן למטה.
           </p>
         </div>
 
-        {/* What happens next — the email timeline */}
+        {/* What happens next - the email timeline */}
         <div className="mt-12 rounded-2xl border border-drift/15 bg-cloud/[0.04] p-6 sm:p-8">
           <h2 className="text-2xl font-extrabold tracking-tight text-cloud sm:text-3xl">
             מה קורה עכשיו?
           </h2>
 
           <ol className="mt-6 space-y-6">
-            {/* Step 1 — immediate confirmation email */}
+            {/* Step 1 - immediate confirmation email */}
             <li className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/15">
                 <Mail className="h-6 w-6 text-gold" strokeWidth={2.2} aria-hidden="true" />
@@ -56,7 +56,7 @@ export default function ThankYouPage() {
               <div>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="text-lg font-extrabold text-cloud sm:text-xl">
-                    מייל האישור — תוך דקות ספורות
+                    מייל האישור: תוך דקות ספורות
                   </span>
                   <span className="rounded-full bg-gold/15 px-3 py-0.5 text-sm font-bold text-gold">
                     אוטומטי
@@ -70,7 +70,7 @@ export default function ThankYouPage() {
               </div>
             </li>
 
-            {/* Step 2 — check spam */}
+            {/* Step 2 - check spam */}
             <li className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/15">
                 <Inbox className="h-6 w-6 text-gold" strokeWidth={2.2} aria-hidden="true" />
@@ -88,14 +88,14 @@ export default function ThankYouPage() {
               </div>
             </li>
 
-            {/* Step 3 — day of the workshop */}
+            {/* Step 3 - day of the workshop */}
             <li className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/15">
                 <Video className="h-6 w-6 text-gold" strokeWidth={2.2} aria-hidden="true" />
               </div>
               <div>
                 <span className="text-lg font-extrabold text-cloud sm:text-xl">
-                  ביום הסדנה — נכנסים דרך אותו קישור
+                  ביום הסדנה: נכנסים דרך אותו קישור
                 </span>
                 <p className="mt-1.5 text-base leading-relaxed text-drift sm:text-lg">
                   בכל אחד משני המפגשים מתחברים לזום דרך הקישור שבמייל האישור, מכל
@@ -138,7 +138,7 @@ export default function ThankYouPage() {
 
           <p className="mt-5 text-base leading-relaxed text-drift sm:text-lg">
             טיפ: הוסף את שני המועדים ליומן עכשיו כדי לא לפספס, ושמור את מייל האישור
-            בהישג יד — הקישור לזום נמצא בו.
+            בהישג יד, הקישור לזום נמצא בו.
           </p>
         </div>
 
