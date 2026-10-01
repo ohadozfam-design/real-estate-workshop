@@ -17,3 +17,6 @@ photos/
 # Design reference screenshots (working material, not app assets)
 exemples/
 examples/
+.vercel
+.env*
+!.env.example

@@ -176,9 +176,15 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
 
             const { hasOrderBump, name = "", phone = "", email = "" } = await readJson();
             const origin = (req.headers.origin as string) || "http://localhost:5173";
+            const lineItems = buildLineItems(Boolean(hasOrderBump));
+            const value =
+              lineItems.reduce(
+                (sum, i) => sum + (i.price_data?.unit_amount ?? 0) * (i.quantity ?? 1),
+                0
+              ) / 100;
             const session = await stripe.checkout.sessions.create({
               mode: "payment",
-              line_items: buildLineItems(Boolean(hasOrderBump)),
+              line_items: lineItems,
               ...(email ? { customer_email: String(email).trim() } : {}),
               metadata: {
                 name: String(name).trim(),
@@ -187,7 +193,7 @@ function apiDevMiddleware(env: Record<string, string>): Plugin {
                 hasOrderBump: String(Boolean(hasOrderBump)),
                 workshop: WORKSHOP_ID,
               },
-              success_url: `${origin}/thank-you`,
+              success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}&value=${value}&currency=USD`,
               cancel_url: `${origin}/?checkout=cancel`,
             });
             return send(200, { url: session.url });

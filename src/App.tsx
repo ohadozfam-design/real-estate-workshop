@@ -10,7 +10,7 @@ import FaqSection from "./components/FaqSection";
 import OrderBumpCheckout from "./components/OrderBumpCheckout";
 import StickyMobileCTA from "./components/StickyMobileCTA";
 import ThankYouPage from "./components/ThankYouPage";
-import { initTracking } from "./lib/track";
+import { initTracking, trackPurchase } from "./lib/track";
 
 // Stripe's success_url redirects to /thank-you. We also accept the legacy
 // ?checkout=success query param so older/cached checkout links keep working.
@@ -26,9 +26,13 @@ export default function App() {
   const [thankYou] = useState(isThankYouRoute);
 
   // Analytics: page_view (once/session) + scroll-depth and time-on-page listeners.
-  // Skip on the thank-you page so post-purchase visits don't skew landing metrics.
+  // The thank-you page skips session analytics (so post-purchase visits don't
+  // skew landing metrics) and only fires the Meta Pixel Purchase event.
   useEffect(() => {
-    if (thankYou) return;
+    if (thankYou) {
+      trackPurchase();
+      return;
+    }
     return initTracking();
   }, [thankYou]);
 

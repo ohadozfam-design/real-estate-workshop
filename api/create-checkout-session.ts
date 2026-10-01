@@ -68,6 +68,32 @@ function buildLineItems(hasOrderBump: boolean): Stripe.Checkout.SessionCreatePar
   return items;
 }
 
+/** Read one cookie from the raw Cookie header. */
+function readCookie(req: VercelRequest, name: string): string {
+  const header = req.headers.cookie || "";
+  for (const part of header.split(";")) {
+    const [k, ...v] = part.trim().split("=");
+    if (k === name) return decodeURIComponent(v.join("="));
+  }
+  return "";
+}
+
+/**
+ * Meta Conversions API match signals, captured here because the later
+ * stripe-webhook request comes from Stripe and has no browser context.
+ * Stored in session metadata (Stripe caps values at 500 chars).
+ */
+function metaSignals(req: VercelRequest): Record<string, string> {
+  const fwd = req.headers["x-forwarded-for"];
+  const ip = (Array.isArray(fwd) ? fwd[0] : fwd || "").split(",")[0].trim();
+  return {
+    fbp: readCookie(req, "_fbp").slice(0, 500),
+    fbc: readCookie(req, "_fbc").slice(0, 500),
+    client_ip: ip.slice(0, 500),
+    client_ua: String(req.headers["user-agent"] || "").slice(0, 500),
+  };
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS - set before anything else so even errors/preflight carry the headers.
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -116,13 +142,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       (req.headers.origin as string | undefined) ??
       (req.headers.host ? `https://${req.headers.host}` : "");
 
+    const lineItems = buildLineItems(hasOrderBump);
+    const value =
+      lineItems.reduce((sum, i) => sum + (i.price_data?.unit_amount ?? 0) * (i.quantity ?? 1), 0) / 100;
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: buildLineItems(hasOrderBump),
+      line_items: lineItems,
       // Capture the lead's contact details on the session.
       ...(email ? { customer_email: email } : {}),
-      metadata: { name, phone, email, hasOrderBump: String(hasOrderBump), workshop: WORKSHOP_ID },
-      success_url: `${origin}/thank-you`,
+      metadata: {
+        name,
+        phone,
+        email,
+        hasOrderBump: String(hasOrderBump),
+        workshop: WORKSHOP_ID,
+        ...metaSignals(req),
+      },
+      // {CHECKOUT_SESSION_ID} is filled in by Stripe; the thank-you page uses it
+      // as the Pixel Purchase eventID (deduped against the webhook's CAPI event).
+      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}&value=${value}&currency=USD`,
       cancel_url: `${origin}/?checkout=cancel`,
     });
 

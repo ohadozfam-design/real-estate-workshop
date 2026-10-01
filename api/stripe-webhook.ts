@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { Resend } from "resend";
+import { createHash } from "crypto";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 // ── Fulfillment configuration (server-side env only) ──────────────────────────
@@ -10,6 +11,13 @@ const ZOOM_LINK = process.env.ZOOM_LINK || "https://zoom.us/";
 // Google Sheet / CRM webhook + admin sales alert (both optional).
 const GOOGLE_SHEET_WEBHOOK_URL = process.env.GOOGLE_SHEET_WEBHOOK_URL;
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL;
+// Meta Conversions API (server-side Purchase). Skipped cleanly if unset.
+// The pixel id is shared with the client build (VITE_META_PIXEL_ID).
+const META_PIXEL_ID = process.env.META_PIXEL_ID || process.env.VITE_META_PIXEL_ID;
+const META_CAPI_ACCESS_TOKEN = process.env.META_CAPI_ACCESS_TOKEN;
+// Optional: routes events to Events Manager → Test events while verifying.
+const META_TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE;
+const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v23.0";
 
 /**
  * Stripe webhook (Vercel Node serverless function) - fully self-contained.
@@ -49,6 +57,13 @@ type PaidRegistration = {
   hasOrderBump: boolean;
   amountTotal: number | null; // smallest currency unit (e.g. cents)
   currency: string | null;
+  paid: boolean;
+  // Meta CAPI match signals captured at checkout creation (see metaSignals).
+  fbp: string;
+  fbc: string;
+  clientIp: string;
+  clientUa: string;
+  sourceUrl: string;
 };
 
 /** Minimal HTML-escape for values interpolated into the email. */
@@ -242,13 +257,95 @@ async function notifyAdmin(reg: PaidRegistration): Promise<void> {
   }
 }
 
+/** SHA-256 hex, as Meta requires for customer information parameters. */
+function sha256(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+/** Digits with country code. Bare local numbers are assumed Israeli (05x) or US (10 digits). */
+function normalizePhone(raw: string): string {
+  let d = raw.replace(/\D/g, "");
+  if (d.startsWith("00")) d = d.slice(2);
+  if (d.startsWith("0")) d = `972${d.slice(1)}`;
+  else if (d.length === 9 && d.startsWith("5")) d = `972${d}`;
+  else if (d.length === 10) d = `1${d}`;
+  return d;
+}
+
+/**
+ * Server-side Purchase via the Meta Conversions API. event_id is the Checkout
+ * Session id - the same eventID the thank-you page pixel uses - so Meta counts
+ * the purchase once even when both the browser and server events arrive.
+ */
+async function sendMetaPurchase(reg: PaidRegistration): Promise<void> {
+  if (!META_PIXEL_ID || !META_CAPI_ACCESS_TOKEN) {
+    console.warn("[stripe-webhook] META_PIXEL_ID / META_CAPI_ACCESS_TOKEN not set - skipping CAPI.");
+    return;
+  }
+  if (!reg.paid) {
+    console.log("[stripe-webhook] session not paid yet - skipping CAPI Purchase:", reg.sessionId);
+    return;
+  }
+
+  const user_data: Record<string, string | string[]> = {};
+  if (reg.email) user_data.em = [sha256(reg.email.trim().toLowerCase())];
+  const phone = normalizePhone(reg.phone);
+  if (phone) user_data.ph = [sha256(phone)];
+  const [first, ...rest] = reg.name.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (first) user_data.fn = [sha256(first)];
+  if (rest.length) user_data.ln = [sha256(rest.join(" "))];
+  if (reg.fbp) user_data.fbp = reg.fbp;
+  if (reg.fbc) user_data.fbc = reg.fbc;
+  if (reg.clientIp) user_data.client_ip_address = reg.clientIp;
+  if (reg.clientUa) user_data.client_user_agent = reg.clientUa;
+
+  const event = {
+    event_name: "Purchase",
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: reg.sessionId,
+    // "website" events require the browser user agent; fall back if missing.
+    action_source: reg.clientUa ? "website" : "system_generated",
+    ...(reg.sourceUrl ? { event_source_url: reg.sourceUrl } : {}),
+    user_data,
+    custom_data: {
+      currency: (reg.currency || "usd").toUpperCase(),
+      value: reg.amountTotal != null ? reg.amountTotal / 100 : 0,
+      content_name: "סדנת מנוע העסקאות ל2 נכסים בחודש",
+      content_type: "product",
+    },
+  };
+
+  try {
+    const r = await fetch(`https://graph.facebook.com/${META_GRAPH_VERSION}/${META_PIXEL_ID}/events`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: [event],
+        access_token: META_CAPI_ACCESS_TOKEN,
+        ...(META_TEST_EVENT_CODE ? { test_event_code: META_TEST_EVENT_CODE } : {}),
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    const body = await r.json().catch(() => ({}));
+    if (!r.ok) console.error("[stripe-webhook] CAPI Purchase rejected:", r.status, JSON.stringify(body));
+    else console.log("[stripe-webhook] CAPI Purchase sent:", reg.sessionId, JSON.stringify(body));
+  } catch (err) {
+    console.error("[stripe-webhook] CAPI Purchase failed:", err instanceof Error ? err.message : err);
+  }
+}
+
 /**
  * Fulfill a paid registration. Each step is independent and non-blocking so a
  * failure in one (e.g. sheet down) never stops the others or fails the webhook.
  */
 async function handlePaidRegistration(reg: PaidRegistration): Promise<void> {
   console.log("[stripe-webhook] paid registration:", reg);
-  await Promise.allSettled([dispatchToSheet(reg), sendBuyerEmail(reg), notifyAdmin(reg)]);
+  await Promise.allSettled([
+    dispatchToSheet(reg),
+    sendBuyerEmail(reg),
+    notifyAdmin(reg),
+    sendMetaPurchase(reg),
+  ]);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -294,6 +391,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         hasOrderBump: md.hasOrderBump === "true",
         amountTotal: session.amount_total ?? null,
         currency: session.currency ?? null,
+        paid: session.payment_status === "paid",
+        fbp: md.fbp ?? "",
+        fbc: md.fbc ?? "",
+        clientIp: md.client_ip ?? "",
+        clientUa: md.client_ua ?? "",
+        sourceUrl: (session.success_url || "").split("?")[0],
       };
 
       await handlePaidRegistration(reg);

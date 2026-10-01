@@ -206,6 +206,44 @@ function fbqTrack(event: string): void {
 
 /* ── public API ─────────────────────────────────────────────────────────── */
 
+/**
+ * Thank-you page: load the pixel (PageView) and fire Purchase once per Stripe
+ * Checkout Session. eventID = the session id, which the stripe-webhook also
+ * sends as event_id to the Conversions API, so Meta deduplicates the two.
+ * Without a cs_ session id (direct visit, legacy link) no Purchase is fired.
+ */
+export function trackPurchase(): void {
+  if (typeof window === "undefined") return;
+  initMetaPixel();
+
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id") || "";
+  if (!sessionId.startsWith("cs_")) return;
+
+  const firedKey = `k2_purchase_${sessionId}`;
+  try {
+    if (window.localStorage.getItem(firedKey)) return; // refresh / back-nav
+  } catch {
+    /* storage blocked - Meta still dedupes on eventID */
+  }
+
+  const value = Number(params.get("value")) || 0;
+  const currency = (params.get("currency") || "USD").toUpperCase();
+  try {
+    window.fbq?.("track", "Purchase", { value, currency }, { eventID: sessionId });
+  } catch {
+    /* pixel not present */
+  }
+
+  try {
+    window.localStorage.setItem(firedKey, "1");
+  } catch {
+    /* ignore */
+  }
+  // Drop the session id from the address bar so it isn't shared/bookmarked.
+  window.history.replaceState(null, "", window.location.pathname);
+}
+
 /** Checkout CTA click - mark the session and update the row before Stripe. */
 export function trackCtaClick(): void {
   state().cta = true;
