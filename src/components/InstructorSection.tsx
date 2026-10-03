@@ -2,6 +2,7 @@ import { useState } from "react";
 import { HardHat, Handshake, Mic } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import Sentences from "./ui/Sentences";
 
 const story: { label: string; body: string }[] = [
   {
@@ -63,7 +64,7 @@ export default function InstructorSection() {
                 <h3 className="text-3xl font-extrabold tracking-tight text-cloud md:text-4xl">אוהד עוז</h3>
                 <p className="ltr-nums mt-1 text-lg font-semibold text-drift">Ohad Ozalvo</p>
                 <p className="mt-4 text-xl leading-relaxed text-drift md:text-2xl">
-                  יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים.
+                  <Sentences text="יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים." />
                 </p>
               </div>
             </div>
@@ -78,7 +79,9 @@ export default function InstructorSection() {
                     <div className="text-base font-bold uppercase tracking-[0.18em] text-gold">
                       {block.label}
                     </div>
-                    <p className="mt-3 text-xl leading-relaxed text-cloud md:text-2xl">{block.body}</p>
+                    <p className="mt-3 text-xl leading-relaxed text-cloud md:text-2xl">
+                      <Sentences text={block.body} />
+                    </p>
                   </article>
                 </Reveal>
               ))}

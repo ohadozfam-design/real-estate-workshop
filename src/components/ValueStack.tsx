@@ -1,30 +1,35 @@
+import { Calculator, ClipboardCheck, MessagesSquare, TrendingUp, type LucideIcon } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import { PRICING } from "../lib/site";
 
-const bonuses = [
+const bonuses: { n: number; name: string; desc: string; value: number; Icon: LucideIcon }[] = [
   {
     n: 1,
     name: "מחשבון הניתוח המהיר",
     desc: "קובץ מוכן לקבלת מחיר הצעה מקסימלי ורווחיות מתוך 4 נתונים.",
     value: 297,
+    Icon: Calculator,
   },
   {
     n: 2,
     name: "תסריטי שיחה ומיילים מול סוכנים",
     desc: "הקובץ המלא, מוכן להעתקה מילה במילה, לשיחות ולמיילים מול סוכנים.",
     value: 197,
+    Icon: MessagesSquare,
   },
   {
     n: 3,
     name: "צ'קליסט תמחור שיפוץ מהיר",
     desc: "טבלת אצבע להערכת שיפוץ בשטח.",
     value: 197,
+    Icon: ClipboardCheck,
   },
   {
     n: 4,
     name: "מדד איתור וניתוח שווקים צומחים",
     desc: "כלי עזר לבחירת שוק מנצח בארה״ב.",
     value: 197,
+    Icon: TrendingUp,
   },
 ];
 
@@ -53,15 +58,18 @@ export default function ValueStack() {
           {bonuses.map((b, i) => (
             <Reveal key={b.n} delay={i * 0.06}>
               <div className="flex h-full flex-col rounded-2xl border border-drift/25 bg-cloud/[0.04] p-6 transition-colors duration-300 hover:border-gold/35 sm:p-8">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="ltr-nums text-sm font-bold uppercase tracking-[0.16em] text-drift">
-                    בונוס {String(b.n).padStart(2, "0")}
+                <div className="flex items-start justify-between gap-3">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold/15 ring-1 ring-gold/30">
+                    <b.Icon className="h-7 w-7 text-gold" strokeWidth={2} aria-hidden="true" />
                   </span>
-                  <span className="ltr-nums rounded-full border border-gold/40 bg-gold/15 px-3.5 py-1 text-lg font-extrabold text-gold">
-                    שווי ${b.value}
+                  <span className="whitespace-nowrap rounded-full bg-gold px-4 py-1.5 text-base font-extrabold text-night shadow-sm sm:text-lg">
+                    שווי <span className="ltr-nums">${b.value}</span>
                   </span>
                 </div>
-                <h3 className="mt-4 text-xl font-bold tracking-tight text-cloud md:text-2xl">
+                <span className="mt-5 text-sm font-bold uppercase tracking-[0.16em] text-drift">
+                  בונוס <span className="ltr-nums">{String(b.n).padStart(2, "0")}</span>
+                </span>
+                <h3 className="mt-1.5 text-xl font-bold tracking-tight text-cloud md:text-2xl">
                   {b.name}
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-drift md:text-lg">{b.desc}</p>

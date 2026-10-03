@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import Sentences from "./ui/Sentences";
 
 const faqs = [
   {
@@ -56,7 +57,9 @@ export default function FaqSection() {
                     aria-hidden="true"
                   />
                 </summary>
-                <p className="pb-5 text-lg leading-relaxed text-drift">{f.a}</p>
+                <p className="pb-5 text-lg leading-relaxed text-drift">
+                  <Sentences text={f.a} />
+                </p>
               </details>
             ))}
           </div>

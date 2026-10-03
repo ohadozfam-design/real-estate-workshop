@@ -9,6 +9,9 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { SITE } from "../lib/site";
+import EventTicket from "./EventTicket";
+
+const WHATSAPP_GROUP_URL = "https://tinyurl.com/mesahkimnadlan";
 
 /**
  * Dedicated post-payment thank-you page. Stripe's success_url redirects here
@@ -40,6 +43,21 @@ export default function ThankYouPage() {
             הפרטים שתצטרך נמצאים כאן למטה.
           </p>
         </div>
+
+        <EventTicket />
+
+        {/* WhatsApp group - the primary next action after purchase */}
+        <a
+          href={WHATSAPP_GROUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="focus-ring mt-8 flex w-full items-center justify-center rounded-full bg-[#25D366] px-6 py-4 text-center text-lg font-extrabold text-night shadow-[0_10px_30px_-10px_rgba(37,211,102,0.6)] transition duration-200 hover:bg-[#1fbd5b] motion-safe:hover:-translate-y-0.5 sm:text-xl"
+        >
+          📲 הצטרפות לקבוצת הוואטסאפ השקטה של הסדנה
+        </a>
+        <p className="mt-3 text-center text-base text-drift">
+          קבוצה שקטה: רק הודעות מהצוות, בלי הודעות מהמשתתפים.
+        </p>
 
         {/* What happens next - the email timeline */}
         <div className="mt-12 rounded-2xl border border-drift/15 bg-cloud/[0.04] p-6 sm:p-8">

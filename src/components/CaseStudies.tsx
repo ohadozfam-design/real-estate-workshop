@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import Sentences from "./ui/Sentences";
 
 type Shot = { src: string; alt: string };
 
@@ -46,7 +47,7 @@ export default function CaseStudies() {
               מה כותבים בוגרי הסדנאות הקודמות
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
-              הודעות אמת שקיבלנו מתלמידים אחרי הסדנה. לחצו על תמונה כדי להגדיל.
+              <Sentences text="הודעות אמת שקיבלנו מתלמידים אחרי הסדנה. לחצו על תמונה כדי להגדיל." />
             </p>
           </div>
         </Reveal>

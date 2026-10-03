@@ -63,7 +63,7 @@ export default function App() {
         </p>
       </footer>
 
-      <StickyMobileCTA bumpSelected={bumpSelected} />
+      <StickyMobileCTA />
     </div>
   );
 }

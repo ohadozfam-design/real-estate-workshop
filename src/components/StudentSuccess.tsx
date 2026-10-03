@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Trophy, TrendingUp, MapPin } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import Sentences from "./ui/Sentences";
 
 type Story = {
   name: string;
@@ -55,7 +56,7 @@ export default function StudentSuccess() {
               תלמידים שכבר עלו על עסקאות אמיתיות
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
-              לא תיאוריה ולא הבטחות. נכסים אמיתיים בשטח, של תלמידים שיישמו את השיטה.
+              <Sentences text="לא תיאוריה ולא הבטחות. נכסים אמיתיים בשטח, של תלמידים שיישמו את השיטה." />
             </p>
           </div>
         </Reveal>

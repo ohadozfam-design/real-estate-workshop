@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock } from "lucide-react";
-import { PRICING, scrollToCheckout } from "../lib/site";
+import { scrollToCheckout } from "../lib/site";
 
-type Props = { bumpSelected: boolean };
-
-export default function StickyMobileCTA({ bumpSelected }: Props) {
+export default function StickyMobileCTA() {
   const [visible, setVisible] = useState(false);
-  const total = bumpSelected ? PRICING.withBump : PRICING.base;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 640);
@@ -30,13 +27,12 @@ export default function StickyMobileCTA({ bumpSelected }: Props) {
           <motion.button
             type="button"
             onClick={scrollToCheckout}
-            aria-label={`שריין מקום בסדנה בעלות של ${total} דולר`}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             className="focus-ring flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3.5 text-lg font-bold tracking-tight text-night shadow-cta transition-colors hover:bg-[#ffca82]"
           >
             <Lock className="h-[18px] w-[18px]" strokeWidth={2.5} aria-hidden="true" />
-            שריין מקום בסדנה · <span className="ltr-nums">${total}</span>
+            שריין מקום בסדנה
           </motion.button>
         </motion.div>
       )}

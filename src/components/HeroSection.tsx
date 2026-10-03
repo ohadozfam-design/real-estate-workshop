@@ -69,8 +69,14 @@ export default function HeroSection() {
           variants={item}
           className="mx-auto mt-6 max-w-2xl text-balance text-xl leading-relaxed text-drift sm:text-2xl"
         >
-          בלי לנחש מספרים, בלי להסתמך על מזל ובלי להתפזר. שיטת עבודה של יזמים
-          מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם הצעות קבוע על השולחן.
+          <span className="block">
+            בלי לנחש מספרים, בלי להסתמך על מזל, בלי להתפזר{" "}
+            <strong className="font-extrabold text-cloud">ובלי לשרוף שעות בזילו</strong>.
+          </span>
+          <span className="mt-1.5 block">
+            שיטת עבודה של יזמים מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם
+            הצעות קבוע על השולחן.
+          </span>
         </motion.p>
 
         {/* VSL player - silent preview loop, click to play full video with sound.
@@ -127,7 +133,7 @@ export default function HeroSection() {
         {/* CTA */}
         <motion.div variants={item} className="mx-auto mt-8 w-full max-w-md">
           <CtaButton onClick={scrollToCheckout}>
-            שריין את המקום שלי בסדנה במחיר <span className="ltr-nums">$97</span> בלבד
+            שריין את המקום שלי בסדנה
           </CtaButton>
           <p className="mt-4 text-lg text-drift">
             🔒 100% אחריות להחזר כספי מלא בסיום הסדנה ללא שאלות.
