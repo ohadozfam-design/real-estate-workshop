@@ -33,7 +33,7 @@ export default function EventTicket() {
           </span>
         </div>
 
-        <p className="ltr-nums mt-5 text-2xl font-black tracking-tight text-cloud sm:text-3xl">
+        <p dir="ltr" className="mt-5 text-right text-2xl font-black tracking-tight text-cloud sm:text-3xl">
           K2 Real Estate Live Workshop
         </p>
 
