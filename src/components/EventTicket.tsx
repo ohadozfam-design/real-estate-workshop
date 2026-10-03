@@ -19,13 +19,13 @@ export default function EventTicket() {
   });
 
   return (
-    <div className="relative mt-10 overflow-hidden rounded-3xl bg-gradient-to-l from-[#1e2c35] to-[#172129] ring-1 ring-gold/30 sm:flex">
+    <div className="relative mt-10 overflow-hidden rounded-3xl bg-gradient-to-l from-[#1e2c35] to-[#172129] ring-1 ring-gold/30 md:flex">
       {/* Main section */}
-      <div className="flex-1 p-6 sm:p-8">
+      <div className="min-w-0 flex-1 p-5 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-gold">
+          <span className="inline-flex items-center gap-2 text-sm font-bold tracking-normal text-gold">
             <Ticket className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-            <span className="ltr-nums">Admit One</span>
+            <span>כרטיס כניסה אישי</span>
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1 text-sm font-bold text-emerald-300 ring-1 ring-emerald-400/30">
             <BadgeCheck className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" />
@@ -33,13 +33,13 @@ export default function EventTicket() {
           </span>
         </div>
 
-        <p dir="ltr" className="mt-5 text-right text-2xl font-black tracking-tight text-cloud sm:text-3xl">
-          K2 Real Estate Live Workshop
+        <p className="mt-5 text-balance text-2xl font-extrabold leading-[1.2] tracking-tight text-cloud sm:text-3xl">
+          סדנת מנוע העסקאות
         </p>
 
-        <dl className="mt-6 grid gap-5 sm:grid-cols-2">
+        <dl className="mt-6 grid min-w-0 gap-5">
           <div>
-            <dt className="text-xs font-bold uppercase tracking-[0.18em] text-drift">מועדים</dt>
+            <dt className="text-sm font-bold tracking-normal text-drift">מועדים</dt>
             <dd className="mt-1.5 flex items-start gap-2 text-lg font-bold text-cloud">
               <CalendarDays className="mt-1 h-5 w-5 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
               <span>
@@ -51,20 +51,20 @@ export default function EventTicket() {
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-bold uppercase tracking-[0.18em] text-drift">פורמט</dt>
+            <dt className="text-sm font-bold tracking-normal text-drift">פורמט</dt>
             <dd className="mt-1.5 flex items-start gap-2 text-lg font-bold text-cloud">
               <Video className="mt-1 h-5 w-5 shrink-0 text-gold" strokeWidth={2.2} aria-hidden="true" />
-              <span className="ltr-nums">Zoom Live Broadcast</span>
+              <span>שידור חי בזום</span>
             </dd>
           </div>
         </dl>
       </div>
 
       {/* Tear-off stub: dashed edge + punched notches (page-colored circles) */}
-      <div className="relative border-t-2 border-dashed border-drift/25 p-6 sm:w-48 sm:border-r-2 sm:border-t-0 sm:p-7">
+      <div className="relative border-t-2 border-dashed border-drift/25 p-5 sm:p-7 md:w-40 md:shrink-0 md:border-r-2 md:border-t-0 md:p-5">
         <span className="absolute -right-4 -top-4 h-8 w-8 rounded-full bg-night" aria-hidden="true" />
-        <span className="absolute -left-4 -top-4 h-8 w-8 rounded-full bg-night sm:hidden" aria-hidden="true" />
-        <span className="absolute -bottom-4 -right-4 hidden h-8 w-8 rounded-full bg-night sm:block" aria-hidden="true" />
+        <span className="absolute -left-4 -top-4 h-8 w-8 rounded-full bg-night md:hidden" aria-hidden="true" />
+        <span className="absolute -bottom-4 -right-4 hidden h-8 w-8 rounded-full bg-night md:block" aria-hidden="true" />
 
         <div className="flex h-full flex-col justify-center gap-3 text-center">
           <div
@@ -73,7 +73,7 @@ export default function EventTicket() {
             aria-hidden="true"
           />
           <div>
-            <div className="text-xs font-bold uppercase tracking-[0.18em] text-drift">מספר כרטיס</div>
+            <div className="text-sm font-bold tracking-normal text-drift">מספר כרטיס</div>
             <div className="ltr-nums mt-1 font-mono text-lg font-bold tracking-widest text-gold">
               {ticketId}
             </div>

@@ -4,19 +4,25 @@ import { X, ZoomIn } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import Sentences from "./ui/Sentences";
 
-type Shot = { src: string; alt: string };
+type Shot = { src: string; width: number; height: number; alt: string };
 
 const shots: Shot[] = [
   {
     src: "/case-studies/case-1.jpg",
+    width: 1044,
+    height: 340,
     alt: "הודעת בוגר בוואטסאפ: סדנה של 400 דולר פלוס, היה מטורף",
   },
   {
     src: "/case-studies/case-2.png",
+    width: 996,
+    height: 284,
     alt: "הודעת בוגר בוואטסאפ: עזר לי מאוד עם הבעיה הכי גדולה ופתח לי את הראש",
   },
   {
     src: "/case-studies/case-3.jpg",
+    width: 1290,
+    height: 860,
     alt: "הודעת בוגר בוואטסאפ: אחלה חשיפה, למדתי כמה דברים חדשים",
   },
 ];
@@ -65,10 +71,12 @@ export default function CaseStudies() {
                 <span className="relative block">
                   <img
                     src={s.src}
+                    width={s.width}
+                    height={s.height}
                     alt={s.alt}
                     loading="lazy"
                     decoding="async"
-                    className="w-full"
+                    className="h-auto w-full"
                   />
                   <span className="pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-night/70 px-3 py-1.5 text-sm font-semibold text-cloud opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
                     <ZoomIn className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" /> הגדל

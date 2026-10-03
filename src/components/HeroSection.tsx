@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, CalendarDays } from "lucide-react";
 import CtaButton from "./ui/CtaButton";
@@ -23,14 +22,6 @@ const item = {
 };
 
 export default function HeroSection() {
-  const [enlarged, setEnlarged] = useState(false);
-
-  useEffect(() => {
-    // Enlarge the video player 2 seconds after load to draw attention.
-    const timer = window.setTimeout(() => setEnlarged(true), 2000);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   return (
     <section
       className="relative overflow-hidden px-5 pb-16 pt-12 sm:pt-16 md:pb-24"
@@ -58,7 +49,7 @@ export default function HeroSection() {
         <motion.h1
           variants={item}
           id="hero-heading"
-          className="mx-auto mt-7 w-full max-w-5xl text-center font-extrabold leading-[1.05] tracking-tight text-cloud text-4xl sm:text-5xl lg:text-6xl"
+          className="mx-auto mt-7 w-full max-w-5xl text-center font-extrabold leading-[1.15] sm:leading-[1.1] text-balance tracking-tight text-cloud text-4xl sm:text-5xl lg:text-6xl"
         >
           <span className="text-gold">ב-4 שעות בלייב</span> נקים מנוע עסקאות שיסגור
           לך 2 עסקאות בחודש
@@ -76,13 +67,10 @@ export default function HeroSection() {
           </span>
         </motion.p>
 
-        {/* VSL player - silent preview loop, click to play full video with sound.
-            Enlarges from max-w-3xl to max-w-5xl 2s after load to draw attention. */}
+        {/* Stable video dimensions from first render; click for sound. */}
         <motion.div
           variants={item}
-          className={`mx-auto mt-9 w-full transition-[max-width] duration-700 ease-out ${
-            enlarged ? "max-w-5xl" : "max-w-3xl"
-          }`}
+          className="mx-auto mt-9 w-full max-w-5xl"
         >
           <VslPlayer />
         </motion.div>
@@ -148,7 +136,7 @@ export default function HeroSection() {
         transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto mt-16 max-w-4xl rounded-3xl bg-gold px-6 py-11 text-center text-night sm:px-12"
       >
-        <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)] md:whitespace-nowrap">
+        <h2 className="font-extrabold tracking-tight text-[clamp(1.9rem,4.5vw,3rem)] text-balance leading-[1.15]">
           תיכנס ללפחות 2 חוזים בכל חודש
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-xl font-semibold leading-relaxed text-night/85">

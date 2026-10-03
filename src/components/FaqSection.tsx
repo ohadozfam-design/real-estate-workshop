@@ -46,9 +46,9 @@ export default function FaqSection() {
         </Reveal>
 
         <Reveal delay={0.06}>
-          <div className="mt-12 border-t border-drift/12">
+          <div className="mt-12 border-t border-drift/[0.12]">
             {faqs.map((f) => (
-              <details key={f.q} className="group border-b border-drift/12">
+              <details key={f.q} className="group border-b border-drift/[0.12]">
                 <summary className="focus-ring flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-xl font-bold text-cloud [&::-webkit-details-marker]:hidden">
                   {f.q}
                   <ChevronDown

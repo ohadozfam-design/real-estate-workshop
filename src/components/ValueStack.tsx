@@ -1,5 +1,6 @@
 import { Calculator, ClipboardCheck, MessagesSquare, TrendingUp, type LucideIcon } from "lucide-react";
 import Reveal from "./ui/Reveal";
+import CtaButton from "./ui/CtaButton";
 import { PRICING } from "../lib/site";
 
 const bonuses: { n: number; name: string; desc: string; value: number; Icon: LucideIcon }[] = [
@@ -62,7 +63,7 @@ export default function ValueStack() {
                   <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold/15 ring-1 ring-gold/30">
                     <b.Icon className="h-7 w-7 text-gold" strokeWidth={2} aria-hidden="true" />
                   </span>
-                  <span className="whitespace-nowrap rounded-full bg-gold px-4 py-1.5 text-base font-extrabold text-night shadow-sm sm:text-lg">
+                  <span className="whitespace-nowrap rounded-full border border-gold/25 bg-gold/10 px-4 py-1.5 text-base font-extrabold text-gold sm:text-lg">
                     שווי <span className="ltr-nums">${b.value}</span>
                   </span>
                 </div>
@@ -80,7 +81,7 @@ export default function ValueStack() {
 
         {/* Social-proof headline bridging the bonus list and the value stack */}
         <Reveal delay={0.08}>
-          <p className="mx-auto my-14 max-w-3xl text-center text-xl font-bold leading-relaxed text-cloud md:my-16 md:text-2xl">
+          <p className="mx-auto mt-8 max-w-3xl text-center text-xl font-bold leading-relaxed text-cloud md:mt-10 md:text-2xl">
             תלמידי הליווי שלנו משתמשים בכלים האלה יום יום וככה הם מגדילים פי 3 את
             כמות ההצעות שהם מציעים ומביאים עסקאות מליגה אחרת.
           </p>
@@ -88,9 +89,9 @@ export default function ValueStack() {
       </div>
 
       {/* Price summary - its own distinct, well-separated visual block */}
-      <div className="mx-auto mt-16 max-w-2xl px-5 pt-4 md:mt-20 md:pt-6">
+      <div className="mx-auto mt-8 max-w-2xl md:mt-10">
         <Reveal delay={0.1}>
-          <div className="rounded-2xl border border-gold/25 bg-cloud/[0.03] p-8 shadow-card sm:p-10">
+          <div className="rounded-2xl border border-gold/25 bg-cloud/[0.03] p-6 shadow-card sm:p-10">
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold text-drift sm:text-xl">סה״כ שווי כולל</span>
               <span className="ltr-nums text-3xl font-extrabold text-drift line-through decoration-coral/80 decoration-2 sm:text-4xl">
@@ -104,10 +105,21 @@ export default function ValueStack() {
               </span>
               <span className="inline-flex items-baseline gap-2">
                 <span className="ltr-nums text-5xl font-extrabold tracking-tight text-gold sm:text-6xl">
-                  $97
+                  ${PRICING.base}
                 </span>
                 <span className="text-lg font-bold text-drift">בלבד</span>
               </span>
+            </div>
+            <div className="mt-6">
+              <CtaButton
+                showLock={false}
+                onClick={() => document.getElementById("checkout")?.scrollIntoView({
+                  behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+                  block: "start",
+                })}
+              >
+                שריין את המקום שלי בסדנה
+              </CtaButton>
             </div>
           </div>
         </Reveal>

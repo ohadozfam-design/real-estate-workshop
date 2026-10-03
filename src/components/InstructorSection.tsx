@@ -41,13 +41,13 @@ export default function InstructorSection() {
 
         {/* Authority stats */}
         <Reveal delay={0.05}>
-          <div className="mt-10 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-drift/15 bg-drift/15">
+          <div className="mt-10 grid grid-cols-1 min-[360px]:grid-cols-3 gap-px overflow-hidden rounded-2xl border border-drift/15 bg-drift/15">
             {stats.map((s) => (
-              <div key={s.label} className="bg-night px-3 py-7 text-center sm:py-9">
+              <div key={s.label} className="min-w-0 bg-night px-3 py-5 text-center sm:py-9">
                 <div className="ltr-nums font-extrabold tracking-tight text-gold text-[clamp(2.5rem,7vw,4.5rem)]">
                   {s.value}
                 </div>
-                <div className="mx-auto mt-1.5 max-w-[11rem] text-lg font-semibold leading-snug text-drift sm:text-xl">
+                <div className="mx-auto mt-1.5 max-w-[11rem] text-base font-semibold leading-snug text-drift sm:text-lg">
                   {s.label}
                 </div>
               </div>
@@ -55,15 +55,15 @@ export default function InstructorSection() {
           </div>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-[300px_1fr] md:items-start md:gap-14">
+        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
           {/* Identity */}
-          <Reveal>
-            <div className="md:sticky md:top-8">
+          <Reveal className="min-w-0">
+            <div className="mx-auto max-w-sm lg:max-w-none">
               <InstructorPortrait />
               <div className="mt-5">
                 <h3 className="text-3xl font-extrabold tracking-tight text-cloud md:text-4xl">אוהד עוז</h3>
                 <p className="ltr-nums mt-1 text-lg font-semibold text-drift">Ohad Ozalvo</p>
-                <p className="mt-4 text-xl leading-relaxed text-drift md:text-2xl">
+                <p className="mt-4 text-lg leading-[1.7] text-drift sm:text-xl">
                   <Sentences text="יזם נדל״ן פעיל בארה״ב · אוהיו ואינדיאנה. מנהל פורטפוליו עסקאות ומנטור למשקיעים." />
                 </p>
               </div>
@@ -71,15 +71,15 @@ export default function InstructorSection() {
           </Reveal>
 
           {/* Story + proof */}
-          <div>
-            <div className="divide-y divide-drift/12 border-y border-drift/12">
+          <div className="min-w-0">
+            <div className="divide-y divide-drift/[0.12] border-y border-drift/[0.12]">
               {story.map((block, i) => (
                 <Reveal key={block.label} delay={i * 0.06}>
                   <article className="py-8">
-                    <div className="text-base font-bold uppercase tracking-[0.18em] text-gold">
+                    <div className="text-base font-bold tracking-normal text-gold">
                       {block.label}
                     </div>
-                    <p className="mt-3 text-xl leading-relaxed text-cloud md:text-2xl">
+                    <p className="mt-3 text-lg leading-[1.7] text-cloud sm:text-xl">
                       <Sentences text={block.body} />
                     </p>
                   </article>
@@ -89,7 +89,7 @@ export default function InstructorSection() {
 
             <Reveal delay={0.12}>
               <div className="mt-8">
-                <div className="text-base font-bold uppercase tracking-[0.18em] text-gold">
+                <div className="text-base font-bold tracking-normal text-gold">
                   ההוכחה בשטח
                 </div>
                 <ul className="mt-4 space-y-px overflow-hidden rounded-xl bg-drift/15">
@@ -132,7 +132,7 @@ function InstructorPortrait() {
         />
       )}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-night/80 to-transparent px-4 pb-3 pt-10">
-        <span className="text-sm font-bold uppercase tracking-[0.18em] text-cloud">מנחה הסדנה</span>
+        <span className="text-sm font-bold tracking-normal text-cloud">מנחה הסדנה</span>
       </div>
     </div>
   );

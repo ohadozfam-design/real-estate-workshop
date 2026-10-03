@@ -166,6 +166,33 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
           </div>
         </div>
 
+        <figure className="overflow-hidden rounded-2xl border border-gold/30 bg-cloud/[0.04] p-4 shadow-card sm:p-6">
+          <figcaption className="mb-4 text-center">
+            <p className="text-sm font-bold text-gold">בוגר הסדנה מספר</p>
+            <blockquote className="mt-2 text-balance text-2xl font-extrabold leading-snug text-cloud sm:text-3xl">
+              ״זה סדנא של 400 דולר פלוס״
+            </blockquote>
+          </figcaption>
+          <a
+            href="/case-studies/case-1.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="focus-ring block overflow-hidden rounded-xl"
+            aria-label="פתיחת עדות הבוגר בגודל מלא"
+          >
+            <img
+              src="/case-studies/case-1.jpg"
+              width={1044}
+              height={340}
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full"
+              alt="הודעת בוגר בוואטסאפ: זה סדנא של 400 דולר פלוס, היה מטורף"
+            />
+          </a>
+          <p className="mt-3 text-center text-sm text-drift">לחצו על התמונה לצפייה בגודל מלא</p>
+        </figure>
+
         {/* Checkout card - sticky CTA scroll target (the offer, not the guarantee) */}
         <div
           id="pricing"
@@ -220,7 +247,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                 {/* Itemized value stack - every bonus listed with its own value */}
             <div className="space-y-3">
               <div className="rounded-xl border border-drift/15 bg-night/40 p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-3 border-b border-drift/12 pb-3">
+                <div className="flex items-center justify-between gap-3 border-b border-drift/[0.12] pb-3">
                   <span className="text-lg font-bold text-cloud">
                     כרטיס לסדנה הלייב · יומיים בלייב
                   </span>
@@ -248,7 +275,7 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-4 flex items-center justify-between border-t border-drift/12 pt-3.5">
+                <div className="mt-4 flex items-center justify-between border-t border-drift/[0.12] pt-3.5">
                   <span className="text-base font-bold text-cloud">שווי כולל</span>
                   <span className="ltr-nums text-2xl font-extrabold text-drift line-through decoration-coral/80 decoration-2">
                     ${PRICING.totalStackValue}
@@ -357,10 +384,10 @@ export default function OrderBumpCheckout({ bumpSelected, onToggle }: Props) {
             </div>
 
             {/* ---- Total ---- */}
-            <div className="mt-6 flex items-center justify-between rounded-xl border border-cloud/10 bg-night/50 px-5 py-4">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-cloud/10 bg-night/50 px-5 py-4">
               <span className="text-lg font-bold text-cloud">סה״כ לתשלום היום</span>
               <div
-                className="relative h-11 overflow-hidden text-left"
+                className="relative min-h-[3.25rem] shrink-0 overflow-visible text-left"
                 role="status"
                 aria-live="polite"
                 aria-atomic="true"
@@ -605,8 +632,8 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={invalid}
         aria-describedby={invalid ? `${id}-error` : undefined}
-        className={`focus-ring w-full rounded-xl border bg-night/60 px-4 py-3 text-lg text-cloud placeholder:text-drift/40 transition-colors ${
-          invalid ? "border-coral" : "border-drift/20 hover:border-drift/35"
+        className={`focus-ring w-full rounded-xl border bg-night/60 px-4 py-3 text-lg text-cloud placeholder:text-drift/60 transition-colors ${
+          invalid ? "border-coral" : "border-drift/50 hover:border-drift/70"
         }`}
       />
       {invalid && (

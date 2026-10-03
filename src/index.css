@@ -56,9 +56,9 @@
 }
 
 @layer components {
-  /* Uppercase eyebrow label - clean tracked gold text, no leading rule. */
+  /* Hebrew eyebrow labels use natural letter spacing. */
   .eyebrow {
-    @apply inline-flex items-center text-sm font-bold uppercase tracking-[0.22em] text-gold;
+    @apply inline-flex items-center text-sm font-bold tracking-normal text-gold;
   }
 }
 

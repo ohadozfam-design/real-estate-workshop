@@ -66,11 +66,11 @@ export default function CurriculumSection() {
           </div>
         </Reveal>
 
-        {/* Day 1 and Day 2: stacked cards on mobile, side by side from md up */}
-        <div className="relative mt-14 grid grid-cols-1 gap-6 md:mt-16 md:grid-cols-2 md:gap-8">
+        {/* Day 1 and Day 2: stacked cards on mobile, side by side from lg up */}
+        <div className="relative mt-14 grid grid-cols-1 gap-6 md:mt-16 lg:grid-cols-2 lg:gap-12">
           {/* Day 1 -> Day 2 connector (RTL: Day 1 sits on the right) */}
           <span
-            className="absolute left-1/2 top-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-gold/40 bg-night text-gold md:flex"
+            className="absolute left-1/2 top-[3.5rem] z-10 hidden h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-gold/40 bg-night text-gold lg:flex"
             aria-hidden="true"
           >
             <ArrowLeft className="h-6 w-6" strokeWidth={2.4} />
@@ -78,17 +78,17 @@ export default function CurriculumSection() {
 
           {days.map((day, i) => (
             <Reveal key={day.label} delay={i * 0.15} className="h-full">
-              <article className="flex h-full flex-col rounded-3xl border border-drift/20 bg-cloud/[0.04] p-6 transition duration-300 hover:border-gold/40 hover:bg-cloud/[0.06] hover:shadow-card motion-safe:hover:-translate-y-1 sm:p-8 lg:p-10">
+              <article className="flex h-full flex-col rounded-3xl border border-drift/20 bg-cloud/[0.04] p-6 transition duration-300 hover:border-gold/40 hover:bg-cloud/[0.06] hover:shadow-card sm:p-8">
                 {/* Day header */}
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-drift/15 pb-6">
-                  <span className="inline-flex items-center rounded-full bg-gold px-5 py-2 text-2xl font-black text-night md:text-3xl">
+                  <span className="inline-flex items-center rounded-full bg-gold px-5 py-2 text-2xl font-extrabold text-night">
                     {day.label}
                   </span>
-                  <span className="text-xl font-bold text-cloud/85 md:text-2xl">{day.date}</span>
+                  <span className="text-lg font-bold text-cloud/85">{day.date}</span>
                 </div>
 
                 {/* Day theme */}
-                <h3 className="mt-7 text-balance text-3xl font-black leading-tight tracking-tight text-cloud md:text-4xl lg:text-[2.6rem]">
+                <h3 className="mt-7 text-balance text-2xl font-extrabold leading-[1.2] tracking-tight text-cloud lg:text-3xl">
                   {day.title}
                 </h3>
 
@@ -97,7 +97,7 @@ export default function CurriculumSection() {
                   {day.points.map((p) => (
                     <li key={p} className="flex items-start gap-3.5">
                       <CheckCircle2
-                        className="mt-0.5 h-7 w-7 shrink-0 text-emerald-400 md:h-8 md:w-8"
+                        className="mt-0.5 h-6 w-6 shrink-0 text-emerald-400"
                         strokeWidth={2.4}
                         aria-hidden="true"
                       />
