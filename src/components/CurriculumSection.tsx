@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, Quote } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import Sentences from "./ui/Sentences";
 import { SITE } from "../lib/site";
@@ -47,33 +47,22 @@ export default function CurriculumSection() {
           <div className="text-center">
             <span className="eyebrow">תכנית הסדנה</span>
 
-            {/* The pain point, framed as the participant's own words */}
-            <figure className="relative mx-auto mt-10 max-w-4xl rounded-3xl border border-gold/25 bg-gold/[0.06] px-6 pb-9 pt-12 sm:px-12">
-              <span
-                className="absolute -top-7 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-night ring-1 ring-gold/40"
-                aria-hidden="true"
-              >
-                <Quote className="h-7 w-7 -scale-x-100 fill-gold/20 text-gold" strokeWidth={2} />
+            <h2
+              id="curriculum-heading"
+              className="mx-auto mt-5 max-w-4xl text-balance font-extrabold leading-tight tracking-tight text-cloud text-[clamp(2rem,4.8vw,3.3rem)]"
+            >
+              <span className="block">
+                <span className="text-gold" aria-hidden="true">"</span>
+                הגשתי כמה הצעות אבל זה לא עבד.
               </span>
-              <blockquote>
-                <h2
-                  id="curriculum-heading"
-                  className="text-balance font-extrabold leading-tight tracking-tight text-cloud text-[clamp(1.85rem,4.4vw,3.1rem)]"
-                >
-                  <span className="block">
-                    <span className="text-gold" aria-hidden="true">"</span>
-                    הגשתי כמה הצעות אבל זה לא עבד.
-                  </span>
-                  <span className="mt-1 block">
-                    אני רוצה להתחיל לבנות צוות ולעלות על חוזים
-                    <span className="text-gold" aria-hidden="true">"</span>
-                  </span>
-                </h2>
-              </blockquote>
-              <figcaption className="mt-5 text-lg italic leading-relaxed text-drift sm:text-xl">
-                אני כבר 4 חודשים בתחום ולא מצליח לעלות על עסקה
-              </figcaption>
-            </figure>
+              <span className="mt-1 block">
+                אני רוצה להתחיל לבנות צוות ולעלות על חוזים
+                <span className="text-gold" aria-hidden="true">"</span>
+              </span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
+              אני כבר 4 חודשים בתחום ולא מצליח לעלות על עסקה
+            </p>
           </div>
         </Reveal>
 

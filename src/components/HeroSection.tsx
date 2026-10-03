@@ -69,13 +69,10 @@ export default function HeroSection() {
           variants={item}
           className="mx-auto mt-6 max-w-2xl text-balance text-xl leading-relaxed text-drift sm:text-2xl"
         >
+          <span className="block">בלי לנחש מספרים, בלי להסתמך על מזל,</span>
           <span className="block">
-            בלי לנחש מספרים, בלי להסתמך על מזל, בלי להתפזר{" "}
-            <strong className="font-extrabold text-cloud">ובלי לשרוף שעות בזילו</strong>.
-          </span>
-          <span className="mt-1.5 block">
-            שיטת עבודה של יזמים מקצועיים שמאתרת נכסים מתחת למחיר השוק ומייצרת זרם
-            הצעות קבוע על השולחן.
+            בלי להתפזר{" "}
+            <strong className="font-extrabold text-cloud">ובלי לשרוף שעות בזילו.</strong>
           </span>
         </motion.p>
 
