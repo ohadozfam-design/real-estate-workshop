@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HeroSection from "./components/HeroSection";
 import LogisticsSection from "./components/LogisticsSection";
 import CurriculumSection from "./components/CurriculumSection";
+import ComparisonSection from "./components/ComparisonSection";
 import InstructorSection from "./components/InstructorSection";
 import ValueStack from "./components/ValueStack";
 import StudentSuccess from "./components/StudentSuccess";
@@ -45,6 +46,7 @@ export default function App() {
         <CaseStudies />
         <LogisticsSection />
         <CurriculumSection />
+        <ComparisonSection />
         <StudentSuccess />
         <InstructorSection />
         <ValueStack />

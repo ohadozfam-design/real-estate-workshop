@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn } from "lucide-react";
 import Reveal from "./ui/Reveal";
 import Sentences from "./ui/Sentences";
+import VoiceNotePlayer from "./VoiceNotePlayer";
 
 type Shot = { src: string; width: number; height: number; alt: string };
 
@@ -25,6 +26,20 @@ const shots: Shot[] = [
     height: 860,
     alt: "הודעת בוגר בוואטסאפ: אחלה חשיפה, למדתי כמה דברים חדשים",
   },
+  {
+    src: "/case-studies/case-4.jpg",
+    width: 1036,
+    height: 498,
+    alt: "הודעת בוגר בוואטסאפ: עזר מלא ופתח לי את הראש לדרכים שונות למצוא דילים, לא רק ממתווכים",
+  },
+];
+
+// Waveform of voice-note-1.m4a: RMS of 48 equal slices, normalized (computed
+// with ffmpeg from the recording itself, not decorative).
+const VOICE_NOTE_PEAKS = [
+  0.92, 0.62, 0.58, 0.68, 0.35, 0.76, 0.71, 0.82, 0.8, 0.73, 0.84, 0.57, 0.57, 0.71, 0.69, 0.72,
+  0.74, 0.67, 0.57, 0.52, 0.75, 0.78, 0.85, 0.76, 0.69, 0.79, 0.9, 0.83, 0.81, 0.46, 0.76, 0.73,
+  0.33, 0.81, 0.54, 0.85, 0.49, 0.79, 0.82, 0.85, 0.76, 0.37, 1.0, 0.78, 0.62, 0.69, 0.82, 0.26,
 ];
 
 export default function CaseStudies() {
@@ -55,6 +70,18 @@ export default function CaseStudies() {
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-drift sm:text-xl">
               <Sentences text="הודעות אמת שקיבלנו מתלמידים אחרי הסדנה. לחצו על תמונה כדי להגדיל." />
             </p>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <div className="mt-12">
+            <VoiceNotePlayer
+              src="/case-studies/voice-note-1.m4a"
+              peaks={VOICE_NOTE_PEAKS}
+              durationHint={46.7}
+              speaker="בוגר הסדנה"
+              caption="בוגר הסדנה מספר במילים שלו"
+            />
           </div>
         </Reveal>
 

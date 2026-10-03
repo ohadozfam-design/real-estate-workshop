@@ -9,8 +9,10 @@ type Story = {
   highlight: string;
   highlightIcon: LucideIcon;
   result: string;
-  metricValue: string;
-  metricLabel: string;
+  /** Single headline metric, or a full deal breakdown via `deal` below. */
+  metricValue?: string;
+  metricLabel?: string;
+  deal?: { label: string; value: string; wide?: boolean; featured?: boolean }[];
   images: string[];
   alt: string[];
   cols: 1 | 2;
@@ -20,11 +22,16 @@ const stories: Story[] = [
   {
     name: "אליהו",
     location: "סינסינטי, אוהיו",
-    highlight: "עסקה באזור מבוקש בסינסינטי",
+    highlight: "קנה ב-$140K נכס ששווה $260K אחרי שיפוץ",
     highlightIcon: TrendingUp,
-    result: "נשאר עם פחות מ-$10,000 הון עצמי בנכס לאחר מימון מחדש (BRRRR מוצלח).",
-    metricValue: "< $10K",
-    metricLabel: "הון עצמי שנשאר בעסקה",
+    result:
+      "עם מחשבון הניתוח המהיר ותסריטי השיחה מול הסוכנים, אליהו זיהה נכס מתחת למחיר השוק ונעל אותו בלי היסוס.",
+    deal: [
+      { label: "מחיר רכישה", value: "$140,000" },
+      { label: "תקציב שיפוץ בפועל", value: "$32,000" },
+      { label: "שווי לאחר שיפוץ (ARV)", value: "$260,000", wide: true },
+      { label: "שווי שנוצר בעסקה (על הנייר)", value: "$88,000+", featured: true },
+    ],
     images: ["/testimonials/eli/eli-1.jpg"],
     alt: ["הנכס של אליהו באזור מבוקש בסינסינטי"],
     cols: 1,
@@ -117,14 +124,50 @@ export default function StudentSuccess() {
 
                     <p className="mt-3 text-lg leading-relaxed text-drift">{s.result}</p>
 
-                    {/* Metric badge */}
+                    {/* Deal breakdown chips, or a single metric badge */}
                     <div className="mt-auto pt-6">
-                      <div className="flex items-center justify-between rounded-xl border border-gold/25 bg-cloud/[0.03] px-5 py-4">
-                        <span className="ltr-nums text-3xl font-extrabold tracking-tight text-gold">
-                          {s.metricValue}
-                        </span>
-                        <span className="text-base font-semibold text-drift">{s.metricLabel}</span>
-                      </div>
+                      {s.deal ? (
+                        <dl className="grid grid-cols-2 gap-2.5">
+                          {s.deal.map((m) => (
+                            <div
+                              key={m.label}
+                              className={
+                                m.featured
+                                  ? "col-span-2 flex items-center justify-between gap-3 rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-4 py-3.5"
+                                  : `rounded-xl border border-drift/15 bg-cloud/[0.03] px-4 py-3 ${
+                                      m.wide ? "col-span-2 flex items-center justify-between gap-3" : ""
+                                    }`
+                              }
+                            >
+                              <dt
+                                className={
+                                  m.featured
+                                    ? "text-base font-bold text-emerald-300"
+                                    : "text-sm font-semibold text-drift"
+                                }
+                              >
+                                {m.label}
+                              </dt>
+                              <dd
+                                className={
+                                  m.featured
+                                    ? "ltr-nums text-3xl font-black tracking-tight text-emerald-300"
+                                    : "ltr-nums mt-0.5 text-xl font-extrabold tracking-tight text-cloud"
+                                }
+                              >
+                                {m.value}
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      ) : (
+                        <div className="flex items-center justify-between rounded-xl border border-gold/25 bg-cloud/[0.03] px-5 py-4">
+                          <span className="ltr-nums text-3xl font-extrabold tracking-tight text-gold">
+                            {s.metricValue}
+                          </span>
+                          <span className="text-base font-semibold text-drift">{s.metricLabel}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </article>
