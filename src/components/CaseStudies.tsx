@@ -80,7 +80,7 @@ export default function CaseStudies() {
               peaks={VOICE_NOTE_PEAKS}
               durationHint={46.7}
               speaker="בוגר הסדנה"
-              caption="בוגר הסדנה מספר במילים שלו"
+              quote="עפתי על זה שאתה שומר את בעלי המקצוע שלך קרוב אליך"
             />
           </div>
         </Reveal>

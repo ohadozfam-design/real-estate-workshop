@@ -118,11 +118,11 @@ export function renderConfirmationEmail(name: string, hasOrderBump: boolean): st
             </td></tr>
             <tr><td style="padding:8px 22px;border-bottom:1px solid rgba(204,213,218,0.12);">
               <div style="font-size:14px;color:#CCD5DA;">מפגש 1</div>
-              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום שלישי, 29 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום שלישי, 6 באוקטובר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
             </td></tr>
             <tr><td style="padding:12px 22px 22px;">
               <div style="font-size:14px;color:#CCD5DA;">מפגש 2</div>
-              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום רביעי, 30 בספטמבר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
+              <div style="margin-top:2px;font-size:18px;font-weight:700;color:#F0EEEB;">יום רביעי, 7 באוקטובר &nbsp;|&nbsp; 18:00 עד 20:00 (שעון ישראל)</div>
             </td></tr>
           </table>
         </td></tr>
@@ -158,8 +158,8 @@ export function renderConfirmationText(name: string, hasOrderBump: boolean): str
     `מקומך בסדנה שמור ומובטח.`,
     ``,
     `מועדי הסדנה:`,
-    `מפגש 1: יום שלישי, 29 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
-    `מפגש 2: יום רביעי, 30 בספטמבר | 18:00 עד 20:00 (שעון ישראל)`,
+    `מפגש 1: יום שלישי, 6 באוקטובר | 18:00 עד 20:00 (שעון ישראל)`,
+    `מפגש 2: יום רביעי, 7 באוקטובר | 18:00 עד 20:00 (שעון ישראל)`,
     ``,
     `קישור לזום: ${ZOOM_LINK}`,
     ``,
@@ -190,7 +190,7 @@ async function dispatchToSheet(reg: PaidRegistration): Promise<void> {
         amount: reg.amountTotal,
         currency: reg.currency,
         hasOrderBump: reg.hasOrderBump,
-        tag: "Workshop_Sep29_Buyer",
+        tag: "Workshop_Oct6_Buyer",
       }),
     });
     console.log("[stripe-webhook] buyer dispatched to sheet:", reg.email);

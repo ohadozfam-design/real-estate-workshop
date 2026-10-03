@@ -9,7 +9,8 @@ type Props = {
   /** Seconds, shown until the browser has read the file's metadata. */
   durationHint: number;
   speaker: string;
-  caption: string;
+  /** The graduate's own words from the recording, shown as the headline quote. */
+  quote: string;
 };
 
 const fmt = (s: number) => {
@@ -23,7 +24,7 @@ const fmt = (s: number) => {
  * timelines and the play glyph stay LTR on this RTL page, per the usual
  * bidi convention for playback controls.
  */
-export default function VoiceNotePlayer({ src, peaks, durationHint, speaker, caption }: Props) {
+export default function VoiceNotePlayer({ src, peaks, durationHint, speaker, quote }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -89,8 +90,13 @@ export default function VoiceNotePlayer({ src, peaks, durationHint, speaker, cap
 
   return (
     <figure className="mx-auto max-w-2xl">
-      <figcaption className="text-center text-2xl font-extrabold tracking-tight text-cloud md:text-3xl">
-        {caption}
+      <figcaption className="text-center">
+        <p className="text-balance text-2xl font-extrabold leading-snug tracking-tight text-cloud md:text-3xl">
+          <span className="text-gold" aria-hidden="true">"</span>
+          {quote}
+          <span className="text-gold" aria-hidden="true">"</span>
+        </p>
+        <p className="mt-2 text-base font-semibold text-drift md:text-lg">{speaker}</p>
       </figcaption>
 
       <div className="mt-6 flex items-center gap-4 rounded-3xl border border-drift/20 bg-[#1b262d] p-4 shadow-card sm:p-5">

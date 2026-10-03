@@ -15,7 +15,7 @@ const BARCODE =
 export default function EventTicket() {
   const [ticketId] = useState(() => {
     const sid = new URLSearchParams(window.location.search).get("session_id") || "";
-    return sid.startsWith("cs_") ? `K2-${sid.slice(-6).toUpperCase()}` : "K2-0929";
+    return sid.startsWith("cs_") ? `K2-${sid.slice(-6).toUpperCase()}` : "K2-1006";
   });
 
   return (
